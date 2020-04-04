@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Investor.Core\Investor.Core.csproj" />
+    <ProjectReference Include="..\Investor.UI.Core\Investor.UI.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Dictionaries\DefaultStyles\" />
+    <Folder Include="Dictionaries\Styles\" />
+    <Folder Include="Images\" />
+  </ItemGroup>
+
+</Project>

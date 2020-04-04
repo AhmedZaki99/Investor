@@ -1,0 +1,62 @@
+﻿<Window x:Class="Investor.UI.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Investor.UI.Windows"
+        xmlns:core="clr-namespace:Investor.UI.Core;assembly=Investor.UI.Core"
+        mc:Ignorable="d"
+        Title="Investor" Height="450" Width="700">
+
+    <!-- Resources -->
+    <Window.Resources>
+
+        <!-- Binding Pages to their ViewModels -->
+        <DataTemplate DataType="{x:Type core:DashboardViewModel}">
+            <local:DashboardView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type core:OperationsViewModel}">
+            <local:OperationsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type core:TransactionsViewModel}">
+            <local:TransactionsView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type core:InventoryViewModel}">
+            <local:InventoryView/>
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type core:InvoicesViewModel}">
+            <local:InvoicesView/>
+        </DataTemplate>
+        
+    </Window.Resources>
+
+    
+    <!-- Content -->
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <!-- Buttons -->
+            <ColumnDefinition Width="*"/>
+            <!-- Page Container -->
+            <ColumnDefinition Width="4*"/>
+        
+        </Grid.ColumnDefinitions>
+
+        <Border BorderThickness="0 0 2 0" Margin="5" Padding="5" BorderBrush="DarkBlue">
+            <ItemsControl ItemsSource="{Binding Pages}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button Content="{Binding Header}"
+                                Command="{Binding DataContext.ChangePageCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                CommandParameter="{Binding}"
+                                Margin="5 15" FontSize="15" Padding="0 10"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+
+        <ContentControl Grid.Column="1" Content="{Binding CurrentPage}"/>
+
+    </Grid>
+
+</Window>
