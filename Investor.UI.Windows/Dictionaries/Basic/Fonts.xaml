@@ -26,7 +26,7 @@
 
     <system:String x:Key="FontAwesome.CloseIcon">&#xf00d;</system:String>
     <system:String x:Key="FontAwesome.MaximizeIcon">&#xf2d0;</system:String>
-    <system:String x:Key="FontAwesome.RestoreIcon">&#xf2d2;</system:String>
+    <system:String x:Key="FontAwesome.UnMaximizeIcon">&#xf2d2;</system:String>
     <system:String x:Key="FontAwesome.MinimizeIcon">&#xf2d1;</system:String>
     
     <!--#endregion-->

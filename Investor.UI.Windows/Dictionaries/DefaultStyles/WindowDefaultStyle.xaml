@@ -1,0 +1,114 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Investor.UI.Windows">
+    
+    
+    
+    <Style x:Key="BaseWindowStyle" TargetType="{x:Type Window}">
+
+
+        <Setter Property="local:WindowDesign.CaptionColor" Value="{StaticResource WindowColor.OuterFrame.Brush}" />
+        <Setter Property="local:WindowDesign.CaptionBorderColor" Value="Transparent" />
+        <Setter Property="local:WindowDesign.CaptionBorderThickness" Value="0" />
+
+        <Setter Property="BorderBrush" Value="{StaticResource WindowColor.InnerFrame.Brush}" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{StaticResource WindowColor.Background.Brush}" />
+
+        <Setter Property="WindowChrome.CaptionHeight" Value="30" />
+        <Setter Property="WindowChrome.ResizeBorderThickness" Value="5" />
+        <Setter Property="WindowChrome.CornerRadius" Value="0" />
+        <Setter Property="WindowChrome.GlassFrameThickness" Value="1" />
+        <Setter Property="WindowChrome.NonClientFrameEdges" Value="None" />
+        <Setter Property="WindowChrome.UseAeroCaptionButtons" Value="False" />
+
+
+        <Setter Property="WindowChrome.WindowChrome">
+            <Setter.Value>
+                <WindowChrome CaptionHeight="30"
+                              ResizeBorderThickness="5"
+                              CornerRadius="0"
+                              GlassFrameThickness="1"
+                              NonClientFrameEdges="None"
+                              UseAeroCaptionButtons="False"
+                              />
+            </Setter.Value>
+        </Setter>
+        
+        
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Window}">
+                    
+                    <Border BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+
+                        <Grid>
+
+                            <Grid.RowDefinitions>
+                                <!-- Caption -->
+                                <RowDefinition Height="{TemplateBinding WindowChrome.CaptionHeight, Converter={local:DoubleToGridLengthConverter}}"/>
+                                <!-- Content -->
+                                <RowDefinition Height="*"/>
+
+                            </Grid.RowDefinitions>
+
+                            <!-- Caption Grid -->
+                            <Grid Grid.Row="0" Background="{TemplateBinding local:WindowDesign.CaptionColor}">
+
+                                <Grid.ColumnDefinitions>
+                                    <!-- Icon -->
+                                    <ColumnDefinition Width="Auto"/>
+                                    <!-- Title -->
+                                    <ColumnDefinition Width="*"/>
+                                    <!-- Control buttons-->
+                                    <ColumnDefinition Width="Auto"/>
+
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Icon -->
+                                <Button Grid.Column="0" Margin="5 0" Command="{Binding ShowMenuCommand}" Style="{StaticResource IconButton}" WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Image Source="{TemplateBinding Icon}" Width="20"/>
+                                </Button>
+
+                                <!-- Title -->
+                                <Viewbox Grid.Column="1" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Left">
+                                    <TextBlock Text="{TemplateBinding Title}" Margin="5 3" />
+                                </Viewbox>
+
+                                <!-- Control Buttons -->
+                                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                    <Button Command="{Binding MinimizeCommand}" Style="{StaticResource WindowControlButton}" Tag="Minimize"/>
+                                    <Button Command="{Binding MaximizeCommand}" Style="{StaticResource WindowControlButton}" Tag="Maximize"/>
+                                    <Button Command="{Binding CloseCommand}" Style="{StaticResource WindowControlButton}" Tag="Close"/>
+                                </StackPanel>
+
+                            </Grid>
+
+                            <!-- Content Border -->
+                            <Border Grid.Row="1"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding local:WindowDesign.CaptionBorderColor}"
+                                    BorderThickness="{TemplateBinding local:WindowDesign.CaptionBorderThickness}">
+
+                                <ContentPresenter Content="{TemplateBinding Content}" />
+                            </Border>
+
+                        </Grid>
+
+
+                    </Border>
+                    
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        
+        
+    </Style>
+
+
+    <Style TargetType="{x:Type Window}" BasedOn="{StaticResource BaseWindowStyle}"/>
+
+
+
+</ResourceDictionary>
