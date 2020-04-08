@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Media;
 using Investor.UI.Core;
+using Common.WPF;
 
 namespace Investor.UI.Windows
 {

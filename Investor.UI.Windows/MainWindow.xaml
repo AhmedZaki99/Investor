@@ -1,4 +1,4 @@
-﻿<Window Style="{StaticResource BaseWindowStyle}"
+﻿<common:EditableWindow 
         x:Class="Investor.UI.Windows.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,8 +6,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Investor.UI.Windows"
         xmlns:core="clr-namespace:Investor.UI.Core;assembly=Investor.UI.Core"
+        xmlns:common="clr-namespace:Common.WPF;assembly=Common.WPF"
         mc:Ignorable="d"
-        Title="Investor" Height="450" Width="700">
+        Title="Investor" Height="450" Width="700"
+        CaptionBorderThickness="0 0 0 0.3">
 
     <!-- Resources -->
     <Window.Resources>
@@ -60,4 +62,4 @@
 
     </Grid>
 
-</Window>
+</common:EditableWindow>

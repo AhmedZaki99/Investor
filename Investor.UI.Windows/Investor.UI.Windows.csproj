@@ -12,7 +12,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="AttachedProperties\" />
+    <Folder Include="Dictionaries\DefaultStyles\" />
+    <Folder Include="Dictionaries\Styles\" />
     <Folder Include="Images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Common.WPF">
+      <HintPath>..\..\..\..\CommonResources\Common.WPF\bin\Release\netcoreapp3.1\Common.WPF.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

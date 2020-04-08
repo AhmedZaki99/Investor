@@ -13,9 +13,7 @@
                 <ResourceDictionary Source="Dictionaries/Basic/Fonts.xaml" />
                 <ResourceDictionary Source="Dictionaries/Basic/BasicStyles.xaml" />
 
-                <ResourceDictionary Source="Dictionaries/Styles/WindowButtonsSytles.xaml" />
-                <ResourceDictionary Source="Dictionaries/DefaultStyles/WindowDefaultStyle.xaml" />
-
+                
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
 
