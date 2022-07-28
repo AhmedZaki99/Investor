@@ -20,6 +20,7 @@ namespace InvestorAPI.Models
         public string? ScaleUnit { get; set; }
 
 
+        [DataType(DataType.MultilineText)]
         [StringLength(1023, ErrorMessage = "The maximum of 1023 characters has been exceeded for the description.")]
         public string? Description { get; set; }
 

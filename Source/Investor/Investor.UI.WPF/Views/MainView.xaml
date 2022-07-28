@@ -1,0 +1,18 @@
+﻿<Window x:Class="Investor.UI.WPF.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Investor.UI.WPF"
+        xmlns:viewmodels="clr-namespace:Investor.UI.Core.ViewModels;assembly=Investor.UI.Core" 
+        d:DataContext="{d:DesignInstance Type=viewmodels:MainDesignModel, IsDesignTimeCreatable=True}"
+        mc:Ignorable="d"
+        Title="Investor" Height="400" Width="600">
+    
+    <Grid>
+        <Button Command="{Binding CloseApplicationCommand}"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                Margin="10" Padding="25 10" FontSize="16">Close Application</Button>
+    </Grid>
+    
+</Window>
