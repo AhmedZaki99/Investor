@@ -9,7 +9,7 @@ namespace InvestorAPI.Data
     /// with a default entity key type of string.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    public abstract class EntityStore<TEntity> : EntityStore<TEntity, string>, IEntityStore<TEntity> where TEntity : class, new()
+    internal abstract class EntityStore<TEntity> : EntityStore<TEntity, string>, IEntityStore<TEntity> where TEntity : class, new()
     {
         protected EntityStore(ApplicationDbContext dbContext, DbSet<TEntity> dbSet) : base(dbContext, dbSet)
         {
@@ -22,7 +22,7 @@ namespace InvestorAPI.Data
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TKey">The type of the entity key.</typeparam>
-    public abstract class EntityStore<TEntity, TKey> : IEntityStore<TEntity, TKey> where TEntity : class, new()
+    internal abstract class EntityStore<TEntity, TKey> : IEntityStore<TEntity, TKey> where TEntity : class, new()
     {
 
         #region Public Properties

@@ -6,7 +6,7 @@ namespace Investor.UI.Core
     /// <summary>
     /// Provides core application functionality.
     /// </summary>
-    public class ApplicationCore : IApplicationCore
+    internal class ApplicationCore : IApplicationCore
     {
 
         #region Private Fields

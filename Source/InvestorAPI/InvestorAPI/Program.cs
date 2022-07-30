@@ -34,8 +34,8 @@ namespace InvestorAPI
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            // TODO: Add extension methods to configure data stores.
-            builder.Services.AddScoped<IBrandStore, BrandStore>();
+            // Add data access stores.
+            builder.Services.AddInvestorDataStores();
         }
 
         private static void ConfigurePipeline(WebApplication app)
