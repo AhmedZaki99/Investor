@@ -6,7 +6,7 @@
     /// with a default entity key type of string.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    public interface IEntityStore<TEntity> : IEntityStore<TEntity, string> where TEntity : class, new()
+    public interface IEntityStore<TEntity> : IEntityStore<TEntity, string> where TEntity : class
     { 
 
     }
@@ -16,7 +16,7 @@
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TKey">The type of the entity key.</typeparam>
-    public interface IEntityStore<TEntity, TKey> where TEntity : class, new()
+    public interface IEntityStore<TEntity, TKey> where TEntity : class
     {
 
         #region Read
@@ -53,7 +53,7 @@
         Task<List<TEntity>> ListEntitiesAsync(int page = 1, int entitiesPerPage = 30);
 
         /// <summary>
-        /// Returns a page of entities starting from the last entity fetched.
+        /// Returns a page of entities starting after the last entity fetched.
         /// </summary>
         /// <param name="lastEntity">
         ///     <para>

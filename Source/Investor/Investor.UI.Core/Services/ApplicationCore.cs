@@ -1,4 +1,5 @@
-﻿using Investor.UI.Core.ViewModels;
+﻿using Investor.Core;
+using Investor.UI.Core.ViewModels;
 using Microsoft.Extensions.Hosting;
 
 namespace Investor.UI.Core
@@ -30,15 +31,17 @@ namespace Investor.UI.Core
         #region Dependencies
 
         private readonly IHostApplicationLifetime _applicationLifetime;
+        private readonly IBrandEndpoint _brandEndpoint;
         private readonly IUIService _uIService;
 
         #endregion
 
         #region Constructors
 
-        public ApplicationCore(IHostApplicationLifetime applicationLifetime, IUIService uIService)
+        public ApplicationCore(IHostApplicationLifetime applicationLifetime, IBrandEndpoint brandEndpoint, IUIService uIService)
         {
             _applicationLifetime = applicationLifetime;
+            _brandEndpoint = brandEndpoint;
             _uIService = uIService;
         }
 
@@ -55,7 +58,7 @@ namespace Investor.UI.Core
             }
 
             // Create the main viewmodel instance.
-            MainViewModel = new MainViewModel(_applicationLifetime);
+            MainViewModel = new MainViewModel(_applicationLifetime, _brandEndpoint);
 
             // Initialize UI with the main viewmodel.
             _uIService.InitializeUI(MainViewModel);

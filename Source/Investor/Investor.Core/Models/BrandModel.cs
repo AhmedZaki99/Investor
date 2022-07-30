@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
-namespace Investor.Data
+namespace Investor.Core
 {
     public class BrandModel
     {
@@ -41,7 +41,7 @@ namespace Investor.Data
 
         #endregion
 
-        #region Constructor
+        #region Constructors
 
         [JsonConstructor]
         public BrandModel(string id, string name, string scaleUnit, string? description, decimal? buyPrice, decimal? sellPrice, DateTime dateCreated)
@@ -54,6 +54,12 @@ namespace Investor.Data
             SellPrice = sellPrice;
             DateCreated = dateCreated;
         }
+
+        public BrandModel(string id, string name, string scaleUnit, string? description, decimal? buyPrice, decimal? sellPrice)
+            : this(id, name, scaleUnit, description, buyPrice, sellPrice, DateTime.UnixEpoch) { }
+
+        public BrandModel(string name, string scaleUnit, string? description, decimal? buyPrice, decimal? sellPrice)
+            : this(string.Empty, name, scaleUnit, description, buyPrice, sellPrice) { }
 
         #endregion
 

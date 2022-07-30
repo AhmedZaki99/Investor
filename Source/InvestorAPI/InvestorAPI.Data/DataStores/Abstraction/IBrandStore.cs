@@ -10,7 +10,7 @@
         #region Pagination
 
         /// <summary>
-        /// Returns a page of entities starting from the last entity fetched.
+        /// Returns a page of entities starting after the last entity fetched.
         /// </summary>
         /// <param name="lastEntityDate">Creation date of the last brand fetched in previous page.</param>
         /// <param name="entitiesPerPage">Number of entities per page; default is 30.</param>

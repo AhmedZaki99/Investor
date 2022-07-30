@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Investor.Core;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Toolkit.Mvvm.Input;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
@@ -26,6 +27,12 @@ namespace Investor.UI.Core.ViewModels
 
         #region Observable Properties
 
+        private string _brandName = string.Empty;
+        public string BrandName
+        {
+            get => _brandName;
+            set => SetProperty(ref _brandName, value);
+        }
 
 
         #endregion
@@ -33,6 +40,7 @@ namespace Investor.UI.Core.ViewModels
         #region Commands
 
         public ICommand CloseApplicationCommand { get; private set; }
+        public ICommand ShowBrandCommand { get; private set; }
 
         #endregion
 
@@ -40,6 +48,7 @@ namespace Investor.UI.Core.ViewModels
         #region Dependencies
 
         private readonly IHostApplicationLifetime _applicationLifetime;
+        private readonly IBrandEndpoint _brandEndpoint;
 
         #endregion
 
@@ -57,10 +66,11 @@ namespace Investor.UI.Core.ViewModels
 
         #endregion
 
-        public MainViewModel(IHostApplicationLifetime applicationLifetime)
+        public MainViewModel(IHostApplicationLifetime applicationLifetime, IBrandEndpoint brandEndpoint)
         {
             // Dependencies.
             _applicationLifetime = applicationLifetime;
+            _brandEndpoint = brandEndpoint;
 
             InitializeCommands();
         }
@@ -70,9 +80,11 @@ namespace Investor.UI.Core.ViewModels
         #region Initialization
 
         [MemberNotNull(nameof(CloseApplicationCommand))]
+        [MemberNotNull(nameof(ShowBrandCommand))]
         private void InitializeCommands()
         {
             CloseApplicationCommand = new RelayCommand(CloseApplication);
+            ShowBrandCommand = new AsyncRelayCommand(ShowBrand);
         }
 
         #endregion
@@ -83,6 +95,13 @@ namespace Investor.UI.Core.ViewModels
         private void CloseApplication()
         {
             _applicationLifetime.StopApplication();
+        }
+
+        private async Task ShowBrand()
+        {
+            var brands = await _brandEndpoint.PaginateAsync();
+
+            BrandName = brands.First().Name;
         }
 
         #endregion

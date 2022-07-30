@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Investor.Core;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Investor.UI.Core
 {
@@ -9,10 +10,9 @@ namespace Investor.UI.Core
     {
         /// <summary>
         /// Adds the minimum essential Application services to the specified <see cref="IServiceCollection" />. Additional services
-        /// such as the UI servcie must be added separately using the
-        /// <see cref="ApplicationBuilder"/> returned from this method.
+        /// such as the UI servcie must be added separately using the <see cref="ApplicationBuilder"/> returned from this method.
         /// </summary>
-        /// <returns>An <see cref="ApplicationBuilder"/> that can be used to further configure the MVC services.</returns>
+        /// <returns>An <see cref="ApplicationBuilder"/> that can be used to further configure the Application services.</returns>
         public static ApplicationBuilder AddApplicationServices(this IServiceCollection services)
         {
             ArgumentNullException.ThrowIfNull(services, nameof(services));
@@ -23,6 +23,21 @@ namespace Investor.UI.Core
             return new ApplicationBuilder(services);
         }
 
+
+        /// <summary>
+        /// Adds necessary Api-related services to the specified <see cref="IServiceCollection" />.
+        /// </summary>
+        /// <returns>The <see cref="ApplicationBuilder"/>.</returns>
+        public static ApplicationBuilder AddApiServer(this ApplicationBuilder builder, string apiServerAddress)
+        {
+            ArgumentNullException.ThrowIfNull(builder, nameof(builder));
+
+            // Add Core Services with Api Endpoints.
+            builder.Services.AddCoreServices()
+                .AddApiEndpoints(apiServerAddress);
+
+            return builder;
+        }
 
         /// <summary>
         /// Adds a <see cref="IUIService"/> implementation to the <see cref="IServiceCollection"/> necessary

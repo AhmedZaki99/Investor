@@ -8,11 +8,15 @@
         d:DataContext="{d:DesignInstance Type=viewmodels:MainDesignModel, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
         Title="Investor" Height="400" Width="600">
-    
-    <Grid>
+
+    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
         <Button Command="{Binding CloseApplicationCommand}"
-                HorizontalAlignment="Center" VerticalAlignment="Center"
                 Margin="10" Padding="25 10" FontSize="16">Close Application</Button>
-    </Grid>
+        
+        <Button Command="{Binding ShowBrandCommand}"
+                Margin="10" Padding="25 10" FontSize="16">Show Brand Name</Button>
+
+        <TextBlock Margin="10" Padding="25 10" FontSize="16" Text="{Binding BrandName}"/>
+    </StackPanel>
     
 </Window>

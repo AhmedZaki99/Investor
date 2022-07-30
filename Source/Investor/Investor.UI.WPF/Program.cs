@@ -34,11 +34,8 @@ namespace Investor.UI.WPF
 
             // Application Services.
             services.AddApplicationServices()
+                .AddApiServer(hostContext.Configuration["ApiServerAddress"])
                 .AddUI<UIService>();
-
-            // TODO: Add Data Services.
-
-            // TODO: Add Core Services.
 
 
             // TODO: Study the pros & cons of adding MainViewModel as a service.

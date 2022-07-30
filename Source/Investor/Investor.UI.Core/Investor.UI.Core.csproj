@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\Internal\" />
+    <ProjectReference Include="..\Investor.Core\Investor.Core.csproj" />
   </ItemGroup>
 
 </Project>
