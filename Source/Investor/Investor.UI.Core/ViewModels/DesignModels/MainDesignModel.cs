@@ -7,7 +7,7 @@
     {
         public MainDesignModel()
         {
-            
+            BrandName = "This is a very long text made to test view text wrapping, check the view out to see for yourself.";
         }
     }
 }

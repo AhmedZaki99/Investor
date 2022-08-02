@@ -1,8 +1,9 @@
 ﻿using Investor.Core;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Toolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
+using System.Diagnostics;
 
 namespace Investor.UI.Core.ViewModels
 {
@@ -84,7 +85,7 @@ namespace Investor.UI.Core.ViewModels
         private void InitializeCommands()
         {
             CloseApplicationCommand = new RelayCommand(CloseApplication);
-            ShowBrandCommand = new AsyncRelayCommand(ShowBrand);
+            ShowBrandCommand = new AsyncRelayCommand(ShowBrandAsync);
         }
 
         #endregion
@@ -97,11 +98,24 @@ namespace Investor.UI.Core.ViewModels
             _applicationLifetime.StopApplication();
         }
 
-        private async Task ShowBrand()
+        private async Task ShowBrandAsync()
         {
-            var brands = await _brandEndpoint.PaginateAsync();
+            BrandName = "Getting Brand...";
+            try
+            {
+                var brands = await _brandEndpoint.PaginateAsync();
 
-            BrandName = brands.First().Name;
+                BrandName = brands?.FirstOrDefault()?.Name ?? "No result.";
+            }
+            catch (ApiConnectionException ex)
+            {
+                if (Debugger.IsAttached)
+                {
+                    Debugger.Break();
+                    throw;
+                }
+                BrandName = ex.Message;
+            }
         }
 
         #endregion

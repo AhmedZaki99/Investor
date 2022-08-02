@@ -16,7 +16,18 @@
         <Button Command="{Binding ShowBrandCommand}"
                 Margin="10" Padding="25 10" FontSize="16">Show Brand Name</Button>
 
-        <TextBlock Margin="10" Padding="25 10" FontSize="16" Text="{Binding BrandName}"/>
+        <Grid Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="1"
+                       Padding="25 10" FontSize="16" 
+                       TextWrapping="Wrap"
+                       Text="{Binding BrandName}"/>
+        </Grid>
     </StackPanel>
     
 </Window>

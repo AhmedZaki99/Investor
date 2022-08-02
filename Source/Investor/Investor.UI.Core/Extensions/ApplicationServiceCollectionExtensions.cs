@@ -43,14 +43,14 @@ namespace Investor.UI.Core
         /// Adds a <see cref="IUIService"/> implementation to the <see cref="IServiceCollection"/> necessary
         /// for UI related tasks.
         /// </summary>
-        /// <typeparam name="TUIService">The type of the <see cref="IUIService"/> implementation.</typeparam>
+        /// <typeparam name="TImplementation">The type of the <see cref="IUIService"/> implementation.</typeparam>
         /// <returns>The <see cref="ApplicationBuilder"/>.</returns>
-        public static ApplicationBuilder AddUI<TUIService>(this ApplicationBuilder builder) where TUIService : class, IUIService
+        public static ApplicationBuilder AddUI<TImplementation>(this ApplicationBuilder builder) where TImplementation : class, IUIService
         {
             ArgumentNullException.ThrowIfNull(builder, nameof(builder));
 
             // Add UI Service.
-            builder.Services.AddSingleton<IUIService, TUIService>();
+            builder.Services.AddSingleton<IUIService, TImplementation>();
 
             return builder;
         }
