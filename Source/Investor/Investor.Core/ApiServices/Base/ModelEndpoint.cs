@@ -5,11 +5,7 @@ using System.Net.Http.Json;
 namespace Investor.Core
 {
 
-    /// <summary>
-    /// Provides an abstraction for an endpoint client service, which communitcates with the api to
-    /// manage generic data models, with a default entity key type of string.
-    /// </summary>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
+    /// <inheritdoc cref="IModelEndpoint{TModel}"/>
     internal abstract class ModelEndpoint<TModel> : ModelEndpoint<TModel, string>, IModelEndpoint<TModel> where TModel : class
     {
         public ModelEndpoint(HttpClient httpClient, IOptions<ApiOptions> optionsAccessor, string endpointPath)
@@ -17,12 +13,7 @@ namespace Investor.Core
     }
 
 
-    /// <summary>
-    /// Provides an abstraction for an endpoint client service, which communitcates with the api to
-    /// manage generic data models.
-    /// </summary>
-    /// <typeparam name="TModel">The type of the model.</typeparam>
-    /// <typeparam name="TKey">The type of the model key.</typeparam>
+    /// <inheritdoc cref="IModelEndpoint{TModel, TKey}"/>
     internal abstract class ModelEndpoint<TModel, TKey> : IModelEndpoint<TModel, TKey> where TModel : class
     {
 

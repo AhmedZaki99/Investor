@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Extensions.Http;
-using Polly.Fallback;
-using Polly.Retry;
 using Polly.Timeout;
 
 namespace Investor.Core
@@ -12,6 +11,9 @@ namespace Investor.Core
     /// </summary>
     public static class CoreServiceCollectionExtensions
     {
+
+        #region Public Extentions
+
         /// <summary>
         /// Adds the minimum essential Core services to the specified <see cref="IServiceCollection" />. Additional services,
         /// such as Endpoint servcies, must be added separately using the <see cref="CoreBuilder"/> returned from this method.
@@ -22,7 +24,7 @@ namespace Investor.Core
             ArgumentNullException.ThrowIfNull(services, nameof(services));
 
             // TODO: Add Core Services.
-            
+
 
             return new CoreBuilder(services);
         }
@@ -36,11 +38,8 @@ namespace Investor.Core
         {
             ArgumentNullException.ThrowIfNull(builder, nameof(builder));
 
-            // Initialize Api policy handlers.
-            var policies = GetApiPolicyHandlers();
-
             // Add Api Endpoints.
-            builder.Services.AddHttpClient<IBrandEndpoint, BrandEndpoint>().AddApiPolicyHandlers(policies);
+            builder.Services.AddHttpClient<IBrandEndpoint, BrandEndpoint>().AddApiPolicyHandlers<IBrandEndpoint>();
 
 
             // Configure Api Options.
@@ -49,56 +48,77 @@ namespace Investor.Core
             return builder;
         }
 
+        #endregion
 
-        #region Helper Methods
+        #region Private Extentions
 
-        private static IHttpClientBuilder AddApiPolicyHandlers(this IHttpClientBuilder clientBuilder, params IAsyncPolicy<HttpResponseMessage?>[] policies)
+        private static IHttpClientBuilder AddApiPolicyHandlers<TClient>(this IHttpClientBuilder clientBuilder) where TClient : class
         {
-            foreach (var policy in policies)
-            {
-                clientBuilder.AddPolicyHandler(policy);
-            }
+            clientBuilder.AddPolicyHandler(GetFallbackPolicy<TClient>);
+            clientBuilder.AddPolicyHandler(GetRetryPolicy<TClient>);
+            clientBuilder.AddPolicyHandler(GetTimeoutPolicy<TClient>);
+
             return clientBuilder;
         }
 
-        private static IAsyncPolicy<HttpResponseMessage?>[] GetApiPolicyHandlers()
+        #endregion
+
+
+        #region Helper Methods
+
+        private static IAsyncPolicy<HttpResponseMessage?> GetTimeoutPolicy<TClient>(IServiceProvider serviceProvider, HttpRequestMessage request) where TClient : class
         {
-            var fallbackPolicy = HttpPolicyExtensions
+            return Policy.TimeoutAsync<HttpResponseMessage?>(10);
+        }
+        
+        private static IAsyncPolicy<HttpResponseMessage?> GetRetryPolicy<TClient>(IServiceProvider serviceProvider, HttpRequestMessage request) where TClient : class
+        {
+            return HttpPolicyExtensions
                 .HandleTransientHttpError()
                 .Or<TimeoutRejectedException>()
-                .FallbackAsync(fallbackValue: null, onFallbackAsync: ThrowApiException);
+                .WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(i), onRetry: (func, time) =>
+                {
+                    var logger = serviceProvider.GetRequiredService<ILogger<TClient>>();
 
-            var retryPolicy = HttpPolicyExtensions
-                .HandleTransientHttpError()
-                .Or<TimeoutRejectedException>()
-                .WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(i));
+                    string failureType = "unknown error";
+                    if (func.Result is not null)
+                    {
+                        failureType = $"server error (status code: {(int)func.Result.StatusCode})";
+                    }
+                    else if (func.Exception is HttpRequestException)
+                    {
+                        failureType = "connection error";
+                    }
+                    else if (func.Exception is TimeoutRejectedException)
+                    {
+                        failureType = "connection timeout";
+                    }
 
-            var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage?>(1);
-
-
-            return new IAsyncPolicy<HttpResponseMessage?>[]
-            {
-                fallbackPolicy,
-                retryPolicy,
-                timeoutPolicy
-            };
+                    logger.LogWarning("Failed to connect to the Api due to {failureType}, retrying after {retryDuration} seconds.", failureType, time.TotalSeconds);
+                });
         }
 
-        private static Task ThrowApiException(DelegateResult<HttpResponseMessage?> func)
+        private static IAsyncPolicy<HttpResponseMessage?> GetFallbackPolicy<TClient>(IServiceProvider serviceProvider, HttpRequestMessage request) where TClient : class
         {
-            if (func.Result is not null)
-            {
-                throw new ApiConnectionException(func.Result.StatusCode, $"Failed to communicate to the api due to server error, status code: {func.Result.StatusCode}.");
-            }
-            else if (func.Exception is HttpRequestException requestException)
-            {
-                throw new ApiConnectionException(requestException, "Failed to communicate to the api due to connection error, see the inner request exception.");
-            }
-            else if (func.Exception is TimeoutRejectedException timeoutException)
-            {
-                throw new ApiConnectionException(timeoutException, "Failed to communicate to the api due to connection timeout, see the inner timeout exception.");
-            }
-            return Task.CompletedTask;
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .Or<TimeoutRejectedException>()
+                .FallbackAsync(fallbackValue: null, onFallbackAsync: func =>
+                {
+                    if (func.Result is not null)
+                    {
+                        throw new ApiConnectionException(func.Result.StatusCode, $"Failed to communicate to the api due to server error, status code: {func.Result.StatusCode}.");
+                    }
+                    else if (func.Exception is HttpRequestException requestException)
+                    {
+                        throw new ApiConnectionException(requestException, "Failed to communicate to the api due to connection error, see the inner request exception.");
+                    }
+                    else if (func.Exception is TimeoutRejectedException timeoutException)
+                    {
+                        throw new ApiConnectionException(timeoutException, "Failed to communicate to the api due to connection timeout, see the inner timeout exception.");
+                    }
+                    return Task.CompletedTask;
+                });
         }
 
         #endregion

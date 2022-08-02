@@ -17,7 +17,7 @@ namespace Investor.UI.WPF
                               .ConfigureServices(ConfigureServices);
 
             using var host = builder.Build();
-            App app = host.Services.GetService<App>()!;
+            App app = host.Services.GetRequiredService<App>();
 
             host.Start();
             app.Run();
