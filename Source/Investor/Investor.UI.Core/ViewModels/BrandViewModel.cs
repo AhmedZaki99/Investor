@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Investor.UI.Core.ViewModels
+﻿namespace Investor.UI.Core.ViewModels
 {
-    public class BrandViewModel : BaseViewModel
+    internal class BrandViewModel : BaseViewModel
     {
+
     }
 }

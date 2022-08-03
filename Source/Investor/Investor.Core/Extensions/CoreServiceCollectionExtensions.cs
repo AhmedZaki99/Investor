@@ -35,7 +35,7 @@ namespace Investor.Core
             ArgumentNullException.ThrowIfNull(builder, nameof(builder));
 
             // Add Api Endpoints.
-            builder.Services.AddHttpClient<IBrandEndpoint, BrandEndpoint>().AddApiPolicyHandlers<IBrandEndpoint>();
+            builder.Services.AddHttpClient<IBrandEndpoint, BrandEndpoint>().AddApiPolicyHandlers<BrandEndpoint>();
 
 
             // Configure Api Options.

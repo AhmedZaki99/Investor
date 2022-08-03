@@ -7,7 +7,7 @@ namespace Investor.UI.Core.ViewModels
     /// A base class that provides <see cref="INotifyPropertyChanged"/> implementation,
     /// and basic functionality for view models.
     /// </summary>
-    public abstract class BaseViewModel : ObservableValidator
+    internal abstract class BaseViewModel : ObservableValidator, IBaseViewModel
     {
 
     }

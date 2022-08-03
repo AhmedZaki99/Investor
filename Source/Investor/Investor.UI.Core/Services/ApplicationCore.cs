@@ -1,6 +1,4 @@
-﻿using Investor.Core;
-using Investor.UI.Core.ViewModels;
-using Microsoft.Extensions.Hosting;
+﻿using Investor.UI.Core.ViewModels;
 
 namespace Investor.UI.Core
 {
@@ -16,32 +14,19 @@ namespace Investor.UI.Core
 
         #endregion
 
-        #region Private Properties
-
-        private MainViewModel? _mainViewModel;
-        private MainViewModel MainViewModel
-        {
-            get => _mainViewModel ?? throw new InvalidOperationException("Application hasn't started up yet.");
-            set => _mainViewModel = value;
-        }
-
-        #endregion
-
 
         #region Dependencies
 
-        private readonly IHostApplicationLifetime _applicationLifetime;
-        private readonly IBrandEndpoint _brandEndpoint;
+        private readonly IMainViewModel _mainViewModel;
         private readonly IUIService _uIService;
 
         #endregion
 
         #region Constructors
 
-        public ApplicationCore(IHostApplicationLifetime applicationLifetime, IBrandEndpoint brandEndpoint, IUIService uIService)
+        public ApplicationCore(IMainViewModel mainViewModel, IUIService uIService)
         {
-            _applicationLifetime = applicationLifetime;
-            _brandEndpoint = brandEndpoint;
+            _mainViewModel = mainViewModel;
             _uIService = uIService;
         }
 
@@ -57,11 +42,8 @@ namespace Investor.UI.Core
                 throw new InvalidOperationException("Application has already started up.");
             }
 
-            // Create the main viewmodel instance.
-            MainViewModel = new MainViewModel(_applicationLifetime, _brandEndpoint);
-
             // Initialize UI with the main viewmodel.
-            _uIService.InitializeUI(MainViewModel);
+            _uIService.InitializeUI(_mainViewModel);
 
             // Show UI at startup.
             _uIService.ShowUI();

@@ -20,10 +20,10 @@ namespace Investor.UI.Core
         #region Methods
 
         /// <summary>
-        /// Initializes the UI, binding it to the provided <see cref="MainViewModel"/> instance.
+        /// Initializes the UI, binding it to the provided <see cref="IMainViewModel"/> implementation.
         /// </summary>
-        /// <param name="mainViewModel">The <see cref="MainViewModel"/> instance to bind to the UI.</param>
-        void InitializeUI(MainViewModel mainViewModel);
+        /// <param name="mainViewModel">The <see cref="IMainViewModel"/> instance to bind to the UI.</param>
+        void InitializeUI(IMainViewModel mainViewModel);
 
 
         /// <summary>

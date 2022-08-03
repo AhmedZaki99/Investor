@@ -4,13 +4,14 @@ using CommunityToolkit.Mvvm.Input;
 using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace Investor.UI.Core.ViewModels
 {
     /// <summary>
-    /// The bottom-level view model for application main window.
+    /// The bottom-level view model for application main view.
     /// </summary>
-    public class MainViewModel : BaseViewModel
+    internal class MainViewModel : BaseViewModel, IMainViewModel
     {
 
         #region Private Fields
@@ -50,28 +51,18 @@ namespace Investor.UI.Core.ViewModels
 
         private readonly IHostApplicationLifetime _applicationLifetime;
         private readonly IBrandEndpoint _brandEndpoint;
+        private readonly ILogger<MainViewModel> _logger;
 
         #endregion
 
         #region Constructors
 
-        #region Design Constructor
-
-        /// <summary>
-        /// A private parameterless constructor exposed to be inherited by design instances.
-        /// </summary>
-#nullable disable
-        private protected MainViewModel()
-#nullable enable
-        { }
-
-        #endregion
-
-        public MainViewModel(IHostApplicationLifetime applicationLifetime, IBrandEndpoint brandEndpoint)
+        public MainViewModel(IHostApplicationLifetime applicationLifetime, IBrandEndpoint brandEndpoint, ILogger<MainViewModel> logger)
         {
             // Dependencies.
             _applicationLifetime = applicationLifetime;
             _brandEndpoint = brandEndpoint;
+            _logger = logger;
 
             InitializeCommands();
         }
@@ -114,7 +105,12 @@ namespace Investor.UI.Core.ViewModels
                     Debugger.Break();
                     throw;
                 }
-                BrandName = ex.Message;
+
+                _logger.LogWarning(
+                    "Failed to connect to the Api server, failure type: {failureType}, status code: {statusCode}, error message: {errMsg}",
+                    ex.FailureType, ex.StatusCode is null ? "N/A" : ex.StatusCode, ex.Message);
+
+                BrandName = "Failed to get the brand, please check your internet connection and try again.";
             }
         }
 

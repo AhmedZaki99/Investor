@@ -40,7 +40,7 @@ namespace Investor.UI.WPF
         #region Methods
 
         /// <inheritdoc/>
-        public void InitializeUI(MainViewModel mainViewModel)
+        public void InitializeUI(IMainViewModel mainViewModel)
         {
             MainWindow = new MainView
             {

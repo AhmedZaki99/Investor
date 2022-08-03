@@ -1,4 +1,5 @@
 ﻿using Investor.Core;
+using Investor.UI.Core.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Investor.UI.Core
@@ -8,6 +9,7 @@ namespace Investor.UI.Core
     /// </summary>
     public static class ApplicationServiceCollectionExtensions
     {
+
         /// <summary>
         /// Adds the minimum essential Application services to the specified <see cref="IServiceCollection" />. Additional services
         /// such as the UI servcie must be added separately using the <see cref="ApplicationBuilder"/> returned from this method.
@@ -19,6 +21,7 @@ namespace Investor.UI.Core
 
             // Add Application Services.
             services.AddSingleton<IApplicationCore, ApplicationCore>();
+
 
             return new ApplicationBuilder(services);
         }
@@ -40,8 +43,8 @@ namespace Investor.UI.Core
         }
 
         /// <summary>
-        /// Adds a <see cref="IUIService"/> implementation to the <see cref="IServiceCollection"/> necessary
-        /// for UI related tasks.
+        /// Adds necessary UI-related services including view models, and an <see cref="IUIService"/>
+        /// implementation to the specified <see cref="IServiceCollection"/>.
         /// </summary>
         /// <typeparam name="TImplementation">The type of the <see cref="IUIService"/> implementation.</typeparam>
         /// <returns>The <see cref="ApplicationBuilder"/>.</returns>
@@ -49,8 +52,17 @@ namespace Investor.UI.Core
         {
             ArgumentNullException.ThrowIfNull(builder, nameof(builder));
 
+
+            // Add main view model.
+            builder.Services.AddSingleton<IMainViewModel, MainViewModel>();
+
+            // Add page view models.
+            // TODO: Add pages.
+
+
             // Add UI Service.
             builder.Services.AddSingleton<IUIService, TImplementation>();
+
 
             return builder;
         }

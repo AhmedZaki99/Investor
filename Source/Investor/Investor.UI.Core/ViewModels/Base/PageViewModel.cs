@@ -3,12 +3,12 @@
     /// <summary>
     /// A base class that provides basic functionality for page view models.
     /// </summary>
-    public abstract class PageViewModel : BaseViewModel
+    internal abstract class PageViewModel : BaseViewModel, IPageViewModel
     {
 
         #region Unchanged Properties
 
-        public BaseViewModel Parent { get; }
+        public IBaseViewModel Parent { get; }
 
         #endregion
 
