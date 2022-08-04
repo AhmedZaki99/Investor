@@ -1,14 +1,14 @@
 ﻿namespace Investor.UI.Core.ViewModels
 {
     /// <summary>
-    /// Provides an abstraction for a base class that provides basic functionality for page view models.
+    /// Provides an abstraction for generic page view models.
     /// </summary>
-    public interface IPageViewModel : IBaseViewModel
+    public interface IPageViewModel : IViewModel
     {
 
         #region Unchanged Properties
 
-        IBaseViewModel Parent { get; }
+        IViewModel Parent { get; }
 
         #endregion
 

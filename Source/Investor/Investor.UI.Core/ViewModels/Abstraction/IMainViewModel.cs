@@ -5,7 +5,7 @@ namespace Investor.UI.Core.ViewModels
     /// <summary>
     /// Provides an abstraction for the bottom-level view model for application main view.
     /// </summary>
-    public interface IMainViewModel : IBaseViewModel
+    public interface IMainViewModel : IViewModel
     {
 
         #region Observable Properties

@@ -4,7 +4,7 @@ using System.Windows.Input;
 namespace Investor.UI.WPF
 {
     /// <summary>
-    /// The <see cref="MainViewModel"/> design instance provider.
+    /// The <see cref="IMainViewModel"/> design instance provider.
     /// </summary>
     public class MainDesignModel : IMainViewModel
     {

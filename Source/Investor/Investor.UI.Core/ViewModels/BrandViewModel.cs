@@ -1,6 +1,6 @@
 ﻿namespace Investor.UI.Core.ViewModels
 {
-    internal class BrandViewModel : BaseViewModel
+    public class BrandViewModel : ViewModelBase
     {
 
     }

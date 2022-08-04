@@ -11,7 +11,7 @@ namespace Investor.UI.Core.ViewModels
     /// <summary>
     /// The bottom-level view model for application main view.
     /// </summary>
-    internal class MainViewModel : BaseViewModel, IMainViewModel
+    public class MainViewModel : ViewModelBase, IMainViewModel
     {
 
         #region Private Fields
