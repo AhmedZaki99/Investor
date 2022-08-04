@@ -1,4 +1,5 @@
 ﻿using Investor.UI.Core.ViewModels;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Investor.UI.WPF
@@ -11,10 +12,11 @@ namespace Investor.UI.WPF
 
         #region Implementation
 
-        public string BrandName { get; set; }
+        public ObservableCollection<IBrandViewModel> Brands { get; set; }
+        public string LocalStatus { get; set; }
 
         public ICommand CloseApplicationCommand => null!;
-        public ICommand ShowBrandCommand => null!;
+        public ICommand GetBrandsCommand => null!;
 
         #endregion
 
@@ -22,7 +24,13 @@ namespace Investor.UI.WPF
 
         public MainDesignModel()
         {
-            BrandName = "This is a very long text made to test view text wrapping, check the view out to see for yourself.";
+            Brands = new(new BrandDesignModel[] 
+            {
+                new BrandDesignModel(),
+                new BrandDesignModel("Oppo Reno 6", "Device", null, 200m, 350m),
+                new BrandDesignModel("Steel grade S-37", "Ton", "Yield at 235 MPa", 470m, 600m)
+            });
+            LocalStatus = "Design mode.";
         }
 
         #endregion

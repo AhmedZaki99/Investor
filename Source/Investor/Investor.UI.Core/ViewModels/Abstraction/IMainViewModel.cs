@@ -1,4 +1,5 @@
-﻿using System.Windows.Input;
+﻿using System.Collections.ObjectModel;
+using System.Windows.Input;
 
 namespace Investor.UI.Core.ViewModels
 {
@@ -10,14 +11,16 @@ namespace Investor.UI.Core.ViewModels
 
         #region Observable Properties
 
-        string BrandName { get; set; }
+        ObservableCollection<IBrandViewModel> Brands { get; set; }
+
+        string LocalStatus { get; set; }
 
         #endregion
 
         #region Commands
 
         ICommand CloseApplicationCommand { get; }
-        ICommand ShowBrandCommand { get; }
+        ICommand GetBrandsCommand { get; }
 
         #endregion
 

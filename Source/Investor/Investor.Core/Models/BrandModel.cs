@@ -13,30 +13,25 @@ namespace Investor.Core
 
 
         [Required]
-        [StringLength(255, ErrorMessage = "Brand name should not be more than 255 characters.")]
+        [StringLength(255)]
         public string Name { get; set; }
 
-        [Display(Name = "Scale Unit")]
-        [StringLength(255, ErrorMessage = "Scale unit should not be more than 255 characters.")]
+        [StringLength(255)]
         public string ScaleUnit { get; set; }
 
 
         [DataType(DataType.MultilineText)]
-        [StringLength(1023, ErrorMessage = "The maximum of 1023 characters has been exceeded for the description.")]
+        [StringLength(1023)]
         public string? Description { get; set; }
 
 
-        [Display(Name = "Buy Price")]
         [DataType(DataType.Currency)]
         public decimal? BuyPrice { get; set; }
 
-        [Display(Name = "Sell Price")]
         [DataType(DataType.Currency)]
         public decimal? SellPrice { get; set; }
 
 
-        [Display(Name = "Date Created")]
-        [DisplayFormat(DataFormatString = "{0:d}")]
         public DateTime DateCreated { get; }
 
         #endregion
