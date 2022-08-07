@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using CommunityToolkit.Mvvm.Input;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Investor.UI.Core.ViewModels
@@ -12,7 +13,11 @@ namespace Investor.UI.Core.ViewModels
         #region Observable Properties
 
         ObservableCollection<IBrandViewModel> Brands { get; set; }
+        IBrandViewModel? SelectedBrand { get; set; }
 
+        IEnumerable<string?> InputErrors { get; }
+
+        bool AddingNewBrand { get; set; }
         string LocalStatus { get; set; }
 
         #endregion
@@ -20,7 +25,13 @@ namespace Investor.UI.Core.ViewModels
         #region Commands
 
         ICommand CloseApplicationCommand { get; }
+
+        ICommand ToggleAddBrandCommand { get; }
+
         ICommand GetBrandsCommand { get; }
+        IRelayCommand AddBrandCommand { get; }
+        IRelayCommand SaveBrandCommand { get; }
+        IRelayCommand DeleteBrandCommand { get; }
 
         #endregion
 

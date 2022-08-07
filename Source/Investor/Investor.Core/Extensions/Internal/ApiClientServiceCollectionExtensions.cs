@@ -14,7 +14,7 @@ namespace Investor.Core
 
         private const int RetryCount = 3;
 
-        private const int TimeoutSeconds = 10;
+        private const int TimeoutSeconds = 15;
 
         #endregion
 

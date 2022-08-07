@@ -1,4 +1,5 @@
 ﻿using Investor.Core;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Investor.UI.Core.ViewModels
@@ -6,18 +7,23 @@ namespace Investor.UI.Core.ViewModels
     public class BrandViewModel : ViewModelBase<BrandModel>, IBrandViewModel
     {
 
+        #region Public Properties
+
+        public bool IsModified { get; private set; }
+
+        #endregion
 
         #region Observable Properties
 
         [Required(ErrorMessage = "Brand name is required.")]
-        [MaxLength(100, ErrorMessage = "Brand name should not be more than {1} characters long.")]
+        [MaxLength(100, ErrorMessage = "Name length shouldn't exceed {1} characters.")]
         public string Name
         {
             get => Model.Name;
             set => SetProperty(Model.Name, value, Model, (model, val) => model.Name = val, true);
         }
 
-        [MaxLength(100, ErrorMessage = "Brand scale unit should not be more than {1} characters long.")]
+        [MaxLength(100, ErrorMessage = "Scale unit length shouldn't exceed {1} characters.")]
         public string ScaleUnit
         {
             get => Model.ScaleUnit;
@@ -25,7 +31,7 @@ namespace Investor.UI.Core.ViewModels
         }
 
 
-        [MaxLength(1000, ErrorMessage = "Brand description should not exceed {1} characters in length.")]
+        [MaxLength(1000, ErrorMessage = "Description length shouldn't exceed {1} characters.")]
         public string? Description
         {
             get => Model.Description;
@@ -52,7 +58,19 @@ namespace Investor.UI.Core.ViewModels
 
         public BrandViewModel(BrandModel model) : base(model)
         {
+            IsModified = false;
+        }
 
+        #endregion
+
+
+        #region Overridden Methods
+
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            IsModified = true;
+
+            base.OnPropertyChanged(e);
         }
 
         #endregion

@@ -32,7 +32,7 @@ namespace Investor.Core
             Options = optionsAccessor?.Value ??
                 throw new InvalidOperationException("Api options must be configured in order to connect with Api Endpoints.");
 
-            string baseUrl = $"{Options.ApiServerAddress}/{Options.ApiRelativePath}/{endpointPath}";
+            string baseUrl = $"{Options.ApiServerAddress}/{Options.ApiRelativePath}/{endpointPath}/";
 
             HttpClient = httpClient;
 

@@ -56,6 +56,9 @@ namespace Investor.Core
         public BrandModel(string name, string scaleUnit, string? description, decimal? buyPrice, decimal? sellPrice)
             : this(string.Empty, name, scaleUnit, description, buyPrice, sellPrice) { }
 
+        public BrandModel(string name) :
+            this(name, string.Empty, null, null, null) { }
+
         #endregion
 
     }

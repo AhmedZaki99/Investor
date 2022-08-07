@@ -1,7 +1,15 @@
-﻿namespace Investor.UI.Core.ViewModels
+﻿using Investor.Core;
+
+namespace Investor.UI.Core.ViewModels
 {
-    public interface IBrandViewModel : IViewModel
+    public interface IBrandViewModel : IViewModel<BrandModel>
     {
+
+        #region Public Properites
+
+        bool IsModified { get; }
+
+        #endregion
 
         #region Observable Properties
 

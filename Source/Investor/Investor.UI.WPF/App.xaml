@@ -7,7 +7,7 @@
         <ResourceDictionary>
 
             <ResourceDictionary.MergedDictionaries>
-                
+                <ResourceDictionary Source="/ValueConverters/ConvertersDictionary.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             
         </ResourceDictionary>

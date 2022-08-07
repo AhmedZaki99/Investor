@@ -18,15 +18,34 @@ namespace Investor.UI.Core.ViewModels
     /// and other necessary tasks for view models; wrapping a non-observable model.
     /// </summary>
     /// <typeparam name="TModel">Type of the model.</typeparam>
-    public abstract class ViewModelBase<TModel> : ViewModelBase
+    public abstract class ViewModelBase<TModel> : ViewModelBase, IViewModel<TModel>
     {
+        
+        #region Protected Properties
 
         protected TModel Model { get; }
+
+        #endregion
+
+
+        #region Constructor
 
         public ViewModelBase(TModel model)
         {
             Model = model;
         }
+
+        #endregion
+
+
+        #region Public Methods
+
+        public TModel GetModel()
+        {
+            return Model;
+        }
+
+        #endregion
 
     }
 
