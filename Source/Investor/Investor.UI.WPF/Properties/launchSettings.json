@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Investor.UI.WPF": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

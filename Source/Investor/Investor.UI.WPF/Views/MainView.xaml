@@ -1,0 +1,259 @@
+﻿<Window x:Class="Investor.UI.WPF.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Investor.UI.WPF"
+        d:DataContext="{d:DesignInstance Type=local:MainDesignModel, IsDesignTimeCreatable=True}"
+        mc:Ignorable="d"
+        Title="Investor"
+        MinHeight="300" MinWidth="400"
+        Height="500" Width="800">
+
+    <Grid>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        
+
+        <!--#region Brands ListView -->
+
+        <Grid Grid.Column="0" Margin="10">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <ListView Grid.Row="0" Margin="0 0 0 10"
+                      ItemsSource="{Binding Brands}"
+                      SelectedItem="{Binding SelectedBrand, Mode=TwoWay}">
+
+                <Validation.ErrorTemplate>
+                    <ControlTemplate>
+                        <AdornedElementPlaceholder/>
+                    </ControlTemplate>
+                </Validation.ErrorTemplate>
+
+                <ListView.View>
+                    <GridView AllowsColumnReorder="True">
+
+                        <GridViewColumn Width="100" Header="Brand Name" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Width="70" Header="Scale Unit" DisplayMemberBinding="{Binding ScaleUnit}"/>
+
+                        <GridViewColumn Width="150" Header="Description">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Description, TargetNullValue='N/A'}" TextTrimming="CharacterEllipsis"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Width="75" Header="Buy Price" DisplayMemberBinding="{Binding BuyPrice, StringFormat={}{0:c}}"/>
+                        <GridViewColumn Width="75" Header="Sell Price" DisplayMemberBinding="{Binding SellPrice, StringFormat={}{0:c}}"/>
+
+                    </GridView>
+                </ListView.View>
+
+            </ListView>
+
+            <!-- Buttons -->
+            <Grid Grid.Row="1" Margin="0 5">
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <Button Grid.Column="0" 
+                        Command="{Binding GetBrandsCommand}" 
+                        Padding="10" FontSize="14">
+                    Get Brands
+                </Button>
+
+                <Button Grid.Column="2" 
+                        Command="{Binding ToggleAddBrandCommand}"
+                        Padding="10" FontSize="14">
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Content" Value="Add new brand" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding AddingNewBrand}" Value="True">
+                                    <Setter Property="Content" Value="Discard new brand" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+
+            <!-- Status -->
+            <TextBlock Grid.Row="2" Margin="0 5" HorizontalAlignment="Left" FontSize="13">
+            <Run Text="Status :"/>
+            <Run Text="{Binding LocalStatus}"/>
+            </TextBlock>
+
+        </Grid>
+        
+        <!--#endregion-->
+        
+        
+        <!--#region Brands Edit -->
+
+        <GroupBox Grid.Column="1" Margin="5 0 5 5" Padding="5 10 5 5" BorderThickness="2" BorderBrush="CadetBlue">
+            <GroupBox.Style>
+                <Style TargetType="{x:Type GroupBox}">
+                    <Setter Property="Header" Value="Edit selected brand" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding AddingNewBrand}" Value="True">
+                            <Setter Property="Header" Value="Add new brand" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </GroupBox.Style>
+            
+            <Grid>
+
+                <!-- Placeholder -->
+                <TextBlock FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                           Visibility="{Binding SelectedBrand, Converter={StaticResource NullableToVisibilityConverter}, ConverterParameter=revert}">
+                    Select a brand to edit..
+                </TextBlock>
+
+                <Grid Visibility="{Binding SelectedBrand, Converter={StaticResource NullableToVisibilityConverter}}">
+
+                    <Validation.ErrorTemplate>
+                        <ControlTemplate>
+                            <AdornedElementPlaceholder/>
+                        </ControlTemplate>
+                    </Validation.ErrorTemplate>
+
+                    <!--#region Grid Resources -->
+
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="FontSize" Value="12" />
+                            <Setter Property="VerticalAlignment" Value="Stretch"/>
+                        </Style>
+
+                        <Style TargetType="{x:Type TextBox}">
+                            <Setter Property="FontSize" Value="12" />
+                            <Setter Property="VerticalAlignment" Value="Top"/>
+                            <Setter Property="Margin" Value="5 0" />
+                        </Style>
+                        <Style x:Key="TextBox.Multiline" TargetType="{x:Type TextBox}" 
+                               BasedOn="{StaticResource {x:Type TextBox}}">
+
+                            <Setter Property="Margin" Value="5 0 5 20" />
+                            <Setter Property="AcceptsReturn" Value="True" />
+                            <Setter Property="TextWrapping" Value="Wrap" />
+                            <Setter Property="VerticalAlignment" Value="Stretch" />
+                            <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
+                        </Style>
+
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="FontSize" Value="13" />
+                            <Setter Property="Padding" Value="5" />
+                            <Setter Property="Margin" Value="5" />
+                        </Style>
+                    </Grid.Resources>
+
+                    <!--#endregion-->
+
+                    <!--#region Grid Cells -->
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="2*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="1.5*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--#endregion-->
+
+
+                    <!--#region Input -->
+
+                    <TextBlock Grid.Row="0">Name:</TextBlock>
+                    <TextBox Grid.Row="0" Grid.Column="1" 
+                             Text="{Binding SelectedBrand.Name, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+                    <TextBlock Grid.Row="1">Scale Unit:</TextBlock>
+                    <TextBox Grid.Row="1" Grid.Column="1" 
+                             Text="{Binding SelectedBrand.ScaleUnit, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+                    <TextBlock Grid.Row="2">Description:</TextBlock>
+                    <TextBox Grid.Row="2" Grid.Column="1" 
+                             Style="{StaticResource TextBox.Multiline}"
+                             Text="{Binding SelectedBrand.Description, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+                    <TextBlock Grid.Row="3">Buy Price:</TextBlock>
+                    <TextBox Grid.Row="3" Grid.Column="1" 
+                             Text="{Binding SelectedBrand.BuyPrice, StringFormat={}{0:c}}"/>
+
+
+                    <TextBlock Grid.Row="4">Sell Price:</TextBlock>
+                    <TextBox Grid.Row="4" Grid.Column="1" 
+                             Text="{Binding SelectedBrand.SellPrice, StringFormat={}{0:c}}"/>
+
+                    <!--#endregion-->
+
+                    <!--#region Validation -->
+
+                    <ScrollViewer Grid.Row="5" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding InputErrors}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" FontSize="11" Foreground="Red" TextWrapping="Wrap"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <!--#endregion-->
+
+                    <!--#region Buttons -->
+
+                    <Button Grid.Row="6" Grid.ColumnSpan="2" 
+                            Visibility="{Binding AddingNewBrand, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=revert-hide}"
+                            Command="{Binding SaveBrandCommand}">
+                        Save Brand
+                    </Button>
+                    <Button Grid.Row="7" Grid.ColumnSpan="2" 
+                            Visibility="{Binding AddingNewBrand, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=revert-hide}"
+                            Command="{Binding DeleteBrandCommand}">
+                        Delete Brand
+                    </Button>
+                    
+                    <Button Grid.Row="6" Grid.ColumnSpan="2" Grid.RowSpan="2" 
+                            VerticalAlignment="Center"
+                            Visibility="{Binding AddingNewBrand, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Command="{Binding AddBrandCommand}">
+                        Add Brand
+                    </Button>
+
+                    <!--#endregion-->
+
+                </Grid>
+            </Grid>
+        </GroupBox>
+
+        <!--#endregion-->
+        
+    </Grid>
+</Window>

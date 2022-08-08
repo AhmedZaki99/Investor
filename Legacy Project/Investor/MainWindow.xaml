@@ -1,0 +1,1474 @@
+﻿<Window x:Class="Investor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Investor"
+        mc:Ignorable="d"
+        Title="Investor" Height="600" Width="930"
+        WindowStartupLocation="CenterScreen"
+        Icon="Resources/Icon.ico"     
+        xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework" ResizeMode="CanMinimize" 
+        >
+      <Window.Resources>
+        <Style TargetType="{x:Type local:MainWindow}">
+            <Setter Property="shell:WindowChrome.WindowChrome">
+                <Setter.Value>
+                    <shell:WindowChrome CaptionHeight="15"
+                                    CornerRadius="0"
+                                    GlassFrameThickness="1"
+                                    NonClientFrameEdges="None"
+                                    ResizeBorderThickness="5"
+                                    UseAeroCaptionButtons="False"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border BorderBrush="Black" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="15*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Tool Bar -->
+            <Border MouseLeftButtonDown="DragWindow" BorderBrush="Black" BorderThickness="0 0 0 1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.2*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Image Margin="3" Source="/Resources/IconS.png" Grid.Column="1"/>
+
+                    <TextBlock x:Name="BarTxt" Padding="10 7" FontFamily="Myriad" FontSize="16" Text="Investor" Grid.Column="2" />
+
+                    <Border x:Name="AccountsBtn" BorderThickness="0" BorderBrush="Black" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="ToolBtn_Click" Grid.Column="3">
+                        <Image Margin="8" />
+                    </Border>
+
+                    <Border x:Name="SettingsBtn" BorderThickness="0" BorderBrush="Black" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="ToolBtn_Click" Grid.Column="4">
+                        <Image Margin="8" Source="/Resources/Settings.png" />
+                    </Border>
+
+                    <Border x:Name="MiniBtn" BorderThickness="0" BorderBrush="Black" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="ToolBtn_Click" Grid.Column="5">
+                        <Image Margin="11" Source="/Resources/Minimize.png" />
+                    </Border>
+
+                    <Border x:Name="ExitBtn" BorderThickness="0" BorderBrush="Black" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="ToolBtn_Click" Grid.Column="6">
+                        <Image Margin="11" Source="/Resources/Exit.png" />
+                    </Border>
+
+                </Grid>
+            </Border>
+
+            <!-- Program Window -->
+            <StackPanel Grid.Row="1" Orientation="Horizontal" >
+
+                <!-- Start Page -->
+                <Grid x:Name="MainGrid" Width="110">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border x:Name="StatBtn" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="InBtn_Click" BorderBrush="Black" BorderThickness="0 0 1 1" Grid.Row="0">
+                        <Image Margin="15" Source="/Resources/Status.png" />
+                    </Border>
+
+                    <Border x:Name="OpBtn" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="OutBtn_Click" BorderBrush="Black" BorderThickness="0 0 1 1" Grid.Row="1">
+                        <Image Margin="15" Source="/Resources/Operations.png" />
+                    </Border>
+
+                    <Border x:Name="AcBtn" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="OutBtn_Click" BorderBrush="Black" BorderThickness="0 0 1 1" Grid.Row="2">
+                        <Image Margin="15" Source="/Resources/Account 2.png" />
+                    </Border>
+
+                    <Border x:Name="InventBtn" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="OutBtn_Click" BorderBrush="Black" BorderThickness="0 0 1 1" Grid.Row="3">
+                        <Image Margin="15" Source="/Resources/Store 2.png" />
+                    </Border>
+
+                    <Border x:Name="InvoBtn" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="InBtn_Click" BorderBrush="Black" BorderThickness="0 0 1 0" Grid.Row="4">
+                        <Image Margin="15" Source="/Resources/Invoices.png" />
+                    </Border>
+
+                </Grid>
+
+                <!-- Main Page -->
+                <Grid MouseDown="Window_MouseDown" Width="800">
+
+                    <!-- Operations Group -->
+                    <Border x:Name="OpGroup" HorizontalAlignment="Left" Width="110" Margin="0 50 0 260" Visibility="Hidden" BorderBrush="Black" BorderThickness="1" Background="White" Panel.ZIndex="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Border x:Name="TradeBtn" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="InBtn_Click" Grid.Row="0">
+                                <Image Margin="15" Source="/Resources/Trade.png" />
+                            </Border>
+                            <Border x:Name="ReturnBtn" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="InBtn_Click" Grid.Row="1">
+                                <Image Margin="15" Source="/Resources/Return.png" />
+                            </Border>
+
+                        </Grid>
+                    </Border>
+
+                    <!-- Account Group -->
+                    <Border x:Name="AcGroup" HorizontalAlignment="Left" Width="110" Margin="0 155 0 155" Visibility="Hidden" BorderBrush="Black" BorderThickness="1" Background="White" Panel.ZIndex="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Border x:Name="BalanBtn" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="InBtn_Click" Grid.Row="0">
+                                <Image Margin="15" Source="/Resources/Balance.png" />
+                            </Border>
+                            <Border x:Name="TransBtn" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="InBtn_Click" Grid.Row="1">
+                                <Image Margin="15" Source="/Resources/Transfer.png" />
+                            </Border>
+
+                        </Grid>
+                    </Border>
+
+                    <!-- Inventory Group -->
+                    <Border x:Name="InventGroup" HorizontalAlignment="Left" Width="110" Margin="0 180 0 25" Visibility="Hidden" BorderBrush="Black" BorderThickness="1" Background="White" Panel.ZIndex="2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Border x:Name="ViewBtn" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="InBtn_Click" Grid.Row="0">
+                                <Image Margin="15" Source="/Resources/View.png" />
+                            </Border>
+                            <Border x:Name="AddBtn" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="InBtn_Click" Grid.Row="1">
+                                <Image Margin="15" Source="/Resources/Add.png" />
+                            </Border>
+                            <Border x:Name="TrnBtn" MouseLeave="InterBtn_MouseLeave" MouseEnter="InterBtn_MouseEnter" MouseDown="InBtn_Click" Grid.Row="2">
+                                <Image Margin="15" Source="/Resources/GTransfer.png" />
+                            </Border>
+
+
+                        </Grid>
+                    </Border>
+
+
+                    <!-- Panels -->
+                    <Grid x:Name="InPanel" Margin="10 30" Panel.ZIndex="1">
+
+                        <!-- Stat Panel -->
+                        <Grid Margin="70 30" x:Name="StatGrid" Visibility="Hidden">
+                            <StackPanel>
+
+                                <Grid Margin="0 10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0" Margin="10 0" Text="Balance : " FontSize="16" />
+                                    <Border Grid.Column="1" Margin="5 0" BorderBrush="Gray" BorderThickness="1">
+                                        <TextBlock x:Name="SBalanceLbl" FontSize="16" Padding="5 0" Text="0.00"  />
+                                    </Border>
+                                    <TextBlock Grid.Column="2" Margin="10 0" Text="Dollars" FontSize="16" />
+                                </Grid>
+
+                                <Grid Margin="0 10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0" Margin="10 0" Text="Goods Value : " FontSize="16" />
+                                    <Border Grid.Column="1" Margin="5 0" BorderBrush="Gray" BorderThickness="1">
+                                        <TextBlock x:Name="SSTotal" FontSize="16" Padding="5 0" Text="0.00"  />
+                                    </Border>
+                                    <TextBlock Grid.Column="2" Margin="10 0" Text="Dollars" FontSize="16" />
+                                </Grid>
+
+                                <Grid Margin="0 10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0" Margin="10 0" Text="Capital : " FontSize="16" />
+                                    <Border Grid.Column="1" Margin="5 0" BorderBrush="Gray" BorderThickness="1">
+                                        <TextBlock x:Name="SCapital" FontSize="16" Padding="5 0" Text="0.00"/>
+                                    </Border>
+                                    <TextBlock Grid.Column="2" Margin="10 0" Text="Dollars" FontSize="16" />
+                                </Grid>
+
+                                <Grid Margin="0 10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0" Margin="10 0" Text="Grass Profit : " FontSize="16" />
+                                    <Border Grid.Column="1" Margin="5 0" BorderBrush="Gray" BorderThickness="1">
+                                        <TextBlock x:Name="SGProfit" FontSize="16" Padding="5 0" Text="0.00"  />
+                                    </Border>
+                                    <TextBlock Grid.Column="2" Margin="10 0" Text="Dollars" FontSize="16" />
+                                </Grid>
+
+                                <Grid Margin="0 10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0" Margin="10 0" Text="Number of operations made : " FontSize="16" />
+                                    <Border Grid.Column="1" Margin="5 0" BorderBrush="Gray" BorderThickness="1">
+                                        <TextBlock x:Name="OpNum" FontSize="16" Padding="5 0" Text="0"  />
+                                    </Border>
+                                </Grid>
+
+                                <!--<GroupBox  Header="Store Warnings" BorderBrush="LightPink" FontSize="16" BorderThickness="3">
+
+                                    <Grid  Margin="5">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="2*"/>
+                                            <RowDefinition Height="2*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <StackPanel Margin="0 5" Orientation="Horizontal" Grid.Row="1">
+                                            <TextBlock  Margin="10 0" Text="1 -   Type : Pc " FontSize="16"  />
+                                            <TextBlock Margin="10 0" Text="Brand : Dell Optiblex 760" FontSize="16"  />
+                                            <TextBlock Margin="10 0" Text="Amount : " FontSize="16"  />
+                                            <Border Width="50" Grid.Column="1" Margin="5 0" BorderBrush="Gray" BorderThickness="1">
+                                                <TextBlock FontSize="16" Padding="5 0" Text="25"  />
+                                            </Border>
+                                        </StackPanel>
+
+                                    </Grid>
+                                </GroupBox>-->
+
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Trade Panel -->
+                        <Grid Margin="70 -20" x:Name="TradeGrid" Visibility="Hidden">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="14*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel>
+
+                                <Grid Margin="10 5 ">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*"/>
+                                        <ColumnDefinition Width="6*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Order : " FontSize="16" Grid.Column="0" />
+                                    <ComboBox x:Name="TOrder" SelectionChanged="TOrder_SelectionChanged" Margin="5 0" FontSize="16" Grid.Column="1">
+                                        <ComboBoxItem IsSelected="True">Purchase</ComboBoxItem>
+                                        <ComboBoxItem>Sell</ComboBoxItem>
+                                    </ComboBox>
+                                </Grid>
+
+                                <CheckBox x:Name="IsPCustom" Click="ChkBx_Click" IsChecked="True" Content="Particular Customer" FontSize="16" Margin="10 5 10 0"/>
+                                <Grid Margin="10 5 ">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*"/>
+                                        <ColumnDefinition Width="6*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Customer : " FontSize="16" Grid.Column="0" />
+                                    <ComboBox x:Name="TCustomer" IsEditable="True" Margin="5 0" FontSize="16" Grid.Column="1"/>
+                                </Grid>
+
+                                <Grid Margin="10 5 ">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*"/>
+                                        <ColumnDefinition Width="6*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Brand Type : " FontSize="16" Grid.Column="0" />
+                                    <ComboBox x:Name="TType" IsEditable="True" SelectionChanged="TType_SelectionChanged" Margin="5 0" FontSize="16" Grid.Column="1"/>
+                                </Grid>
+
+                                <Grid Margin="10 5 ">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*"/>
+                                        <ColumnDefinition Width="6*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Brand : " FontSize="16" Grid.Column="0" />
+                                    <ComboBox x:Name="TBrand" SelectionChanged="TBrand_SelectionChanged" IsEditable="True" Margin="5 0" FontSize="16" Grid.Column="1"/>
+                                </Grid>
+
+                                <Grid Margin="10 5 ">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*"/>
+                                        <ColumnDefinition Width="4*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Store : " FontSize="16" Grid.Column="0" />
+                                    <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                        <TextBlock x:Name="TStore" FontSize="16" Padding="5 0" Text="0"  />
+                                    </Border>
+                                    <TextBlock x:Name="TScale0" Text=" Units " FontSize="16" Grid.Column="3" />
+                                </Grid>
+
+                                <Grid Margin="10 5 ">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*"/>
+                                        <ColumnDefinition Width="4*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Amount : " FontSize="16" Grid.Column="0" />
+                                    <TextBox x:Name="TAmount" Text="0" Margin="5 0" FontSize="16" Grid.Column="1" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TradingCT" LostFocus="TradingLF"/>
+                                    <TextBlock x:Name="TScale1" Text=" Units" FontSize="16" Grid.Column="2" />
+                                </Grid>
+
+                                <CheckBox Visibility="Visible"  x:Name="IsNewPrice" IsChecked="False" Content="Set as a Trade price " FontSize="16" Margin="10 5 10 1"/>
+                                <Grid Margin="10 5 ">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*"/>
+                                        <ColumnDefinition Width="4*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                        <TextBlock Text="Price Per " FontSize="16"  />
+                                        <TextBox x:Name="TPriceA" Margin="3 0" Width="50" Text="0" FontSize="14" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TradingCT" LostFocus="TradingLF" />
+                                        <TextBlock x:Name="TScale2" Text="Units : " FontSize="16" />
+                                    </StackPanel>
+
+                                    <TextBox x:Name="TPriceV" Text="0.00" Margin="5 0" FontSize="16" Grid.Column="1" PreviewTextInput="TextBox_PreviewTextInput" TextChanged="TradingCT" LostFocus="TradingLF"/>
+                                    <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                </Grid>
+
+                                <Grid Margin="10 5 ">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*"/>
+                                        <ColumnDefinition Width="4*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Total Price : " FontSize="16" Grid.Column="0" />
+                                    <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                        <TextBlock x:Name="TTotalLbl" FontSize="16" Padding="5 0" Text="0.00"  />
+                                    </Border>
+                                    <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                </Grid>
+
+                                <Grid Margin="10 5 ">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="5*"/>
+                                        <ColumnDefinition Width="4*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Balance : " FontSize="16" Grid.Column="0" />
+                                    <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                        <TextBlock x:Name="TBalanceLbl" FontSize="16" Padding="5 0" Text="0.00"  />
+                                    </Border>
+                                    <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                </Grid>
+
+                                <GroupBox  Header="Date and Time" FontSize="16" BorderThickness="3">
+
+                                    <Grid x:Name="DateGrid" Margin="20 3">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="2*"/>
+                                            <RowDefinition Height="2*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <CheckBox x:Name="IsNow" Click="ChkBx_Click" IsChecked="True" Content="Trade Now" FontSize="16" Margin="0 5" Grid.Row="0"/>
+
+                                        <StackPanel x:Name="DT1" IsEnabled="False" Margin="0 3" Orientation="Horizontal" Grid.Row="1">
+                                            <TextBlock Text="Hour : " FontSize="16"  />
+                                            <TextBox x:Name="TDateH" Margin="15 0 20 0" Width="50" FontSize="16" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LfNCurren" />
+                                            <TextBlock Text="Min : " FontSize="16"  />
+                                            <TextBox x:Name="TDateM" Margin="30 0" Width="50" FontSize="16" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LfNCurren" />
+                                            <ComboBox x:Name="TDateC" Width="70">
+                                                <ComboBoxItem IsSelected="True" Content="Am"/>
+                                                <ComboBoxItem Content="Pm"/>
+                                            </ComboBox>
+                                        </StackPanel>
+
+                                        <StackPanel x:Name="DT2" IsEnabled="False" Margin="0 3" Orientation="Horizontal" Grid.Row="2">
+                                            <TextBlock Text="Day : " FontSize="16"  />
+                                            <TextBox x:Name="TDateD" Margin="22 0" Width="50" FontSize="16" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LfNCurren" />
+                                            <TextBlock Text="Month : " FontSize="16"  />
+                                            <TextBox x:Name="TDateMo" Margin="10 0" Width="50" FontSize="16" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LfNCurren" />
+                                            <TextBlock Text="Year : " FontSize="16"  />
+                                            <TextBox x:Name="TDateY" Margin="10 0" Width="80" FontSize="16" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LfNCurren" />
+                                        </StackPanel>
+
+
+                                    </Grid>
+                                </GroupBox>
+                            </StackPanel>
+
+                            <Button Grid.Row="1" Margin="200 3" x:Name="ConOBtn" Click="ConTOrder_Click" FontSize="16" Grid.Column="2"  Content="Confirm Order"/>
+
+                        </Grid>
+
+                        <!-- Balance Panel -->
+                        <Grid Margin="30 0" x:Name="BalanGrid" Visibility="Hidden">
+                            <StackPanel>
+
+                                <Grid Margin="10 10 10 30">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4*"/>
+                                        <ColumnDefinition Width="4*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Current Balance : " FontSize="16" Grid.Column="0" />
+                                    <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                        <TextBlock x:Name="BalanceLbl" FontSize="16" Padding="5 0" Text="0.00"  />
+                                    </Border>
+                                    <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                </Grid>
+
+                                <CheckBox x:Name="IsAllTime" Click="ChkBx_Click" IsChecked="True" Content="All Time" FontSize="16" Margin="10 10 10 0"/>
+                                <Grid x:Name="BalanceTime" Background="WhiteSmoke" IsEnabled="False" Margin="10 10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text=" Year : " FontSize="16" Grid.Column="0" />
+                                    <TextBox x:Name="BYear" Margin="5 0" Text="0" FontSize="16" Grid.Column="1" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LfNCurren"/>
+                                    <TextBlock Text=" Month : " FontSize="16" Grid.Column="3" />
+
+                                    <ComboBox Margin="5 0" FontSize="16" Grid.Column="4" x:Name="BMonth">
+                                        <ComboBoxItem IsSelected="True" Content="All Year"/>
+                                        <ComboBoxItem Content="January"/>
+                                        <ComboBoxItem Content="February"/>
+                                        <ComboBoxItem Content="March"/>
+                                        <ComboBoxItem Content="April"/>
+                                        <ComboBoxItem Content="May"/>
+                                        <ComboBoxItem Content="June"/>
+                                        <ComboBoxItem Content="July"/>
+                                        <ComboBoxItem Content="August"/>
+                                        <ComboBoxItem Content="September"/>
+                                        <ComboBoxItem Content="October"/>
+                                        <ComboBoxItem Content="November"/>
+                                        <ComboBoxItem Content="December"/>
+                                    </ComboBox>
+
+                                    <Button Margin="30 0" FontSize="16" Grid.Column="5" x:Name="BShowBTn" Content="Show Data" Click="BShowBTn_Click"/>
+                                </Grid>
+
+                                <Border BorderBrush="Black" BorderThickness="0 1 0 0">
+                                    <StackPanel>
+                                        <Grid Margin="10 10 ">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Total Purchases : " FontSize="16" Grid.Column="0" />
+                                            <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                <TextBlock x:Name="TPurshLbl" FontSize="16" Padding="5 0" Text="0.00"/>
+                                            </Border>
+                                            <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                        </Grid>
+
+                                        <Grid Margin="10 10 ">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Total Sales : " FontSize="16" Grid.Column="0" />
+                                            <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                <TextBlock x:Name="TSalesLbl" FontSize="16" Padding="5 0" Text="0.00"/>
+                                            </Border>
+                                            <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                        </Grid>
+
+                                        <Grid Margin="10 10 ">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Total Profits : " FontSize="16" Grid.Column="0" />
+                                            <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                <TextBlock x:Name="TProfLbl" FontSize="16" Padding="5 0" Text="0.00"  />
+                                            </Border>
+                                            <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                        </Grid>
+
+                                        <Grid Margin="10 10 ">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Return of Sales : " FontSize="16" Grid.Column="0" />
+                                            <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                <TextBlock x:Name="TRSalesLbl" FontSize="16" Padding="5 0" Text="0.00"/>
+                                            </Border>
+                                            <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                        </Grid>
+
+                                        <Grid Margin="10 10 ">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Return of Purchases : " FontSize="16" Grid.Column="0" />
+                                            <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                <TextBlock x:Name="TRPurshLbl" FontSize="16" Padding="5 0" Text="0.00"/>
+                                            </Border>
+                                            <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                        </Grid>
+
+                                        <Grid Margin="10 10 ">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Total Expenses : " FontSize="16" Grid.Column="0" />
+                                            <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                <TextBlock x:Name="TExpenLbl" FontSize="16" Padding="5 0" Text="0.00"  />
+                                            </Border>
+                                            <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                        </Grid>
+
+                                        <Grid Margin="10 10 ">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="4*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="Gross Profit : " FontSize="16" Grid.Column="0" />
+                                            <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                <TextBlock x:Name="GProfLbl" FontSize="16" Padding="5 0" Text="0.00"  />
+                                            </Border>
+                                            <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+
+                        </Grid>
+
+                        <!-- Transfer Panel -->
+                        <Grid Margin="30 -20" x:Name="TransGrid" Visibility="Hidden">
+                            <StackPanel>
+                                <StackPanel Margin="30 0">
+                                    <Grid Margin="10 5 ">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5*"/>
+                                            <ColumnDefinition Width="6*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Balance : " FontSize="16" Grid.Column="0" />
+                                        <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                            <TextBlock x:Name="TrBalanceLbl" FontSize="16" Padding="5 0" Text="0.00"  />
+                                        </Border>
+                                        <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                    </Grid>
+
+                                    <Grid Margin="10 5 ">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5*"/>
+                                            <ColumnDefinition Width="6*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Order : " FontSize="16" Grid.Column="0" />
+                                        <ComboBox x:Name="TrOrder" Margin="5 0" FontSize="16" Grid.Column="1" SelectionChanged="TrOrder_SelectionChanged">
+                                            <ComboBoxItem IsSelected="True" Content="Deposit"/>
+                                            <ComboBoxItem Content="Withdraw"/>
+                                            <ComboBoxItem Content="Expenses"/>
+                                        </ComboBox>
+                                    </Grid>
+
+                                    <Grid Margin="10 5 ">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5*"/>
+                                            <ColumnDefinition Width="6*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Type : " FontSize="16" Grid.Column="0" />
+                                        <ComboBox x:Name="TrType" Margin="5 0" FontSize="16" Grid.Column="1" IsEditable="True"/>
+                                    </Grid>
+
+                                    <Grid Margin="10 5 ">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5*"/>
+                                            <ColumnDefinition Width="6*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="Amount : " FontSize="16"  />
+                                        <TextBox x:Name="TrAmount" Text="0.00" Margin="5 0" FontSize="16" Grid.Column="1" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LfDouble"/>
+                                        <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                    </Grid>
+
+                                    <CheckBox x:Name="IsTrNow" Click="ChkBx_Click" IsChecked="True" Content="Transfer Now" FontSize="16" Margin="10 5 10 0"/>
+                                    <Grid Margin="10 5 ">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5*"/>
+                                            <ColumnDefinition Width="1.8*"/>
+                                            <ColumnDefinition Width="1.8*"/>
+                                            <ColumnDefinition Width="2.4*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="Date : " FontSize="16"  />
+
+                                        <ComboBox IsEnabled="False" x:Name="TDDComb" Grid.Column="1" Margin="5 0" FontSize="14"/>
+                                        <ComboBox IsEnabled="False" x:Name="TDMComb" Grid.Column="2" Margin="5 0" FontSize="14"/>
+                                        <TextBox IsEnabled="False" x:Name="TDYTxt" Grid.Column="3" Margin="5 0" FontSize="14" PreviewTextInput="TextBox_PreviewTextInput"  LostFocus="TextBox_LfNCurren"/>
+                                    </Grid>
+
+                                    <Grid Margin="10 5 ">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5*"/>
+                                            <ColumnDefinition Width="6*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="Note : " FontSize="16"  />
+                                        <TextBox x:Name="TrNote" Margin="5 0" Height="50" FontSize="16" Grid.Column="1"/>
+                                    </Grid>
+                                </StackPanel>
+                                <Button Grid.Row="1" Margin="250 5" x:Name="OrderBtn" Click="ConOrder_Click" FontSize="16" Grid.Column="0" Content="Confirm Order"/>
+
+                                <GroupBox Height="235" Padding="5" FontSize="16" Header="Transfer Log" BorderBrush="Gray" BorderThickness="2">
+                                    <ScrollViewer>
+                                        <StackPanel x:Name="TransPan">
+
+                                            <!--
+                                            <Grid Margin="10 5 ">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="1.5*"/>
+                                                    <ColumnDefinition Width="3*"/>
+                                                    <ColumnDefinition Width="3*"/>
+                                                    <ColumnDefinition Width="1.5*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Margin="5 0" Text="Deposit : " FontSize="16" Grid.Column="0" />
+                                                <TextBlock Margin="5 0" Text="Bank" FontSize="16" Grid.Column="2" />
+                                                <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="3">
+                                                    <TextBlock FontSize="16" Padding="5 0" Text="500.00"  />
+                                                </Border>
+                                                <TextBlock Text=" Dollars " FontSize="16" Grid.Column="4" />
+                                            </Grid>
+
+                                            <Grid Background="LightGray" Margin="10 5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="1.5*"/>
+                                                    <ColumnDefinition Width="3*"/>
+                                                    <ColumnDefinition Width="3*"/>
+                                                    <ColumnDefinition Width="1.5*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Text=" 27 / 07 / 2017 " FontSize="16" Grid.Column="0" />
+                                                <TextBlock Margin="5 0" Text="withdraw : " FontSize="16" Grid.Column="1" />
+                                                <TextBlock Margin="5 0" Text="Bank" FontSize="16" Grid.Column="2" />
+                                                <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="3">
+                                                    <TextBlock FontSize="16" Padding="5 0" Text="750.00"  />
+                                                </Border>
+                                                <TextBlock Text=" Dollars " FontSize="16" Grid.Column="4" />
+
+                                                <TextBlock Margin="0 3" Text=" Note : " FontSize="16" Grid.Row="1" Grid.Column="1" />
+                                                <TextBlock Margin="0 3" Text="For a Dept" FontSize="16" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" />
+                                            </Grid>
+
+                                            <Grid Margin="10 5 ">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="1.5*"/>
+                                                    <ColumnDefinition Width="3*"/>
+                                                    <ColumnDefinition Width="3*"/>
+                                                    <ColumnDefinition Width="1.5*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text=" 02 / 08 / 2017 " FontSize="16" Grid.Column="0" />
+                                                <TextBlock Margin="5 0" Text="Deposit : " FontSize="16" Grid.Column="1" />
+                                                <TextBlock Margin="5 0" Text="Bank" FontSize="16" Grid.Column="2" />
+                                                <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="3">
+                                                    <TextBlock FontSize="16" Padding="5 0" Text="1,800.00"  />
+                                                </Border>
+                                                <TextBlock Text=" Dollars " FontSize="16" Grid.Column="4" />
+                                            </Grid>
+
+                                            <Grid Background="WhiteSmoke" Margin="10 5 ">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="1.5*"/>
+                                                    <ColumnDefinition Width="3*"/>
+                                                    <ColumnDefinition Width="3*"/>
+                                                    <ColumnDefinition Width="1.5*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Text=" 07 / 08 / 2017 " FontSize="16" Grid.Column="0" />
+                                                <TextBlock Margin="5 0" Text="Deposit : " FontSize="16" Grid.Column="1" />
+                                                <TextBlock Margin="5 0" Text="Bank" FontSize="16" Grid.Column="2" />
+                                                <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="3">
+                                                    <TextBlock FontSize="16" Padding="5 0" Text="2,500.00"  />
+                                                </Border>
+                                                <TextBlock Text=" Dollars " FontSize="16" Grid.Column="4" />
+                                            </Grid>
+                                            -->
+
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </GroupBox>
+
+
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Brands View Grid -->
+                        <Grid Margin="15 -25" x:Name="BrandGrid" Visibility="Hidden">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="10*"/>
+                                <RowDefinition Height="0.8*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Margin="10 10 " Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5*"/>
+                                    <ColumnDefinition Width="6*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Type : " FontSize="16" Grid.Column="0" />
+                                <ComboBox Margin="5 0 50 0" x:Name="BTypeView" IsEditable="True" SelectionChanged="BTypeView_SelectionChanged" FontSize="16" Grid.Column="1"/>
+                            </Grid>
+
+                            <Grid Margin="20 7 20 5" Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="6*"/>
+                                    <ColumnDefinition Width="7*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="7*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="Total Value : " FontSize="16" Grid.Column="0" />
+                                <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                    <TextBlock x:Name="STotal" FontSize="16" Padding="5 0" Text="0.00"  />
+                                </Border>
+                                <TextBlock Text=" Dollars " FontSize="16" Grid.Column="2" />
+                            </Grid>
+
+                            <!-- Brands List -->
+                            <Border Grid.Row="1" Padding="5 3" BorderBrush="Gray" BorderThickness="1">
+                                <ScrollViewer>
+                                    <Grid x:Name="StoreG">
+                                        <StackPanel>
+
+                                            <!--
+                                            <GroupBox FontSize="16" Header="Ceramic" BorderBrush="LightBlue" BorderThickness="3">
+                                                <StackPanel>
+
+                                                    <Grid Margin="10 5 ">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="6*"/>
+                                                            <ColumnDefinition Width="4*"/>
+                                                            <ColumnDefinition Width="3*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Trade Price Per 10 Blocks : " FontSize="16" Grid.Column="0" />
+                                                        <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                            <TextBlock FontSize="16" Padding="5 0" Text="35.00"  />
+                                                        </Border>
+                                                        <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                                    </Grid>
+
+                                                    <Grid Margin="10 5 ">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="6*"/>
+                                                            <ColumnDefinition Width="4*"/>
+                                                            <ColumnDefinition Width="3*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Amount : " FontSize="16" Grid.Column="0" />
+                                                        <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                            <TextBlock FontSize="16" Padding="5 0" Text="5,700"  />
+                                                        </Border>
+                                                        <TextBlock Text=" Blocks " FontSize="16" Grid.Column="3" />
+                                                    </Grid>
+
+                                                    <Grid Margin="10 5 ">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="6*"/>
+                                                            <ColumnDefinition Width="4*"/>
+                                                            <ColumnDefinition Width="3*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Value : " FontSize="16" Grid.Column="0" />
+                                                        <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                            <TextBlock FontSize="16" Padding="5 0" Text="19,950.00"  />
+                                                        </Border>
+                                                        <TextBlock Text="Dollars" FontSize="16" Grid.Column="3" />
+                                                    </Grid>
+
+                                                </StackPanel>
+                                            </GroupBox>
+
+                                            <GroupBox FontSize="16" Header="Dell Optiplex 760" BorderBrush="LightPink" BorderThickness="3">
+                                                <StackPanel>
+
+                                                    <Grid Margin="10 5 ">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="6*"/>
+                                                            <ColumnDefinition Width="4*"/>
+                                                            <ColumnDefinition Width="3*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Trade Price Per 1 Device : " FontSize="16" Grid.Column="0" />
+                                                        <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                            <TextBlock FontSize="16" Padding="5 0" Text="3,000.00"  />
+                                                        </Border>
+                                                        <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                                    </Grid>
+
+                                                    <Grid Margin="10 5 ">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="6*"/>
+                                                            <ColumnDefinition Width="4*"/>
+                                                            <ColumnDefinition Width="3*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Amount : " FontSize="16" Grid.Column="0" />
+                                                        <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                            <TextBlock FontSize="16" Padding="5 0" Text="25"  />
+                                                        </Border>
+                                                        <TextBlock Text=" Devices " FontSize="16" Grid.Column="3" />
+                                                    </Grid>
+
+                                                    <Grid Margin="10 5 ">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="6*"/>
+                                                            <ColumnDefinition Width="4*"/>
+                                                            <ColumnDefinition Width="3*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Value : " FontSize="16" Grid.Column="0" />
+                                                        <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                            <TextBlock FontSize="16" Padding="5 0" Text="75,000.00"  />
+                                                        </Border>
+                                                        <TextBlock Text="Dollars" FontSize="16" Grid.Column="3" />
+                                                    </Grid>
+
+                                                </StackPanel>
+                                            </GroupBox>
+
+                                            <GroupBox FontSize="16" Header="Flour" BorderBrush="LightBlue" BorderThickness="3">
+                                                <StackPanel>
+
+                                                    <Grid Margin="10 5 ">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="6*"/>
+                                                            <ColumnDefinition Width="4*"/>
+                                                            <ColumnDefinition Width="3*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Trade Price Per 30 Kilograms : " FontSize="16" Grid.Column="0" />
+                                                        <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                            <TextBlock FontSize="16" Padding="5 0" Text="20.00"  />
+                                                        </Border>
+                                                        <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                                    </Grid>
+
+                                                    <Grid Margin="10 5 ">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="6*"/>
+                                                            <ColumnDefinition Width="4*"/>
+                                                            <ColumnDefinition Width="3*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Amount : " FontSize="16" Grid.Column="0" />
+                                                        <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                            <TextBlock FontSize="16" Padding="5 0" Text="750"  />
+                                                        </Border>
+                                                        <TextBlock Text=" Kilograms " FontSize="16" Grid.Column="3" />
+                                                    </Grid>
+
+                                                    <Grid Margin="10 5 ">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="6*"/>
+                                                            <ColumnDefinition Width="4*"/>
+                                                            <ColumnDefinition Width="3*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Value : " FontSize="16" Grid.Column="0" />
+                                                        <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                            <TextBlock FontSize="16" Padding="5 0" Text="500.00"  />
+                                                        </Border>
+                                                        <TextBlock Text="Dollars" FontSize="16" Grid.Column="3" />
+                                                    </Grid>
+
+                                                </StackPanel>
+                                            </GroupBox>
+
+                                            <GroupBox FontSize="16" Header="Shoes" BorderBrush="LightBlue" BorderThickness="3">
+                                                <StackPanel>
+
+                                                    <Grid Margin="10 5 ">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="6*"/>
+                                                            <ColumnDefinition Width="4*"/>
+                                                            <ColumnDefinition Width="3*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Trade Price Per 1 Pair : " FontSize="16" Grid.Column="0" />
+                                                        <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                            <TextBlock FontSize="16" Padding="5 0" Text="75.00"  />
+                                                        </Border>
+                                                        <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                                    </Grid>
+
+                                                    <Grid Margin="10 5 ">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="6*"/>
+                                                            <ColumnDefinition Width="4*"/>
+                                                            <ColumnDefinition Width="3*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Amount : " FontSize="16" Grid.Column="0" />
+                                                        <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                            <TextBlock FontSize="16" Padding="5 0" Text="230"  />
+                                                        </Border>
+                                                        <TextBlock Text=" Pairs " FontSize="16" Grid.Column="3" />
+                                                    </Grid>
+
+                                                    <Grid Margin="10 5 ">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="6*"/>
+                                                            <ColumnDefinition Width="4*"/>
+                                                            <ColumnDefinition Width="3*"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Text="Value : " FontSize="16" Grid.Column="0" />
+                                                        <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                                            <TextBlock FontSize="16" Padding="5 0" Text="17,250.00"  />
+                                                        </Border>
+                                                        <TextBlock Text="Dollars" FontSize="16" Grid.Column="3" />
+                                                    </Grid>
+
+                                                </StackPanel>
+                                            </GroupBox>
+                                            -->
+
+                                        </StackPanel>
+                                    </Grid>
+                                </ScrollViewer>
+                            </Border>
+                        </Grid>
+
+                        <!-- Add Panel -->
+                        <Grid Margin="100 0" x:Name="AddGrid" Visibility="Hidden">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="12*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel>
+
+                                <CheckBox x:Name="IsNtype" Click="ChkBx_Click" IsChecked="True" Content="Add New Type " FontSize="16" Margin="10 10 10 0"/>
+                                <Grid Margin="10 10 ">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="6*"/>
+                                        <ColumnDefinition Width="6.5*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Type : " FontSize="16" Grid.Column="0" />
+                                    <TextBox x:Name="BTypeTxt" Margin="5 0" FontSize="16" Grid.Column="1"/>
+                                    <ComboBox x:Name="BTypeCmb" Visibility="Hidden" Margin="5 0" FontSize="16" Grid.Column="1" IsEditable="True"/>
+                                </Grid>
+
+                                <Grid Margin="10 10 ">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="6*"/>
+                                        <ColumnDefinition Width="6.5*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Brand Name : " FontSize="16" Grid.Column="0" />
+                                    <TextBox x:Name="BName" Margin="5 0" FontSize="16" Grid.Column="1"/>
+                                </Grid>
+
+                                <CheckBox x:Name="IsScaleSetted" Click="ChkBx_Click" IsChecked="True" Content="Set Scale unit " FontSize="16" Margin="10 10 10 0"/>
+                                <Grid Margin="10 10 ">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="6*"/>
+                                        <ColumnDefinition Width="6.5*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Scale Unit : " FontSize="16" Grid.Column="0" />
+                                    <TextBox x:Name="BScale" Margin="5 0" FontSize="16" Grid.Column="1" TextChanged="BScale_TextChanged"/>
+                                </Grid>
+
+                                <CheckBox x:Name="IsSetted" Click="ChkBx_Click" IsChecked="True" Content="Set trade price " FontSize="16" Margin="10 10 10 0"/>
+                                <Grid x:Name="TPriceGrid" Margin="10 10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="6*"/>
+                                        <ColumnDefinition Width="4*"/>
+                                        <ColumnDefinition Width="2.5*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                        <TextBlock Text="Trade Price Per " FontSize="16"  />
+                                        <TextBox x:Name="BTPriceA" Text="0" Margin="3 0" Width="50" FontSize="14" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LfNCurren" />
+                                        <TextBlock x:Name="UPricelbl" Text=" Units : " FontSize="16" />
+                                    </StackPanel>
+
+                                    <TextBox x:Name="BTPriceV" Text="0.00" Margin="5 0" FontSize="16" Grid.Column="1" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LfDouble"/>
+                                    <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                </Grid>
+
+                                <CheckBox x:Name="IsSellSetted" Click="ChkBx_Click" IsChecked="True" Content="Set Sell price " FontSize="16" Margin="10 10 10 0"/>
+                                <Grid x:Name="SPriceGrid" Margin="10 10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="6*"/>
+                                        <ColumnDefinition Width="4*"/>
+                                        <ColumnDefinition Width="2.5*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                        <TextBlock Text="Sell Price Per " FontSize="16"  />
+                                        <TextBox x:Name="BSPriceA" Text="0" Margin="3 0" Width="50" FontSize="14" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LfNCurren" />
+                                        <TextBlock x:Name="UPricelbl2" Text=" Units : " FontSize="16" />
+                                    </StackPanel>
+
+                                    <TextBox x:Name="BSPriceV" Text="0.00" Margin="5 0" FontSize="16" Grid.Column="1" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LfDouble"/>
+                                    <TextBlock Text=" Dollars " FontSize="16" Grid.Column="3" />
+                                </Grid>
+
+                                <CheckBox x:Name="IsAmountSetted" Click="ChkBx_Click" IsChecked="False" Content="Set Initial amount" FontSize="16" Margin="10 10 10 0"/>
+                                <Grid x:Name="GAmountGrid" Margin="10 10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="6*"/>
+                                        <ColumnDefinition Width="4*"/>
+                                        <ColumnDefinition Width="2.5*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Text="Amount : " FontSize="16" Grid.Column="0" />
+                                    <TextBox x:Name="BAmount" Margin="5 0" IsEnabled="False" Text="0" FontSize="16" Grid.Column="1" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LfNCurren"/>
+                                    <TextBlock Margin="5 0" x:Name="UAmount" Text="Units" FontSize="16" Grid.Column="3" />
+                                </Grid>
+
+                            </StackPanel>
+                            <Button Margin="170 0 170 5" x:Name="AddBrand" Click="AddBrand_Click" FontSize="16" Grid.Row="1" Content="Add Brand"/>
+                        </Grid>
+
+                        <!-- Invoices View Grid -->
+                        <Grid Margin=" 0 -15" x:Name="InvoGrid" Visibility="Hidden">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="60"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="400"/>
+                                <RowDefinition Height="40"/>
+                            </Grid.RowDefinitions>
+
+                            <!-- Search Grid -->
+                            <GroupBox Header="Search" FontSize="14" Grid.Row="0" BorderThickness="1" BorderBrush="Gray">
+                                <Grid>
+                                    <Grid Margin="5" Visibility="Visible">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="3*"/>
+                                            <ColumnDefinition Width="5*"/>
+                                            <ColumnDefinition Width="6*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Search by : " FontSize="14" Grid.Column="0" />
+                                        <ComboBox x:Name="SComb" Margin="10 0" FontSize="14" Grid.Column="1" SelectionChanged="SComb_SelectionChanged">
+                                            <ComboBoxItem IsSelected="True" Content="Customer"/>
+                                            <ComboBoxItem Content="Brand"/>
+                                            <ComboBoxItem Content="Brand Type"/>
+                                            <ComboBoxItem Content="Date"/>
+                                        </ComboBox>
+                                        <TextBox x:Name="SSrchTxt" Visibility="Visible" Margin="10 0" FontSize="14" Grid.Column="2" TextChanged="SearchText_Changed"/>
+                                        <StackPanel x:Name="SDate" Grid.Column="2" Visibility="Hidden" Orientation="Horizontal">
+                                            <TextBox x:Name="SSDay" Margin="0 0 5 0" Width="70" FontSize="14" TextChanged="SearchText_Changed" PreviewTextInput="TextBox_PreviewTextInput"/>
+                                            <TextBox x:Name="SSMonth" Margin="5 0" Width="70" FontSize="14" TextChanged="SearchText_Changed" PreviewTextInput="TextBox_PreviewTextInput"/>
+                                            <TextBox x:Name="SSyear" Margin="5 0" Width="110" FontSize="14" TextChanged="SearchText_Changed" PreviewTextInput="TextBox_PreviewTextInput"/>
+                                        </StackPanel>
+
+                                    </Grid>
+
+                                </Grid>
+                            </GroupBox>
+
+                            <!-- Options Grid -->
+                            <Grid Grid.Row="3">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Padding="10" Text="Options : " FontSize="14" Grid.Column="0" />
+                                <Button IsEnabled="False" x:Name="InvoReturn" Margin="20 5" Content="Return" FontSize="14" Grid.Column="1" Click="InvoReturn_Click"/>
+                                <Button IsEnabled="False" x:Name="InvoRemove" Margin="20 5" Content="Remove" FontSize="14" Grid.Column="3" Click="InvoRemove_Click"/>
+                            </Grid>
+
+                            <!-- Invoices List -->
+                            <Border Margin="2 2" Padding="7 0 27 0" BorderBrush="Gray" Grid.Row="1" BorderThickness="1 0 1 1" >
+                                <Grid Margin="10 5 ">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="3*"/>
+                                        <ColumnDefinition Width="2.2*"/>
+                                        <ColumnDefinition Width="5.5*"/>
+                                        <ColumnDefinition Width="4.5*"/>
+                                        <ColumnDefinition Width="5*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <Border Grid.Column="0" BorderBrush="Black" BorderThickness="0 0 1 0">
+                                        <TextBlock FontSize="14" TextAlignment="Center" Text="No. "/>
+                                    </Border>
+                                    <Border Grid.Column="1" BorderBrush="Black" BorderThickness="0 0 1 0">
+                                        <TextBlock FontSize="14" TextAlignment="Center" Text=" Date "/>
+                                    </Border>
+                                    <Border Grid.Column="2" BorderBrush="Black" BorderThickness="0 0 1 0">
+                                        <TextBlock FontSize="14" TextAlignment="Center" Padding="5 0" Text="Type"/>
+                                    </Border>
+                                    <Border Grid.Column="3" BorderBrush="Black" BorderThickness="0 0 1 0">
+                                        <TextBlock FontSize="14" TextAlignment="Center" Padding="5 0" Text="Customer"/>
+                                    </Border>
+                                    <Border Grid.Column="4" BorderBrush="Black" BorderThickness="0 0 1 0">
+                                        <TextBlock FontSize="14" TextAlignment="Center" Padding="5 0" Text="Brand Type"/>
+                                    </Border>
+                                    <Border Grid.Column="5" BorderBrush="Black" BorderThickness="0 0 0 0">
+                                        <TextBlock FontSize="14" TextAlignment="Center" Padding="5 0" Text="Brand"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <Border Margin="2 0" Padding="5" BorderBrush="Gray" Grid.Row="2" BorderThickness="1 0 0 1">
+                                <ScrollViewer x:Name="InvoScroll">
+                                    <StackPanel x:Name="InvoPan">
+                                        <!--
+                                        <Border Margin="3 1" Padding="3 1"  BorderBrush="Teal" BorderThickness="1 0 0 1" >
+                                            <StackPanel Height="25" MouseUp="InvoPanel_MouseUp" MouseLeave="InvoPanel_MouseLeave" MouseEnter="InvoPanel_MouseEnter">
+
+                                                <Grid Margin="10 3 ">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="0.7*"/>
+                                                        <ColumnDefinition Width="3*"/>
+                                                        <ColumnDefinition Width="2*"/>
+                                                        <ColumnDefinition Width="5.5*"/>
+                                                        <ColumnDefinition Width="4.5*"/>
+                                                        <ColumnDefinition Width="5*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" FontSize="14" Background="#FFD3EAFF" Text="1 - "  />
+                                                    <TextBlock Grid.Column="1" FontSize="14" Background="#FFA8D6FF" Text=" 15 / 07 / 2017 "  />
+                                                    <TextBlock Grid.Column="2" FontSize="14" Background="#FFD3EAFF" Padding="5 0" Text="Purchase"/>
+                                                    <TextBlock Grid.Column="3" FontSize="14" Background="#FFA8D6FF" Padding="5 0" Text="Ahmed Mohamed Yousef"/>
+                                                    <TextBlock Grid.Column="4" FontSize="14" Background="#FFD3EAFF" Padding="5 0" Text="Ceramic"/>
+                                                    <TextBlock Grid.Column="5" FontSize="14" Background="#FFA8D6FF" Padding="5 0" Text="Gray Ceramic"/>
+                                                </Grid>
+
+                                                <Grid Margin="10 3 ">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="3.7*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="5*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock FontSize="14" Grid.Column="1" Padding="5 0" Text="Amount : "/>
+                                                    <TextBlock FontSize="14" Grid.Column="2" Padding="5 0" Text="50"/>
+                                                    <TextBlock FontSize="14" Grid.Column="3" Padding="5 0" Text="Block"/>
+                                                </Grid>
+
+                                                <Grid  Margin="10 3 ">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="3.7*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="5*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock FontSize="14" Grid.Column="1" Padding="5 0" Text="Price Per 25 Blocks : "/>
+                                                    <TextBlock FontSize="14" Grid.Column="2" Padding="5 0" Text="300"/>
+                                                    <TextBlock FontSize="14" Grid.Column="3" Padding="5 0" Text="Dollars"/>
+                                                </Grid>
+
+                                                <Grid Margin="10 3">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="3.7*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="5*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock FontSize="14" Grid.Column="1" Padding="5 0" Text="Total price : "/>
+                                                    <TextBlock FontSize="14" Grid.Column="2" Padding="5 0" Text="600"/>
+                                                    <TextBlock FontSize="14" Grid.Column="3" Padding="5 0" Text="Dollars"/>
+                                                </Grid>
+
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border Margin="3 1" Padding="3 1"  BorderBrush="DarkSeaGreen" BorderThickness="1 0 0 1" >
+                                            <StackPanel Height="25" MouseUp="InvoPanel_MouseUp" MouseLeave="InvoPanel_MouseLeave" MouseEnter="InvoPanel_MouseEnter">
+
+                                                <Grid Margin="10 3 ">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="0.7*"/>
+                                                        <ColumnDefinition Width="3*"/>
+                                                        <ColumnDefinition Width="2*"/>
+                                                        <ColumnDefinition Width="5.5*"/>
+                                                        <ColumnDefinition Width="4.5*"/>
+                                                        <ColumnDefinition Width="5*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" FontSize="14" Background="#FFD3EAFF" Text="2 - "  />
+                                                    <TextBlock Grid.Column="1" FontSize="14" Background="#FFA8D6FF" Text=" 26 / 05 / 2016 "  />
+                                                    <TextBlock Grid.Column="2" FontSize="14" Background="#FFD3EAFF" Padding="5 0" Text="Sell"/>
+                                                    <TextBlock Grid.Column="3" FontSize="14" Background="#FFA8D6FF" Padding="5 0" Text="Omar Mahmoud"/>
+                                                    <TextBlock Grid.Column="4" FontSize="14" Background="#FFD3EAFF" Padding="5 0" Text="Food"/>
+                                                    <TextBlock Grid.Column="5" FontSize="14" Background="#FFA8D6FF" Padding="5 0" Text="Flour"/>
+                                                </Grid>
+
+                                                <Grid Margin="10 3 ">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="3.7*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="5*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock FontSize="14" Grid.Column="1" Padding="5 0" Text="Amount : "/>
+                                                    <TextBlock FontSize="14" Grid.Column="2" Padding="5 0" Text="300"/>
+                                                    <TextBlock FontSize="14" Grid.Column="3" Padding="5 0" Text="Kilograms"/>
+                                                </Grid>
+
+                                                <Grid  Margin="10 3 ">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="3.7*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="5*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock FontSize="14" Grid.Column="1" Padding="5 0" Text="Price per 50 Kilograms : "/>
+                                                    <TextBlock FontSize="14" Grid.Column="2" Padding="5 0" Text="300"/>
+                                                    <TextBlock FontSize="14" Grid.Column="3" Padding="5 0" Text="Dollars"/>
+                                                </Grid>
+
+                                                <Grid Margin="10 3">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="3.7*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="5*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock FontSize="14" Grid.Column="1" Padding="5 0" Text="Total price : "/>
+                                                    <TextBlock FontSize="14" Grid.Column="2" Padding="5 0" Text="900"/>
+                                                    <TextBlock FontSize="14" Grid.Column="3" Padding="5 0" Text="Dollars"/>
+                                                </Grid>
+
+                                            </StackPanel>
+                                        </Border>
+
+                                        <Border Margin="3 1" Padding="3 1"  BorderBrush="Teal" BorderThickness="1 0 0 1" >
+                                            <StackPanel Height="25" MouseUp="InvoPanel_MouseUp" MouseLeave="InvoPanel_MouseLeave" MouseEnter="InvoPanel_MouseEnter">
+
+                                                <Grid Margin="10 3 ">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="0.7*"/>
+                                                        <ColumnDefinition Width="3*"/>
+                                                        <ColumnDefinition Width="2*"/>
+                                                        <ColumnDefinition Width="5.5*"/>
+                                                        <ColumnDefinition Width="4.5*"/>
+                                                        <ColumnDefinition Width="5*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" FontSize="14" Background="#FFD3EAFF" Text="3 - "  />
+                                                    <TextBlock Grid.Column="1" FontSize="14" Background="#FFA8D6FF" Text=" 08 / 02 / 2016 "  />
+                                                    <TextBlock Grid.Column="2" FontSize="14" Background="#FFD3EAFF" Padding="5 0" Text="Purchase"/>
+                                                    <TextBlock Grid.Column="3" FontSize="14" Background="#FFA8D6FF" Padding="5 0" Text="Mohamed Sayed"/>
+                                                    <TextBlock Grid.Column="4" FontSize="14" Background="#FFD3EAFF" Padding="5 0" Text="Clothes"/>
+                                                    <TextBlock Grid.Column="5" FontSize="14" Background="#FFA8D6FF" Padding="5 0" Text="Shoes"/>
+                                                </Grid>
+
+                                                <Grid Margin="10 3 ">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="3.7*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="5*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock FontSize="14" Grid.Column="1" Padding="5 0" Text="Amount : "/>
+                                                    <TextBlock FontSize="14" Grid.Column="2" Padding="5 0" Text="75"/>
+                                                    <TextBlock FontSize="14" Grid.Column="3" Padding="5 0" Text="Pairs"/>
+                                                </Grid>
+
+                                                <Grid  Margin="10 3 ">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="3.7*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="5*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock FontSize="14" Grid.Column="1" Padding="5 0" Text="Price per 5 pairs : "/>
+                                                    <TextBlock FontSize="14" Grid.Column="2" Padding="5 0" Text="350"/>
+                                                    <TextBlock FontSize="14" Grid.Column="3" Padding="5 0" Text="Dollars"/>
+                                                </Grid>
+
+                                                <Grid Margin="10 3">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="3.7*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="6*"/>
+                                                        <ColumnDefinition Width="5*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock FontSize="14" Grid.Column="1" Padding="5 0" Text="Total price : "/>
+                                                    <TextBlock FontSize="14" Grid.Column="2" Padding="5 0" Text="5250"/>
+                                                    <TextBlock FontSize="14" Grid.Column="3" Padding="5 0" Text="Dollars"/>
+                                                </Grid>
+
+                                            </StackPanel>
+                                        </Border>
+-->
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Border>
+                        </Grid>
+
+                        <!-- Goods Transfer Panel -->
+                        <Grid Margin="30 -15" x:Name="GTransGrid" Visibility="Hidden">
+                            <StackPanel>
+                                <StackPanel Margin="30 0">
+
+                                    <Grid Margin="10 5 ">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5*"/>
+                                            <ColumnDefinition Width="6*"/>
+                                            <ColumnDefinition Width="2.5*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Brand Type : " FontSize="16" Grid.Column="0" />
+                                        <ComboBox x:Name="SType" IsEditable="True" SelectionChanged="SType_SelectionChanged" Margin="5 0" FontSize="16" Grid.Column="1"/>
+                                    </Grid>
+
+                                    <Grid Margin="10 5 ">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5*"/>
+                                            <ColumnDefinition Width="6*"/>
+                                            <ColumnDefinition Width="2.5*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Brand : " FontSize="16" Grid.Column="0" />
+                                        <ComboBox x:Name="SBrand" SelectionChanged="SBrand_SelectionChanged" IsEditable="True" Margin="5 0" FontSize="16" Grid.Column="1"/>
+                                    </Grid>
+
+                                    <Grid Margin="10 5 ">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5*"/>
+                                            <ColumnDefinition Width="6*"/>
+                                            <ColumnDefinition Width="2.5*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Store : " FontSize="16" Grid.Column="0" />
+                                        <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="1">
+                                            <TextBlock x:Name="SStore" FontSize="16" Padding="5 0" Text="0"  />
+                                        </Border>
+                                        <TextBlock Margin="5 0" x:Name="SScale0" Text="Units" FontSize="16" Grid.Column="3" />
+                                    </Grid>
+
+
+                                    <Grid x:Name="_GAmountGrid" Margin="10 10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5*"/>
+                                            <ColumnDefinition Width="6*"/>
+                                            <ColumnDefinition Width="2.5*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="Amount : " FontSize="16" Grid.Column="0" />
+                                        <TextBox x:Name="SAmount" Margin="5 0" Text="0" FontSize="16" Grid.Column="1" PreviewTextInput="TextBox_PreviewTextInput" LostFocus="TextBox_LfNCurren"/>
+                                        <TextBlock Margin="5 0" x:Name="SScale1" Text="Units" FontSize="16" Grid.Column="3" />
+                                    </Grid>
+
+                                    <Grid Margin="10 5 ">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5*"/>
+                                            <ColumnDefinition Width="6*"/>
+                                            <ColumnDefinition Width="2.5*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Order : " FontSize="16" Grid.Column="0" />
+                                        <ComboBox x:Name="STrOrder" Margin="5 0" FontSize="16" Grid.Column="1">
+                                            <ComboBoxItem IsSelected="True" Content="Move In"/>
+                                            <ComboBoxItem Content="Move Out"/>
+                                        </ComboBox>
+                                    </Grid>
+
+                                    <Grid Margin="10 5 ">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="5*"/>
+                                            <ColumnDefinition Width="6*"/>
+                                            <ColumnDefinition Width="2.5*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Text="Note : " FontSize="16"  />
+                                        <TextBox x:Name="STrNote" Margin="5 0" Height="50" FontSize="16" Grid.Column="1"/>
+                                    </Grid>
+                                </StackPanel>
+                                <Button Grid.Row="1" Margin="250 5" x:Name="SOrderBtn" Click="SOrderBtn_Click" FontSize="16" Grid.Column="0" Content="Confirm Order"/>
+
+                                <GroupBox Height="240" Padding="0 5" FontSize="16" Header="Transfer Log" BorderBrush="Gray" BorderThickness="2">
+                                    <ScrollViewer>
+                                        <StackPanel x:Name="GTransPan">
+
+                                            <!--
+                                            <Grid Margin="5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="1.2*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="3*"/>
+                                                    <ColumnDefinition Width="1.5*"/>
+                                                    <ColumnDefinition Width="1.5*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Margin="5 0" Text="Move In : " FontSize="16" Grid.Column="0" />
+                                                <TextBlock Margin="5 0" Text="Phones" FontSize="16" Grid.Column="1" />
+                                                <TextBlock Margin="5 0" Text="Samsung s3" FontSize="16" Grid.Column="2" />
+                                                <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="3">
+                                                    <TextBlock FontSize="16" Padding="5 0" Text="30"  />
+                                                </Border>
+                                                <TextBlock Margin="5 0" Text="Unit" FontSize="16" Grid.Column="4" />
+                                            </Grid>
+
+                                            <Grid Background="WhiteSmoke" Margin="5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="1.2*"/>
+                                                    <ColumnDefinition Width="2*"/>
+                                                    <ColumnDefinition Width="3*"/>
+                                                    <ColumnDefinition Width="1.5*"/>
+                                                    <ColumnDefinition Width="1.5*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <TextBlock Margin="5 0" Text="Move Out : " FontSize="16" Grid.Column="0" />
+                                                <TextBlock Margin="5 0" Text="Phones" FontSize="16" Grid.Column="1" />
+                                                <TextBlock Margin="5 0" Text="Nokia N97" FontSize="16" Grid.Column="2" />
+                                                <Border Margin="5 0" BorderBrush="Gray" BorderThickness="1" Grid.Column="3">
+                                                    <TextBlock FontSize="16" Padding="5 0" Text="25"  />
+                                                </Border>
+                                                <TextBlock Margin="5 0" Text="Unit" FontSize="16" Grid.Column="4" />
+
+                                                <TextBlock Margin="0 3" Text=" Note : " FontSize="16" Grid.Row="1" Grid.Column="1" />
+                                                <TextBlock Margin="0 3" Text="To the other shop" FontSize="16" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="3" />
+                                            </Grid>
+                                            -->
+
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </GroupBox>
+
+
+                            </StackPanel>
+                        </Grid>
+
+                    </Grid>
+
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>
+       
