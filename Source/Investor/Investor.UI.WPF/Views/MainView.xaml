@@ -204,12 +204,12 @@
 
                     <TextBlock Grid.Row="3">Buy Price:</TextBlock>
                     <TextBox Grid.Row="3" Grid.Column="1" 
-                             Text="{Binding SelectedBrand.BuyPrice, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:c}}"/>
+                             Text="{Binding SelectedBrand.BuyPrice, StringFormat={}{0:c}}"/>
 
 
                     <TextBlock Grid.Row="4">Sell Price:</TextBlock>
                     <TextBox Grid.Row="4" Grid.Column="1" 
-                             Text="{Binding SelectedBrand.SellPrice, UpdateSourceTrigger=PropertyChanged, StringFormat={}{0:c}}"/>
+                             Text="{Binding SelectedBrand.SellPrice, StringFormat={}{0:c}}"/>
 
                     <!--#endregion-->
 

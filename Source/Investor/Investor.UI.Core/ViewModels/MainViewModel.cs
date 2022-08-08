@@ -23,6 +23,13 @@ namespace Investor.UI.Core.ViewModels
 
         #region Observable Properties
 
+        private string _localStatus;
+        public string LocalStatus
+        {
+            get => _localStatus;
+            set => SetProperty(ref _localStatus, value);
+        }
+
         private ObservableCollection<IBrandViewModel> _brands;
         public ObservableCollection<IBrandViewModel> Brands
         {
@@ -36,6 +43,7 @@ namespace Investor.UI.Core.ViewModels
             get => _selectedBrand;
             set
             {
+                // Hook event listeners to notify commands, if new brand was selected.
                 NotifyCanSaveBrandOnFirstEdit(ref _selectedBrand, value);
                 NotifyOnBrandErrorsChanged(ref _selectedBrand, value);
 
@@ -50,7 +58,6 @@ namespace Investor.UI.Core.ViewModels
         {
             get => SelectedBrand?.GetErrors().Select(err => $"*{err.ErrorMessage}") ?? Enumerable.Empty<string>();
         }
-
 
         private bool _addingNewBrand;
         public bool AddingNewBrand
@@ -69,12 +76,6 @@ namespace Investor.UI.Core.ViewModels
             }
         }
 
-        private string _localStatus;
-        public string LocalStatus
-        {
-            get => _localStatus;
-            set => SetProperty(ref _localStatus, value);
-        }
 
         #endregion
 
@@ -154,6 +155,10 @@ namespace Investor.UI.Core.ViewModels
         private void ToggleAddBrand()
         {
             AddingNewBrand = !AddingNewBrand;
+            if (!AddingNewBrand)
+            {
+                LocalStatus = "Ready.";
+            }
         }
 
         private async Task GetBrandsAsync()
@@ -280,6 +285,7 @@ namespace Investor.UI.Core.ViewModels
 
             void brandModifiedHandler(object? sender, PropertyChangedEventArgs e)
             {
+                // Call handler only once..
                 if (sender is IBrandViewModel brand)
                 {
                     brand.PropertyChanged -= brandModifiedHandler;
