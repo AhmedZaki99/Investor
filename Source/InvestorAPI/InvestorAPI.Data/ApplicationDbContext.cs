@@ -29,6 +29,7 @@ namespace InvestorAPI.Data
             base.OnModelCreating(modelBuilder);
 
 
+            // Brand Model..
             modelBuilder.Entity<Brand>()
                 .Property(b => b.ScaleUnit)
                 .HasDefaultValue("Unit");
@@ -36,6 +37,30 @@ namespace InvestorAPI.Data
             modelBuilder.Entity<Brand>()
                 .Property(b => b.DateCreated)
                 .HasDefaultValueSql("GETUTCDATE()");
+
+
+            // Dated Entities..
+            foreach (var entity in modelBuilder.Model.GetEntityTypes())
+            {
+                if (entity.GetAllBaseTypes().Any(t => t.ClrType == typeof(DatedEntity)))
+                {
+                    entity.GetProperty(nameof(DatedEntity.DateCreated)).SetDefaultValueSql("GETUTCDATE()");
+                }
+            }
+        }
+
+        #endregion
+
+        #region Convention
+
+        protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+        {
+            base.ConfigureConventions(configurationBuilder);
+
+            configurationBuilder.Properties<decimal>()
+                .HavePrecision(19, 4);
+            configurationBuilder.Properties<decimal?>()
+                .HavePrecision(19, 4);
         }
 
         #endregion
