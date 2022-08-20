@@ -24,10 +24,8 @@ namespace InvestorAPI.Data
         public string? Description { get; set; }
 
 
-        [Precision(19, 4)]
         public decimal? BuyPrice { get; set; }
 
-        [Precision(19, 4)]
         public decimal? SellPrice { get; set; }
 
 

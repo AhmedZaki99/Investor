@@ -14,7 +14,9 @@ namespace InvestorAPI.Data
         [Required]
         public AccountType AccountType { get; set; }
 
+
         public Account? ParentAccount { get; set; }
+        public string? ParentAccountId { get; set; }
         public bool IsSubAccount => ParentAccount != null;
 
 
