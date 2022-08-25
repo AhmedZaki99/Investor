@@ -8,7 +8,7 @@ namespace InvestorAPI.Data
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string UnitConversionId { get; set; } = null!;
+        public string Id { get; set; } = null!;
 
 
         [Required]

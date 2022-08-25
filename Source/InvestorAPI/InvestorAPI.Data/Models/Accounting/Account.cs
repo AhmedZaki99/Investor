@@ -8,7 +8,7 @@ namespace InvestorAPI.Data
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string AccountId { get; set; } = null!;
+        public string Id { get; set; } = null!;
 
         public Business? Business { get; set; }
         public string? BusinessId { get; set; }

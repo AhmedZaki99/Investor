@@ -9,7 +9,7 @@ namespace InvestorAPI.Data
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string InvoiceId { get; set; } = null!;
+        public string Id { get; set; } = null!;
 
         [Required]
         public string BusinessId { get; set; } = null!;

@@ -8,7 +8,7 @@ namespace InvestorAPI.Data
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string ContactId { get; set; } = null!;
+        public string Id { get; set; } = null!;
 
 
         [MaxLength(255)]
