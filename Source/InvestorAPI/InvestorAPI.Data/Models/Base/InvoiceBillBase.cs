@@ -29,7 +29,7 @@ namespace InvestorAPI.Data
         public DateTime? PaymentDue { get; set; }
 
 
-        [MaxLength(1023)]
+        [MaxLength(1024)]
         public string? Notes { get; set; }
 
     }

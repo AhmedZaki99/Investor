@@ -11,7 +11,7 @@ namespace InvestorAPI.Data
         public Product Product { get; set; } = null!;
 
 
-        [MaxLength(1023)]
+        [MaxLength(1024)]
         public string? Description { get; set; }
 
 

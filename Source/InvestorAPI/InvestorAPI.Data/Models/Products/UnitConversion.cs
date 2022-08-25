@@ -24,7 +24,7 @@ namespace InvestorAPI.Data
         public double ConversionValue { get; set; }
 
 
-        [MaxLength(1023)]
+        [MaxLength(1024)]
         public string? Description { get; set; }
 
     }

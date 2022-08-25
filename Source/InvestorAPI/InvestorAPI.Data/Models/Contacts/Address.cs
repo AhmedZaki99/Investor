@@ -12,24 +12,24 @@ namespace InvestorAPI.Data
 
 
         [Required]
-        [MaxLength(127)]
+        [MaxLength(64)]
         public string Country { get; set; } = null!;
 
-        [MaxLength(127)]
+        [MaxLength(64)]
         public string? Province { get; set; }
 
 
-        [MaxLength(255)]
+        [MaxLength(256)]
         public string? AddressLine1 { get; set; }
 
-        [MaxLength(255)]
+        [MaxLength(256)]
         public string? AddressLine2 { get; set; }
         
 
-        [MaxLength(127)]
+        [MaxLength(64)]
         public string? City { get; set; }
 
-        [MaxLength(63)]
+        [MaxLength(32)]
         public string? PostalCode { get; set; }
 
     }

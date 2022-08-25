@@ -11,17 +11,17 @@ namespace InvestorAPI.Data
         public string Id { get; set; } = null!;
 
 
-        [MaxLength(255)]
+        [MaxLength(64)]
         public string? FirstName { get; set; }
 
-        [MaxLength(255)]
+        [MaxLength(64)]
         public string? LastName { get; set; }
 
 
-        [MaxLength(255)]
+        [MaxLength(128)]
         public string? Email { get; set; }
 
-        [MaxLength(127)]
+        [MaxLength(32)]
         public string? Phone { get; set; }
 
     }

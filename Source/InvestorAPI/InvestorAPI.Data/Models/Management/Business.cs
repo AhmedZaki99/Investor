@@ -13,7 +13,7 @@ namespace InvestorAPI.Data
 
 
         [Required]
-        [MaxLength(255)]
+        [MaxLength(256)]
         public string Name { get; set; } = null!;
 
 
@@ -22,10 +22,10 @@ namespace InvestorAPI.Data
         public string? BusinessTypeId { get; set; }
 
 
-        [MaxLength(31)]
+        [MaxLength(32)]
         public string? Country { get; set; }
 
-        [MaxLength(31)]
+        [MaxLength(32)]
         public string? Currency { get; set; }
 
         // TODO: Add support for pre-defined countries and currencies. (using enums or database entities).

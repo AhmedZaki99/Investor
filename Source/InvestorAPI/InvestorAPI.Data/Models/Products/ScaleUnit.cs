@@ -15,10 +15,10 @@ namespace InvestorAPI.Data
 
 
         [Required]
-        [MaxLength(255)]
+        [MaxLength(256)]
         public string Name { get; set; } = null!;
 
-        [MaxLength(1023)]
+        [MaxLength(1024)]
         public string? Description { get; set; }
 
     }

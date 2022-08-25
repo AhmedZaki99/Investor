@@ -23,10 +23,10 @@ namespace InvestorAPI.Data
 
 
         [Required]
-        [MaxLength(255)]
+        [MaxLength(256)]
         public string Name { get; set; } = null!;
 
-        [MaxLength(63)]
+        [MaxLength(64)]
         public string? Code { get; set; }
 
 
@@ -36,7 +36,7 @@ namespace InvestorAPI.Data
 
         public decimal? SalesPrice { get; set; }
 
-        [MaxLength(1023)]
+        [MaxLength(1024)]
         public string? SalesDescription { get; set; }
 
         [NotNull]
@@ -46,7 +46,7 @@ namespace InvestorAPI.Data
 
         public decimal? Cost { get; set; }
 
-        [MaxLength(1023)]
+        [MaxLength(1024)]
         public string? PurchaseDescription { get; set; }
 
         [NotNull]
@@ -57,7 +57,7 @@ namespace InvestorAPI.Data
 
         #region Non-Service Data
 
-        [MaxLength(255)]
+        [MaxLength(128)]
         public string? SKU { get; set; }
 
 
