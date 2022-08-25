@@ -18,6 +18,8 @@ namespace InvestorAPI.Data
         [Required]
         public bool IsReturn { get; set; }
 
+        // FEATURE: study the possibility to accept sales and returns in the same invoice.
+
 
         [Required]
         [Precision(0)]

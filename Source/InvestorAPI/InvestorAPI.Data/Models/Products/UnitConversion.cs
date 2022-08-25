@@ -12,12 +12,12 @@ namespace InvestorAPI.Data
 
 
         [Required]
-        public ScaleUnit SourceUnit { get; set; } = null!;
         public string SourceUnitId { get; set; } = null!;
+        public ScaleUnit SourceUnit { get; set; } = null!;
 
         [Required]
-        public ScaleUnit TargetUnit { get; set; } = null!;
         public string TargetUnitId { get; set; } = null!;
+        public ScaleUnit TargetUnit { get; set; } = null!;
 
 
         [Required]

@@ -14,12 +14,21 @@ namespace InvestorAPI.Data
         public string ProductId { get; set; } = null!;
 
         [Required]
+        public string BusinessId { get; set; } = null!;
+        public Business Business { get; set; } = null!;
+
+
+        [Required]
         public bool IsService { get; set; }
 
 
         [Required]
         [MaxLength(255)]
         public string Name { get; set; } = null!;
+
+        [MaxLength(63)]
+        public string? Code { get; set; }
+
 
         public Category? Category { get; set; }
         public string? CategoryId { get; set; }

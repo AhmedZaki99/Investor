@@ -12,8 +12,8 @@ namespace InvestorAPI.Data
 
 
         [Required]
-        public Invoice Invoice { get; set; } = null!;
         public string InvoiceId { get; set; } = null!; 
+        public Invoice Invoice { get; set; } = null!;
 
     }
 

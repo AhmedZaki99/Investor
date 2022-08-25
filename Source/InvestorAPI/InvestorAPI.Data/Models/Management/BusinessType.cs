@@ -3,15 +3,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorAPI.Data
 {
-    public class Category : DatedEntity
+    public class BusinessType 
     {
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string CategoryId { get; set; } = null!;
-
-        public Business? Business { get; set; }
-        public string? BusinessId { get; set; }
+        public string BusinessTypeId { get; set; } = null!;
 
 
         [Required]
@@ -20,9 +17,6 @@ namespace InvestorAPI.Data
 
         [MaxLength(1023)]
         public string? Description { get; set; }
-
-
-        public List<Product> Products { get; set; } = new();
 
     }
 }

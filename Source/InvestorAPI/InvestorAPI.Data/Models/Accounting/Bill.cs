@@ -11,6 +11,10 @@ namespace InvestorAPI.Data
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string BillId { get; set; } = null!;
 
+        [Required]
+        public string BusinessId { get; set; } = null!;
+        public Business Business { get; set; } = null!;
+
 
         [NotNull]
         public Vendor? Vendor { get; set; } = null!;

@@ -24,7 +24,5 @@ namespace InvestorAPI.Data
         [MaxLength(127)]
         public string? Phone { get; set; }
 
-
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorAPI.Data
 {
@@ -11,14 +12,14 @@ namespace InvestorAPI.Data
         public string BillItemId { get; set; } = null!;
 
 
-        [Required]
-        public Account ExpenseCategory { get; set; } = null!;
-        public string ExpenseCategoryId { get; set; } = null!;
+        [NotNull]
+        public Account? ExpenseCategory { get; set; }
+        public string? ExpenseCategoryId { get; set; }
 
 
         [Required]
-        public Bill Bill { get; set; } = null!;
         public string BillId { get; set; } = null!; 
+        public Bill Bill { get; set; } = null!;
 
     }
 

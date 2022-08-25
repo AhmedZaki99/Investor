@@ -7,8 +7,8 @@ namespace InvestorAPI.Data
     {
 
         [Required]
-        public Product Product { get; set; } = null!;
         public string ProductId { get; set; } = null!;
+        public Product Product { get; set; } = null!;
 
 
         [MaxLength(1023)]

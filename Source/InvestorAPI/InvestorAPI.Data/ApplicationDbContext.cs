@@ -7,13 +7,20 @@ namespace InvestorAPI.Data
 
         #region Entity Sets
 
+        #region Prototype
+
         public DbSet<Brand> Brands => Set<Brand>();
 
+        #endregion
+
+
+        public DbSet<Business> Businesses => Set<Business>();
+        public DbSet<BusinessType> BusinessTypes => Set<BusinessType>();
 
         public DbSet<Account> Accounts => Set<Account>();
         
         public DbSet<ScaleUnit> ScaleUnits => Set<ScaleUnit>();
-        public DbSet<UnitConversion> UnitConversion => Set<UnitConversion>();
+        public DbSet<UnitConversion> UnitConversions => Set<UnitConversion>();
 
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Product> Products => Set<Product>();
@@ -61,6 +68,10 @@ namespace InvestorAPI.Data
 
             #endregion
 
+
+            // Business..
+            BuildBusiness(modelBuilder);
+
             // Invoice & Bill..
             BuildInvoice(modelBuilder);
 
@@ -73,6 +84,54 @@ namespace InvestorAPI.Data
 
         #region Model Builders
 
+        private static void BuildBusiness(ModelBuilder modelBuilder)
+        {
+            #region Client-Cascade dependent items on delete.
+
+            modelBuilder.Entity<Business>()
+                .HasMany(b => b.Accounts)
+                .WithOne(a => a.Business)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Business>()
+                .HasMany(b => b.Products)
+                .WithOne(p => p.Business)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Business>()
+                .HasMany(b => b.Categories)
+                .WithOne(c => c.Business)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Business>()
+                .HasMany(b => b.ScaleUnits)
+                .WithOne(u => u.Business)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Business>()
+                .HasMany(b => b.Invoices)
+                .WithOne(i => i.Business)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Business>()
+                .HasMany(b => b.Bills)
+                .WithOne(b => b.Business)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Business>()
+                .HasMany(b => b.Customers)
+                .WithOne(c => c.Business)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Business>()
+                .HasMany(b => b.Vendors)
+                .WithOne(v => v.Business)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            #endregion
+
+        }
+        
         private static void BuildInvoice(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<InvoiceItem>()

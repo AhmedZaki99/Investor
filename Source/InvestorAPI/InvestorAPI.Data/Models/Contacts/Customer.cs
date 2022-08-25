@@ -10,6 +10,10 @@ namespace InvestorAPI.Data
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string CustomerId { get; set; } = null!;
 
+        [Required]
+        public string BusinessId { get; set; } = null!;
+        public Business Business { get; set; } = null!;
+
 
         [Required]
         [MaxLength(255)]

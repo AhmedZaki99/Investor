@@ -10,6 +10,9 @@ namespace InvestorAPI.Data
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string ScaleUnitId { get; set; } = null!;
 
+        public Business? Business { get; set; }
+        public string? BusinessId { get; set; }
+
 
         [Required]
         [MaxLength(255)]
