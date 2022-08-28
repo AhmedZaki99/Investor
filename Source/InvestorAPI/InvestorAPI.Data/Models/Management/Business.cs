@@ -44,6 +44,9 @@ namespace InvestorAPI.Data
 
         public List<Invoice> Invoices { get; set; } = new();
         public List<Bill> Bills { get; set; } = new();
+        
+        public List<CustomerPayment> CustomerPayments { get; set; } = new();
+        public List<CreditPayment> CreditPayments { get; set; } = new();
 
         #endregion
 

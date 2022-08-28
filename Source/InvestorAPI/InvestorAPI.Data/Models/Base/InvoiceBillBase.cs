@@ -10,7 +10,11 @@ namespace InvestorAPI.Data
 
 
         [Required]
-        public bool IsDue { get; set; }
+        public decimal TotalAmount { get; set; }
+
+        public decimal? AmountDue { get; set; }
+        public bool IsDue => AmountDue is not null;
+
 
         [Required]
         public bool IsTracked { get; set; }

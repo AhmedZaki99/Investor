@@ -34,6 +34,7 @@ namespace InvestorAPI.Data
 
 
         public List<Invoice> Invoices { get; set; } = new();
+        public List<CustomerPayment> Payments { get; set; } = new();
 
     }
 }

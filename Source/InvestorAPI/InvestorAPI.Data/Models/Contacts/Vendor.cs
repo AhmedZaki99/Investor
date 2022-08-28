@@ -31,6 +31,7 @@ namespace InvestorAPI.Data
 
 
         public List<Bill> Bills { get; set; } = new();
+        public List<CreditPayment> Payments { get; set; } = new();
 
     }
 }

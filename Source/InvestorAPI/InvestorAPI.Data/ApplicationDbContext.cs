@@ -36,6 +36,11 @@ namespace InvestorAPI.Data
         public DbSet<BillItem> BillItems => Set<BillItem>();
         public DbSet<Bill> Bills => Set<Bill>();
 
+        public DbSet<PaymentMethod> PaymentMethods => Set<PaymentMethod>();
+        public DbSet<CustomerPayment> CustomerPayments => Set<CustomerPayment>();
+        public DbSet<CreditPayment> CreditPayments => Set<CreditPayment>();
+
+
         #endregion
 
 
@@ -118,6 +123,16 @@ namespace InvestorAPI.Data
                 .WithOne(b => b.Business)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
+            modelBuilder.Entity<Business>()
+                .HasMany(b => b.CustomerPayments)
+                .WithOne(c => c.Business)
+                .OnDelete(DeleteBehavior.ClientCascade);
+
+            modelBuilder.Entity<Business>()
+                .HasMany(b => b.CreditPayments)
+                .WithOne(v => v.Business)
+                .OnDelete(DeleteBehavior.ClientCascade);
+            
             modelBuilder.Entity<Business>()
                 .HasMany(b => b.Customers)
                 .WithOne(c => c.Business)
