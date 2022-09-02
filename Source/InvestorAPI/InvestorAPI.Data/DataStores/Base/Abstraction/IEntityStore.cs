@@ -50,7 +50,7 @@
         ///     really is required for your use case, or if next/previous pagination is enough.
         ///     </para>
         /// </remarks>
-        Task<List<TEntity>> ListEntitiesAsync(int page = 1, int entitiesPerPage = 30);
+        IAsyncEnumerable<TEntity> ListEntitiesAsync(int page = 1, int entitiesPerPage = 30);
 
         /// <summary>
         /// Returns a page of entities starting after the last entity fetched.
@@ -64,7 +64,7 @@
         ///     </para>
         /// </param>
         /// <param name="entitiesPerPage">Number of entities per page; default is 30.</param>
-        Task<List<TEntity>> PaginateEntitiesAsync(TEntity? lastEntity = null, int entitiesPerPage = 30);
+        IAsyncEnumerable<TEntity> PaginateEntitiesAsync(TEntity? lastEntity = null, int entitiesPerPage = 30);
 
         #endregion
 
@@ -96,6 +96,14 @@
         /// Determines wheather the entity exists.
         /// </summary>
         bool EntityExists(TKey key);
+
+        #endregion
+
+
+
+        #region Benchmarking
+
+        Task<List<TEntity>> OldPaginateEntitiesAsync(TEntity? lastEntity = null, int entitiesPerPage = 30);
 
         #endregion
 

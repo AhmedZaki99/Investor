@@ -91,7 +91,7 @@ namespace InvestorAPI.Data
 
         private static void BuildBusiness(ModelBuilder modelBuilder)
         {
-            #region Client-Cascade dependent items on delete.
+            #region Client-Cascade dependent items on delete
 
             modelBuilder.Entity<Business>()
                 .HasMany(b => b.Accounts)

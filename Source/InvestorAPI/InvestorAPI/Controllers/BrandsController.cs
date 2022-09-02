@@ -31,16 +31,19 @@ namespace InvestorAPI.Controllers
         /// Get a page of brands, based on the last fetched brand creation date.
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BrandOutputDTO>>> PaginateBrandsAsync([FromQuery] DateTime? lastBrandDate = null, [FromQuery] int perPage = 30)
+        public async IAsyncEnumerable<BrandOutputDTO> PaginateBrandsAsync([FromQuery] string? lastBrandId = null, [FromQuery] int perPage = 30)
         {
-            List<Brand> brands;
-            if (lastBrandDate is null)
+            IAsyncEnumerable<Brand> brands;
+            if (lastBrandId is null)
             {
-                brands = await _brandStore.PaginateEntitiesAsync(entitiesPerPage: perPage);
+                brands = _brandStore.PaginateEntitiesAsync(entitiesPerPage: perPage);
             }
-            else brands = await _brandStore.PaginateEntitiesAsync(lastBrandDate.Value, perPage);
+            else brands = _brandStore.PaginateEntitiesAsync(lastBrandId, perPage);
 
-            return brands.Select(b => new BrandOutputDTO(b)).ToList();
+            await foreach (var brand in brands)
+            {
+                yield return new BrandOutputDTO(brand);
+            }
         }
 
         /// <summary>
@@ -67,7 +70,7 @@ namespace InvestorAPI.Controllers
 
             return CreatedAtAction(nameof(GetBrandAsync), new { id = brand.BrandId }, new BrandOutputDTO(brand));
         }
-
+        
         /// <summary>
         /// Update brand by id.
         /// </summary>
@@ -115,6 +118,45 @@ namespace InvestorAPI.Controllers
         }
 
         #endregion
+
+
+
+        #region Benchmarking
+
+        [HttpGet("old")]
+        public async Task<ActionResult<IEnumerable<BrandOutputDTO>>> OldPaginateBrandsAsync([FromQuery] string? lastBrandId = null, [FromQuery] int perPage = 30)
+        {
+            List<Brand> brands;
+            if (lastBrandId is null)
+            {
+                brands = await _brandStore.OldPaginateEntitiesAsync(entitiesPerPage: perPage);
+            }
+            else brands = await _brandStore.OldPaginateEntitiesAsync(lastBrandId, perPage);
+
+            return brands.Select(b => new BrandOutputDTO(b)).ToList();
+        }
+
+        /// <summary>
+        /// Create 70,000 brands.
+        /// </summary>
+        [HttpPost("70k")]
+        public async Task<ActionResult<BrandOutputDTO>> SpamBrandsAsync([FromBody] BrandCreateInputDTO brandDTO)
+        {
+            var tonOfBrands = Enumerable.Range(0, 70000).Select(i => new Brand
+            {
+                Name = $"{brandDTO.Name} #{i}",
+                Description = brandDTO.Description,
+                BuyPrice = brandDTO.BuyPrice,
+                SellPrice = brandDTO.SellPrice,
+                ScaleUnit = brandDTO.ScaleUnit ?? "Unit"
+            });
+            await _brandStore.CreateATonAsync(tonOfBrands);
+
+            return NoContent();
+        }
+
+        #endregion
+
 
     }
 }

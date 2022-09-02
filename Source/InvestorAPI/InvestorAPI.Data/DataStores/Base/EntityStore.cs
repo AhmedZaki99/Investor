@@ -93,18 +93,18 @@ namespace InvestorAPI.Data
 
 
         /// <inheritdoc/>
-        public virtual Task<List<TEntity>> ListEntitiesAsync(int page = 1, int entitiesPerPage = 30)
+        public virtual IAsyncEnumerable<TEntity> ListEntitiesAsync(int page = 1, int entitiesPerPage = 30)
         {
             entitiesPerPage = entitiesPerPage > MaxEntitiesPerPage ? MaxEntitiesPerPage : entitiesPerPage;
 
             return GetOrderedQuery().Skip((page - 1) * entitiesPerPage)
                                     .Take(entitiesPerPage)
                                     .AsNoTracking()
-                                    .ToListAsync();
+                                    .AsAsyncEnumerable();
         }
 
         /// <inheritdoc/>
-        public virtual Task<List<TEntity>> PaginateEntitiesAsync(TEntity? lastEntity = null, int entitiesPerPage = 30)
+        public virtual IAsyncEnumerable<TEntity> PaginateEntitiesAsync(TEntity? lastEntity = null, int entitiesPerPage = 30)
         {
             entitiesPerPage = entitiesPerPage > MaxEntitiesPerPage ? MaxEntitiesPerPage : entitiesPerPage;
 
@@ -116,7 +116,7 @@ namespace InvestorAPI.Data
 
             return query.Take(entitiesPerPage)
                         .AsNoTracking()
-                        .ToListAsync();
+                        .AsAsyncEnumerable();
         }
 
         #endregion
@@ -209,6 +209,27 @@ namespace InvestorAPI.Data
         /// after a given entity.
         /// </summary>
         protected abstract Expression<Func<TEntity, bool>> OrderedAfterEntity(TEntity entity);
+
+        #endregion
+
+
+
+        #region Benchmarking
+
+        public virtual Task<List<TEntity>> OldPaginateEntitiesAsync(TEntity? lastEntity = null, int entitiesPerPage = 30)
+        {
+            entitiesPerPage = entitiesPerPage > MaxEntitiesPerPage ? MaxEntitiesPerPage : entitiesPerPage;
+
+            IQueryable<TEntity> query = GetOrderedQuery();
+            if (lastEntity is not null)
+            {
+                query = query.Where(OrderedAfterEntity(lastEntity));
+            }
+
+            return query.Take(entitiesPerPage)
+                        .AsNoTracking()
+                        .ToListAsync();
+        }
 
         #endregion
 

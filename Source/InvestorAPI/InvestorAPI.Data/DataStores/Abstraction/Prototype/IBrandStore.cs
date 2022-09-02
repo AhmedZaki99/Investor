@@ -14,7 +14,20 @@
         /// </summary>
         /// <param name="lastEntityDate">Creation date of the last brand fetched in previous page.</param>
         /// <param name="entitiesPerPage">Number of entities per page; default is 30.</param>
-        Task<List<Brand>> PaginateEntitiesAsync(DateTime lastEntityDate, int entitiesPerPage = 30);
+        IAsyncEnumerable<Brand> PaginateEntitiesAsync(string lastEntityId, int entitiesPerPage = 30);
+
+        #endregion
+
+
+
+        #region Benchmarking
+
+        Task<List<Brand>> OldPaginateEntitiesAsync(string lastEntityId, int entitiesPerPage = 30);
+
+        /// <summary>
+        /// Create a ton of brands.
+        /// </summary>
+        Task<Brand> CreateATonAsync(IEnumerable<Brand> brands);
 
         #endregion
 
