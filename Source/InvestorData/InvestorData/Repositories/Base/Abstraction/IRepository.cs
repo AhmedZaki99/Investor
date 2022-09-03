@@ -6,7 +6,7 @@
     /// with a default entity key type of string.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    public interface IEntityStore<TEntity> : IEntityStore<TEntity, string> where TEntity : class
+    public interface IRepository<TEntity> : IRepository<TEntity, string> where TEntity : class
     { 
 
     }
@@ -16,7 +16,7 @@
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TKey">The type of the entity key.</typeparam>
-    public interface IEntityStore<TEntity, TKey> where TEntity : class
+    public interface IRepository<TEntity, TKey> where TEntity : class
     {
 
         #region Read

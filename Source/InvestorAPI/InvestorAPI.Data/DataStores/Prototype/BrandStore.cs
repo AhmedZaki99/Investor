@@ -8,7 +8,7 @@ namespace InvestorAPI.Data
     /// <summary>
     /// A data store that manages <see cref="Brand"/> entities.
     /// </summary>
-    internal class BrandStore : EntityStore<Brand>, IBrandStore
+    internal class BrandStore : Repository<Brand>, IBrandStore
     {
 
         #region Constructor

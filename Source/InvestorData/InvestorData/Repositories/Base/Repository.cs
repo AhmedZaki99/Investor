@@ -9,9 +9,9 @@ namespace InvestorData
     /// with a default entity key type of string.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    public abstract class EntityStore<TEntity> : EntityStore<TEntity, string>, IEntityStore<TEntity> where TEntity : class
+    public abstract class Repository<TEntity> : Repository<TEntity, string>, IRepository<TEntity> where TEntity : class
     {
-        protected EntityStore(InvestorDbContext dbContext, DbSet<TEntity> dbSet) : base(dbContext, dbSet)
+        protected Repository(InvestorDbContext dbContext, DbSet<TEntity> dbSet) : base(dbContext, dbSet)
         {
             
         }
@@ -22,7 +22,7 @@ namespace InvestorData
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TKey">The type of the entity key.</typeparam>
-    public abstract class EntityStore<TEntity, TKey> : IEntityStore<TEntity, TKey> where TEntity : class
+    public abstract class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class
     {
 
         #region Public Properties
@@ -61,7 +61,7 @@ namespace InvestorData
 
         #region Constructor
 
-        protected EntityStore(InvestorDbContext dbContext, DbSet<TEntity> dbSet)
+        protected Repository(InvestorDbContext dbContext, DbSet<TEntity> dbSet)
         {
             DbContext = dbContext;
             DbSet = dbSet;
