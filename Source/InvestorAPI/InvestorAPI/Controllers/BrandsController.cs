@@ -1,5 +1,6 @@
 ﻿using InvestorAPI.Data;
 using InvestorAPI.Models;
+using InvestorData;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvestorAPI.Controllers

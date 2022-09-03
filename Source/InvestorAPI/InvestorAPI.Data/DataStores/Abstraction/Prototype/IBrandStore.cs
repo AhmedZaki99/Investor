@@ -1,4 +1,6 @@
-﻿namespace InvestorAPI.Data
+﻿using InvestorData;
+
+namespace InvestorAPI.Data
 {
 
     /// <summary>

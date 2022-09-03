@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using InvestorData;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace InvestorAPI.Data
