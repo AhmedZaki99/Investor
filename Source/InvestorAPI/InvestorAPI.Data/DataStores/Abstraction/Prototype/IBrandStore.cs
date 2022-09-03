@@ -12,9 +12,9 @@
         /// <summary>
         /// Returns a page of entities starting after the last entity fetched.
         /// </summary>
-        /// <param name="lastEntityDate">Creation date of the last brand fetched in previous page.</param>
+        /// <param name="lastEntityName">Name of the last brand fetched in previous page.</param>
         /// <param name="entitiesPerPage">Number of entities per page; default is 30.</param>
-        IAsyncEnumerable<Brand> PaginateEntitiesAsync(string lastEntityId, int entitiesPerPage = 30);
+        IAsyncEnumerable<Brand> PaginateEntitiesAsync(string lastEntityName, int entitiesPerPage = 30);
 
         #endregion
 

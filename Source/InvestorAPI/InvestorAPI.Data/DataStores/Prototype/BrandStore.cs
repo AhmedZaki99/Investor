@@ -50,12 +50,12 @@ namespace InvestorAPI.Data
 
         protected override IOrderedQueryable<Brand> GetOrderedQuery()
         {
-            return DbSet.OrderBy(b => b.BrandId);
+            return DbSet.OrderBy(b => b.Name);
         }
 
         protected override Expression<Func<Brand, bool>> OrderedAfterEntity(Brand entity)
         {
-            return b => b.BrandId.CompareTo(entity.BrandId) > 0;
+            return b => b.Name.CompareTo(entity.Name) > 0;
         }
 
 
@@ -70,11 +70,11 @@ namespace InvestorAPI.Data
 
         #region Benchmarking
 
-        public Task<List<Brand>> OldPaginateEntitiesAsync(string lastEntityId, int entitiesPerPage = 30)
+        public Task<List<Brand>> OldPaginateEntitiesAsync(string lastEntityName, int entitiesPerPage = 30)
         {
             entitiesPerPage = entitiesPerPage > MaxEntitiesPerPage ? MaxEntitiesPerPage : entitiesPerPage;
 
-            return GetOrderedQuery().Where(b => b.BrandId.CompareTo(lastEntityId) > 0)
+            return GetOrderedQuery().Where(b => b.Name.CompareTo(lastEntityName) > 0)
                                     .Take(entitiesPerPage)
                                     .AsNoTracking()
                                     .ToListAsync();

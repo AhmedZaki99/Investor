@@ -28,17 +28,17 @@ namespace InvestorAPI.Controllers
         #region Controller Actions
 
         /// <summary>
-        /// Get a page of brands, based on the last fetched brand creation date.
+        /// Get a page of brands, based on the last fetched brand name.
         /// </summary>
         [HttpGet]
-        public async IAsyncEnumerable<BrandOutputDTO> PaginateBrandsAsync([FromQuery] string? lastBrandId = null, [FromQuery] int perPage = 30)
+        public async IAsyncEnumerable<BrandOutputDTO> PaginateBrandsAsync([FromQuery] string? lastBrandName = null, [FromQuery] int perPage = 30)
         {
             IAsyncEnumerable<Brand> brands;
-            if (lastBrandId is null)
+            if (lastBrandName is null)
             {
                 brands = _brandStore.PaginateEntitiesAsync(entitiesPerPage: perPage);
             }
-            else brands = _brandStore.PaginateEntitiesAsync(lastBrandId, perPage);
+            else brands = _brandStore.PaginateEntitiesAsync(lastBrandName, perPage);
 
             await foreach (var brand in brands)
             {
