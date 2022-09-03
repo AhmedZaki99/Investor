@@ -12,15 +12,15 @@ namespace InvestorAPI.Controllers
 
         #region Dependencies
 
-        private readonly IBrandStore _brandStore;
+        private readonly IBrandRepository _brandRepository;
 
         #endregion
 
         #region Constructor
 
-        public BrandsController(IBrandStore brandStore)
+        public BrandsController(IBrandRepository brandRepository)
         {
-            _brandStore = brandStore;
+            _brandRepository = brandRepository;
         }
 
         #endregion
@@ -37,9 +37,9 @@ namespace InvestorAPI.Controllers
             IAsyncEnumerable<Brand> brands;
             if (lastBrandName is null)
             {
-                brands = _brandStore.PaginateEntitiesAsync(entitiesPerPage: perPage);
+                brands = _brandRepository.PaginateBrandsAsync(brandsPerPage: perPage);
             }
-            else brands = _brandStore.PaginateEntitiesAsync(lastBrandName, perPage);
+            else brands = _brandRepository.PaginateBrandsAsync(lastBrandName, perPage);
 
             await foreach (var brand in brands)
             {
@@ -53,7 +53,7 @@ namespace InvestorAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<BrandOutputDTO>> GetBrandAsync([FromRoute] string id)
         {
-            var brand = await _brandStore.FindAsync(id);
+            var brand = await _brandRepository.FindAsync(id);
             if (brand is null)
             {
                 return NotFound();
@@ -67,7 +67,7 @@ namespace InvestorAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<BrandOutputDTO>> CreateBrandAsync([FromBody] BrandCreateInputDTO brandDTO)
         {
-            var brand = await _brandStore.CreateAsync(brandDTO.Map());
+            var brand = await _brandRepository.CreateAsync(brandDTO.Map());
 
             return CreatedAtAction(nameof(GetBrandAsync), new { id = brand.BrandId }, new BrandOutputDTO(brand));
         }
@@ -87,13 +87,13 @@ namespace InvestorAPI.Controllers
                 return ValidationProblem(ModelState);
             }
 
-            var brand = await _brandStore.FindAsync(id);
+            var brand = await _brandRepository.FindAsync(id);
             if (brand is null)
             {
                 return NotFound();
             }
 
-            await _brandStore.UpdateAsync(brandDTO.Update(brand));
+            await _brandRepository.UpdateAsync(brandDTO.Update(brand));
 
             return NoContent();
         }
@@ -104,7 +104,7 @@ namespace InvestorAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBrandAsync([FromRoute] string id)
         {
-            var deleteResult = await _brandStore.DeleteAsync(id);
+            var deleteResult = await _brandRepository.DeleteAsync(id);
 
             if (deleteResult == DeleteResult.EntityNotFound)
             {
@@ -119,45 +119,6 @@ namespace InvestorAPI.Controllers
         }
 
         #endregion
-
-
-
-        #region Benchmarking
-
-        [HttpGet("old")]
-        public async Task<ActionResult<IEnumerable<BrandOutputDTO>>> OldPaginateBrandsAsync([FromQuery] string? lastBrandId = null, [FromQuery] int perPage = 30)
-        {
-            List<Brand> brands;
-            if (lastBrandId is null)
-            {
-                brands = await _brandStore.OldPaginateEntitiesAsync(entitiesPerPage: perPage);
-            }
-            else brands = await _brandStore.OldPaginateEntitiesAsync(lastBrandId, perPage);
-
-            return brands.Select(b => new BrandOutputDTO(b)).ToList();
-        }
-
-        /// <summary>
-        /// Create 70,000 brands.
-        /// </summary>
-        [HttpPost("70k")]
-        public async Task<ActionResult<BrandOutputDTO>> SpamBrandsAsync([FromBody] BrandCreateInputDTO brandDTO)
-        {
-            var tonOfBrands = Enumerable.Range(0, 70000).Select(i => new Brand
-            {
-                Name = $"{brandDTO.Name} #{i}",
-                Description = brandDTO.Description,
-                BuyPrice = brandDTO.BuyPrice,
-                SellPrice = brandDTO.SellPrice,
-                ScaleUnit = brandDTO.ScaleUnit ?? "Unit"
-            });
-            await _brandStore.CreateATonAsync(tonOfBrands);
-
-            return NoContent();
-        }
-
-        #endregion
-
 
     }
 }

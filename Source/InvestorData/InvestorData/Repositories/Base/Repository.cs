@@ -5,7 +5,7 @@ namespace InvestorData
 {
 
     /// <summary>
-    /// Provides a base data store that manages database entities at a basic level,
+    /// Provides a base repository that manages database entities at a basic level,
     /// with a default entity key type of string.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
@@ -18,37 +18,12 @@ namespace InvestorData
     }
 
     /// <summary>
-    /// Provides a base data store that manages database entities at a basic level.
+    /// Provides a base repository that manages database entities at a basic level.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <typeparam name="TKey">The type of the entity key.</typeparam>
     public abstract class Repository<TEntity, TKey> : IRepository<TEntity, TKey> where TEntity : class
     {
-
-        #region Public Properties
-
-        private int _maxEntitiesPerPage = 100;
-        /// <summary>
-        /// Gets or sets the maximum number of entities to list in a page.
-        /// </summary>
-        /// <remarks>
-        /// Defaults to 100.
-        /// </remarks>
-        public int MaxEntitiesPerPage
-        {
-            get => _maxEntitiesPerPage;
-            set
-            {
-                if (_maxEntitiesPerPage == value) return;
-                if (value <= 0)
-                {
-                    throw new InvalidOperationException("Value provided must be a positive integer.");
-                }
-                _maxEntitiesPerPage = value;
-            }
-        }
-
-        #endregion
 
         #region Protected Properties 
 
@@ -81,41 +56,11 @@ namespace InvestorData
         }
 
         /// <inheritdoc/>
-        public virtual Task<TEntity?> FindAndNavigateAsync(TKey key, bool track = false)
+        public virtual IAsyncEnumerable<TEntity> ListEntitiesAsync(Expression<Func<TEntity, bool>>? condition = null)
         {
-            IQueryable<TEntity> query = GetNavigationQuery();
-            if (!track)
-            {
-                query = query.AsNoTracking();
-            }
-            return query.FirstOrDefaultAsync(HasKey(key));
-        }
+            IQueryable<TEntity> query = condition is not null ? DbSet.Where(condition) : DbSet;
 
-
-        /// <inheritdoc/>
-        public virtual IAsyncEnumerable<TEntity> ListEntitiesAsync(int page = 1, int entitiesPerPage = 30)
-        {
-            entitiesPerPage = entitiesPerPage > MaxEntitiesPerPage ? MaxEntitiesPerPage : entitiesPerPage;
-
-            return GetOrderedQuery().Skip((page - 1) * entitiesPerPage)
-                                    .Take(entitiesPerPage)
-                                    .AsNoTracking()
-                                    .AsAsyncEnumerable();
-        }
-
-        /// <inheritdoc/>
-        public virtual IAsyncEnumerable<TEntity> PaginateEntitiesAsync(TEntity? lastEntity = null, int entitiesPerPage = 30)
-        {
-            entitiesPerPage = entitiesPerPage > MaxEntitiesPerPage ? MaxEntitiesPerPage : entitiesPerPage;
-
-            IQueryable<TEntity> query = GetOrderedQuery();
-            if (lastEntity is not null)
-            {
-                query = query.Where(OrderedAfterEntity(lastEntity));
-            }
-
-            return query.Take(entitiesPerPage)
-                        .AsNoTracking()
+            return query.AsNoTracking()
                         .AsAsyncEnumerable();
         }
 
@@ -170,21 +115,6 @@ namespace InvestorData
 
         #endregion
 
-        #region Virtual Helper Methods
-
-        /// <summary>
-        /// Get the query representing the entier DbSet, including all navigation properties.
-        /// </summary>
-        /// <remarks>
-        /// This method shoud be overriden by deriving classes if the entity includes any navigation properties,
-        /// since the default base implementation only returns the DbSet as is, with no relations included.
-        /// </remarks>
-        protected virtual IQueryable<TEntity> GetNavigationQuery()
-        {
-            return DbSet.AsQueryable();
-        }
-
-        #endregion
 
         #region Abstract Methods
 
@@ -197,39 +127,6 @@ namespace InvestorData
         /// Returns the expression of key-matching predicate. 
         /// </summary>
         protected abstract Expression<Func<TEntity, bool>> HasKey(TKey key);
-
-
-        /// <summary>
-        /// Get the query representing the entities of the DbSet ordered for pagination.
-        /// </summary>
-        protected abstract IOrderedQueryable<TEntity> GetOrderedQuery();
-
-        /// <summary>
-        /// Returns the expression that determines wheather entities are ordered
-        /// after a given entity.
-        /// </summary>
-        protected abstract Expression<Func<TEntity, bool>> OrderedAfterEntity(TEntity entity);
-
-        #endregion
-
-
-
-        #region Benchmarking
-
-        public virtual Task<List<TEntity>> OldPaginateEntitiesAsync(TEntity? lastEntity = null, int entitiesPerPage = 30)
-        {
-            entitiesPerPage = entitiesPerPage > MaxEntitiesPerPage ? MaxEntitiesPerPage : entitiesPerPage;
-
-            IQueryable<TEntity> query = GetOrderedQuery();
-            if (lastEntity is not null)
-            {
-                query = query.Where(OrderedAfterEntity(lastEntity));
-            }
-
-            return query.Take(entitiesPerPage)
-                        .AsNoTracking()
-                        .ToListAsync();
-        }
 
         #endregion
 

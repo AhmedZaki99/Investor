@@ -1,10 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
-    public class Product : DatedEntity
+    [Index(nameof(IsService))]
+    [Index(nameof(Name), IsUnique = true)]
+    [Index(nameof(Code), IsUnique = true)]
+    public class Product : DatedEntity, IComparable<Product>
     {
 
         #region Common Data
@@ -71,6 +75,53 @@ namespace InvestorData
         [NotNull]
         public Account? InventoryAccount { get; set; }
         public string? InventoryAccountId { get; set; }
+
+        #endregion
+
+
+        #region Coparision
+
+        public int CompareTo(Product? other)
+        {
+            if (other is null)
+            {
+                return 1;
+            }
+            int compareByCategory = Category?.CompareTo(other.Category) ?? (other.Category is null ? 0 : -1);
+            if (compareByCategory == 0)
+            {
+                return Name.CompareTo(other.Name);
+            }
+            return compareByCategory;
+        } 
+        
+        public int PlainCompareTo(Product? other)
+        {
+            if (other == null)
+            {
+                return 1;
+            }
+
+            int compareByCategory;
+            if (Category == null)
+            {
+                if (other.Category != null)
+                {
+                    return -1;
+                }
+                compareByCategory = 0;
+            }
+            else
+            {
+                compareByCategory = Category.CompareTo(other.Category);
+            }
+
+            if (compareByCategory == 0)
+            {
+                return Name.CompareTo(other.Name);
+            }
+            return compareByCategory;
+        }
 
         #endregion
 

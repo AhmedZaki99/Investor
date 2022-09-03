@@ -35,8 +35,8 @@ namespace InvestorAPI
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
                 sqlOptions.CommandTimeout(60)));
 
-            // Add data access stores.
-            builder.Services.AddInvestorDataStores();
+            // Add data access repositories.
+            builder.Services.AddApplicationRepositories();
         }
 
         private static void ConfigurePipeline(WebApplication app)
