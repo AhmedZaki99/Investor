@@ -23,25 +23,25 @@ namespace InvestorData
         #region Search
 
         /// <inheritdoc/>
-        public IAsyncEnumerable<Product> SearchByCode(Business business, string code)
+        public IAsyncEnumerable<Product> SearchByCode(string businessId, string code)
         {
-            return DbSet.Where(p => p.BusinessId == business.Id && p.Code != null && p.Code.StartsWith(code))
+            return DbSet.Where(p => p.BusinessId == businessId && p.Code != null && p.Code.StartsWith(code))
                         .AsNoTracking()
                         .AsAsyncEnumerable();
         }
 
         /// <inheritdoc/>
-        public IAsyncEnumerable<Product> SearchByName(Business business, string name)
+        public IAsyncEnumerable<Product> SearchByName(string businessId, string name)
         {
-            return DbSet.Where(p => p.BusinessId == business.Id && p.Name.Contains(name))
+            return DbSet.Where(p => p.BusinessId == businessId && p.Name.Contains(name))
                         .AsNoTracking()
                         .AsAsyncEnumerable();
         }
 
         /// <inheritdoc/>
-        public IAsyncEnumerable<Product> SearchByCodeThenName(Business business, string codeOrName)
+        public IAsyncEnumerable<Product> SearchByCodeThenName(string businessId, string codeOrName)
         {
-            return DbSet.Where(p => p.BusinessId == business.Id)
+            return DbSet.Where(p => p.BusinessId == businessId)
                         .Where(p => p.Code != null && p.Code.StartsWith(codeOrName) || p.Name.Contains(codeOrName))
                         .AsNoTracking()
                         .AsAsyncEnumerable();
@@ -52,17 +52,17 @@ namespace InvestorData
         #region Filter
 
         /// <inheritdoc/>
-        public IAsyncEnumerable<Product> FilterByType(Business business, bool isService)
+        public IAsyncEnumerable<Product> FilterByType(string businessId, bool isService)
         {
-            return DbSet.Where(p => p.BusinessId == business.Id && p.IsService == isService)
+            return DbSet.Where(p => p.BusinessId == businessId && p.IsService == isService)
                         .AsNoTracking()
                         .AsAsyncEnumerable();
         }
 
         /// <inheritdoc/>
-        public IAsyncEnumerable<Product> FilterByCategory(Business business, Category category)
+        public IAsyncEnumerable<Product> FilterByCategory(string businessId, Category category)
         {
-            return DbSet.Where(p => p.BusinessId == business.Id && p.CategoryId == category.Id)
+            return DbSet.Where(p => p.BusinessId == businessId && p.CategoryId == category.Id)
                         .AsNoTracking()
                         .AsAsyncEnumerable();
         }
@@ -72,16 +72,20 @@ namespace InvestorData
         #region Pagination
 
         /// <inheritdoc/>
-        public virtual IAsyncEnumerable<Product> PaginateProductsAsync(Business business, Product? lastProduct = null, int productsPerPage = 70)
+        public virtual async Task<IAsyncEnumerable<Product>> PaginateProductsAsync(string businessId, string? lastProductId = null, int productsPerPage = 70)
         {
             if (productsPerPage <= 0)
             {
                 throw new ArgumentException($"{nameof(productsPerPage)} argument cannot be less than 1.", nameof(productsPerPage));
             }
 
-            IQueryable<Product> query = DbSet.Where(p => p.BusinessId == business.Id)
+            IQueryable<Product> query = DbSet.Where(p => p.BusinessId == businessId)
                                              .Include(p => p.Category)
                                              .OrderBy(p => p);
+
+            Product? lastProduct = await DbSet.Include(p => p.Category)
+                                              .FirstOrDefaultAsync(p => p.Id == lastProductId);
+
             if (lastProduct is not null)
             {
                 query = query.Where(p => p.CompareTo(lastProduct) > 1);
