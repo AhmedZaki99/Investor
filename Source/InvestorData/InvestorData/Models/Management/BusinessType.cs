@@ -18,5 +18,22 @@ namespace InvestorData
         [MaxLength(1024)]
         public string? Description { get; set; }
 
+
+        #region Rules
+
+        [Required]
+        public bool DisableServices { get; set; } = false;
+
+        [Required]
+        public bool DisableProducts { get; set; } = false;
+
+        [Required]
+        public bool NoInventory { get; set; } = false;
+
+        [Required]
+        public bool SalesOnly { get; set; } = false;
+
+        #endregion
+
     }
 }

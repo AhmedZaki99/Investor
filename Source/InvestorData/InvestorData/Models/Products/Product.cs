@@ -43,7 +43,6 @@ namespace InvestorData
         [MaxLength(1024)]
         public string? SalesDescription { get; set; }
 
-        [NotNull]
         public Account? IncomeAccount { get; set; }
         public string? IncomeAccountId { get; set; }
 
@@ -53,7 +52,6 @@ namespace InvestorData
         [MaxLength(1024)]
         public string? PurchaseDescription { get; set; }
 
-        [NotNull]
         public Account? ExpenseAccount { get; set; }
         public string? ExpenseAccountId { get; set; }
 

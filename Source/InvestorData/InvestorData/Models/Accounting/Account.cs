@@ -12,6 +12,10 @@ namespace InvestorData
 
         public Business? Business { get; set; }
         public string? BusinessId { get; set; }
+        
+
+        public BusinessType? BusinessType { get; set; }
+        public string? BusinessTypeId { get; set; }
 
 
         [Required]
