@@ -4,6 +4,7 @@ using InvestorAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvestorAPI.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220902025104_AddBrandNameIndex")]
+    partial class AddBrandNameIndex
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,50 +24,7 @@ namespace InvestorAPI.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("InvestorAPI.Data.Brand", b =>
-                {
-                    b.Property<string>("BrandId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal?>("BuyPrice")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("decimal(19,4)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(3)
-                        .HasColumnType("datetime2(3)")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1023)
-                        .HasColumnType("nvarchar(1023)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("ScaleUnit")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasDefaultValue("Unit");
-
-                    b.Property<decimal?>("SellPrice")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("decimal(19,4)");
-
-                    b.HasKey("BrandId");
-
-                    b.HasIndex("Name");
-
-                    b.ToTable("Brands");
-                });
-
-            modelBuilder.Entity("InvestorData.Account", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Account", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -112,7 +71,7 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("Accounts");
                 });
 
-            modelBuilder.Entity("InvestorData.Address", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Address", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -148,7 +107,7 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("InvestorData.Bill", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Bill", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -209,7 +168,7 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("Bills");
                 });
 
-            modelBuilder.Entity("InvestorData.BillItem", b =>
+            modelBuilder.Entity("InvestorAPI.Data.BillItem", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -253,7 +212,50 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("BillItems");
                 });
 
-            modelBuilder.Entity("InvestorData.Business", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Brand", b =>
+                {
+                    b.Property<string>("BrandId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal?>("BuyPrice")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1023)
+                        .HasColumnType("nvarchar(1023)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("ScaleUnit")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasDefaultValue("Unit");
+
+                    b.Property<decimal?>("SellPrice")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("decimal(19,4)");
+
+                    b.HasKey("BrandId");
+
+                    b.HasIndex("Name");
+
+                    b.ToTable("Brands");
+                });
+
+            modelBuilder.Entity("InvestorAPI.Data.Business", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -292,7 +294,7 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("Businesses");
                 });
 
-            modelBuilder.Entity("InvestorData.BusinessType", b =>
+            modelBuilder.Entity("InvestorAPI.Data.BusinessType", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -312,7 +314,7 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("BusinessTypes");
                 });
 
-            modelBuilder.Entity("InvestorData.Category", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Category", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -344,13 +346,10 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("BusinessId");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("InvestorData.Contact", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Contact", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -387,7 +386,7 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("Contacts");
                 });
 
-            modelBuilder.Entity("InvestorData.CreditPayment", b =>
+            modelBuilder.Entity("InvestorAPI.Data.CreditPayment", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -440,7 +439,7 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("CreditPayments");
                 });
 
-            modelBuilder.Entity("InvestorData.Customer", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Customer", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -486,7 +485,7 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("InvestorData.CustomerPayment", b =>
+            modelBuilder.Entity("InvestorAPI.Data.CustomerPayment", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -539,7 +538,7 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("CustomerPayments");
                 });
 
-            modelBuilder.Entity("InvestorData.Invoice", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Invoice", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -600,7 +599,7 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("Invoices");
                 });
 
-            modelBuilder.Entity("InvestorData.InvoiceItem", b =>
+            modelBuilder.Entity("InvestorAPI.Data.InvoiceItem", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -640,7 +639,7 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("InvoiceItems");
                 });
 
-            modelBuilder.Entity("InvestorData.PaymentMethod", b =>
+            modelBuilder.Entity("InvestorAPI.Data.PaymentMethod", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -665,7 +664,7 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("PaymentMethods");
                 });
 
-            modelBuilder.Entity("InvestorData.Product", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Product", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -744,27 +743,18 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("Code")
-                        .IsUnique()
-                        .HasFilter("[Code] IS NOT NULL");
-
                     b.HasIndex("ExpenseAccountId");
 
                     b.HasIndex("IncomeAccountId");
 
                     b.HasIndex("InventoryAccountId");
 
-                    b.HasIndex("IsService");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.HasIndex("ScaleUnitId");
 
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("InvestorData.ScaleUnit", b =>
+            modelBuilder.Entity("InvestorAPI.Data.ScaleUnit", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -796,13 +786,10 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("BusinessId");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("ScaleUnits");
                 });
 
-            modelBuilder.Entity("InvestorData.UnitConversion", b =>
+            modelBuilder.Entity("InvestorAPI.Data.UnitConversion", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -832,7 +819,7 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("UnitConversions");
                 });
 
-            modelBuilder.Entity("InvestorData.Vendor", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Vendor", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -878,14 +865,14 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("Vendors");
                 });
 
-            modelBuilder.Entity("InvestorData.Account", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Account", b =>
                 {
-                    b.HasOne("InvestorData.Business", "Business")
+                    b.HasOne("InvestorAPI.Data.Business", "Business")
                         .WithMany("Accounts")
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.ClientCascade);
 
-                    b.HasOne("InvestorData.Account", "ParentAccount")
+                    b.HasOne("InvestorAPI.Data.Account", "ParentAccount")
                         .WithMany()
                         .HasForeignKey("ParentAccountId");
 
@@ -894,15 +881,15 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("ParentAccount");
                 });
 
-            modelBuilder.Entity("InvestorData.Bill", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Bill", b =>
                 {
-                    b.HasOne("InvestorData.Business", "Business")
+                    b.HasOne("InvestorAPI.Data.Business", "Business")
                         .WithMany("Bills")
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("InvestorData.Vendor", "Vendor")
+                    b.HasOne("InvestorAPI.Data.Vendor", "Vendor")
                         .WithMany("Bills")
                         .HasForeignKey("VendorId");
 
@@ -911,19 +898,19 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("Vendor");
                 });
 
-            modelBuilder.Entity("InvestorData.BillItem", b =>
+            modelBuilder.Entity("InvestorAPI.Data.BillItem", b =>
                 {
-                    b.HasOne("InvestorData.Bill", "Bill")
+                    b.HasOne("InvestorAPI.Data.Bill", "Bill")
                         .WithMany("Items")
                         .HasForeignKey("BillId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("InvestorData.Account", "ExpenseCategory")
+                    b.HasOne("InvestorAPI.Data.Account", "ExpenseCategory")
                         .WithMany()
                         .HasForeignKey("ExpenseCategoryId");
 
-                    b.HasOne("InvestorData.Product", "Product")
+                    b.HasOne("InvestorAPI.Data.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -936,18 +923,18 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("InvestorData.Business", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Business", b =>
                 {
-                    b.HasOne("InvestorData.BusinessType", "BusinessType")
+                    b.HasOne("InvestorAPI.Data.BusinessType", "BusinessType")
                         .WithMany()
                         .HasForeignKey("BusinessTypeId");
 
                     b.Navigation("BusinessType");
                 });
 
-            modelBuilder.Entity("InvestorData.Category", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Category", b =>
                 {
-                    b.HasOne("InvestorData.Business", "Business")
+                    b.HasOne("InvestorAPI.Data.Business", "Business")
                         .WithMany("Categories")
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.ClientCascade);
@@ -955,21 +942,21 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("Business");
                 });
 
-            modelBuilder.Entity("InvestorData.CreditPayment", b =>
+            modelBuilder.Entity("InvestorAPI.Data.CreditPayment", b =>
                 {
-                    b.HasOne("InvestorData.Business", "Business")
+                    b.HasOne("InvestorAPI.Data.Business", "Business")
                         .WithMany("CreditPayments")
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("InvestorData.PaymentMethod", "PaymentMethod")
+                    b.HasOne("InvestorAPI.Data.PaymentMethod", "PaymentMethod")
                         .WithMany()
                         .HasForeignKey("PaymentMethodId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("InvestorData.Vendor", "Vendor")
+                    b.HasOne("InvestorAPI.Data.Vendor", "Vendor")
                         .WithMany("Payments")
                         .HasForeignKey("VendorId");
 
@@ -980,19 +967,19 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("Vendor");
                 });
 
-            modelBuilder.Entity("InvestorData.Customer", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Customer", b =>
                 {
-                    b.HasOne("InvestorData.Address", "BillingAddress")
+                    b.HasOne("InvestorAPI.Data.Address", "BillingAddress")
                         .WithMany()
                         .HasForeignKey("BillingAddressId");
 
-                    b.HasOne("InvestorData.Business", "Business")
+                    b.HasOne("InvestorAPI.Data.Business", "Business")
                         .WithMany("Customers")
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("InvestorData.Contact", "PrimaryContact")
+                    b.HasOne("InvestorAPI.Data.Contact", "PrimaryContact")
                         .WithMany()
                         .HasForeignKey("PrimaryContactId");
 
@@ -1003,19 +990,19 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("PrimaryContact");
                 });
 
-            modelBuilder.Entity("InvestorData.CustomerPayment", b =>
+            modelBuilder.Entity("InvestorAPI.Data.CustomerPayment", b =>
                 {
-                    b.HasOne("InvestorData.Business", "Business")
+                    b.HasOne("InvestorAPI.Data.Business", "Business")
                         .WithMany("CustomerPayments")
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("InvestorData.Customer", "Customer")
+                    b.HasOne("InvestorAPI.Data.Customer", "Customer")
                         .WithMany("Payments")
                         .HasForeignKey("CustomerId");
 
-                    b.HasOne("InvestorData.PaymentMethod", "PaymentMethod")
+                    b.HasOne("InvestorAPI.Data.PaymentMethod", "PaymentMethod")
                         .WithMany()
                         .HasForeignKey("PaymentMethodId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1028,15 +1015,15 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("PaymentMethod");
                 });
 
-            modelBuilder.Entity("InvestorData.Invoice", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Invoice", b =>
                 {
-                    b.HasOne("InvestorData.Business", "Business")
+                    b.HasOne("InvestorAPI.Data.Business", "Business")
                         .WithMany("Invoices")
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("InvestorData.Customer", "Customer")
+                    b.HasOne("InvestorAPI.Data.Customer", "Customer")
                         .WithMany("Invoices")
                         .HasForeignKey("CustomerId");
 
@@ -1045,15 +1032,15 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("InvestorData.InvoiceItem", b =>
+            modelBuilder.Entity("InvestorAPI.Data.InvoiceItem", b =>
                 {
-                    b.HasOne("InvestorData.Invoice", "Invoice")
+                    b.HasOne("InvestorAPI.Data.Invoice", "Invoice")
                         .WithMany("Items")
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("InvestorData.Product", "Product")
+                    b.HasOne("InvestorAPI.Data.Product", "Product")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1064,40 +1051,40 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("InvestorData.PaymentMethod", b =>
+            modelBuilder.Entity("InvestorAPI.Data.PaymentMethod", b =>
                 {
-                    b.HasOne("InvestorData.Business", "Business")
+                    b.HasOne("InvestorAPI.Data.Business", "Business")
                         .WithMany()
                         .HasForeignKey("BusinessId");
 
                     b.Navigation("Business");
                 });
 
-            modelBuilder.Entity("InvestorData.Product", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Product", b =>
                 {
-                    b.HasOne("InvestorData.Business", "Business")
+                    b.HasOne("InvestorAPI.Data.Business", "Business")
                         .WithMany("Products")
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("InvestorData.Category", "Category")
+                    b.HasOne("InvestorAPI.Data.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("InvestorData.Account", "ExpenseAccount")
+                    b.HasOne("InvestorAPI.Data.Account", "ExpenseAccount")
                         .WithMany()
                         .HasForeignKey("ExpenseAccountId");
 
-                    b.HasOne("InvestorData.Account", "IncomeAccount")
+                    b.HasOne("InvestorAPI.Data.Account", "IncomeAccount")
                         .WithMany()
                         .HasForeignKey("IncomeAccountId");
 
-                    b.HasOne("InvestorData.Account", "InventoryAccount")
+                    b.HasOne("InvestorAPI.Data.Account", "InventoryAccount")
                         .WithMany()
                         .HasForeignKey("InventoryAccountId");
 
-                    b.HasOne("InvestorData.ScaleUnit", "ScaleUnit")
+                    b.HasOne("InvestorAPI.Data.ScaleUnit", "ScaleUnit")
                         .WithMany()
                         .HasForeignKey("ScaleUnitId");
 
@@ -1114,9 +1101,9 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("ScaleUnit");
                 });
 
-            modelBuilder.Entity("InvestorData.ScaleUnit", b =>
+            modelBuilder.Entity("InvestorAPI.Data.ScaleUnit", b =>
                 {
-                    b.HasOne("InvestorData.Business", "Business")
+                    b.HasOne("InvestorAPI.Data.Business", "Business")
                         .WithMany("ScaleUnits")
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.ClientCascade);
@@ -1124,15 +1111,15 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("Business");
                 });
 
-            modelBuilder.Entity("InvestorData.UnitConversion", b =>
+            modelBuilder.Entity("InvestorAPI.Data.UnitConversion", b =>
                 {
-                    b.HasOne("InvestorData.ScaleUnit", "SourceUnit")
+                    b.HasOne("InvestorAPI.Data.ScaleUnit", "SourceUnit")
                         .WithMany()
                         .HasForeignKey("SourceUnitId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("InvestorData.ScaleUnit", "TargetUnit")
+                    b.HasOne("InvestorAPI.Data.ScaleUnit", "TargetUnit")
                         .WithMany()
                         .HasForeignKey("TargetUnitId")
                         .OnDelete(DeleteBehavior.ClientCascade)
@@ -1143,19 +1130,19 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("TargetUnit");
                 });
 
-            modelBuilder.Entity("InvestorData.Vendor", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Vendor", b =>
                 {
-                    b.HasOne("InvestorData.Address", "Address")
+                    b.HasOne("InvestorAPI.Data.Address", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId");
 
-                    b.HasOne("InvestorData.Business", "Business")
+                    b.HasOne("InvestorAPI.Data.Business", "Business")
                         .WithMany("Vendors")
                         .HasForeignKey("BusinessId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("InvestorData.Contact", "Contact")
+                    b.HasOne("InvestorAPI.Data.Contact", "Contact")
                         .WithMany()
                         .HasForeignKey("ContactId");
 
@@ -1166,12 +1153,12 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("Contact");
                 });
 
-            modelBuilder.Entity("InvestorData.Bill", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Bill", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("InvestorData.Business", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Business", b =>
                 {
                     b.Navigation("Accounts");
 
@@ -1194,24 +1181,24 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("Vendors");
                 });
 
-            modelBuilder.Entity("InvestorData.Category", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Category", b =>
                 {
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("InvestorData.Customer", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Customer", b =>
                 {
                     b.Navigation("Invoices");
 
                     b.Navigation("Payments");
                 });
 
-            modelBuilder.Entity("InvestorData.Invoice", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Invoice", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("InvestorData.Vendor", b =>
+            modelBuilder.Entity("InvestorAPI.Data.Vendor", b =>
                 {
                     b.Navigation("Bills");
 

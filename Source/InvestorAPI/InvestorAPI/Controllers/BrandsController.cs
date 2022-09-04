@@ -1,5 +1,6 @@
 ﻿using InvestorAPI.Data;
 using InvestorAPI.Models;
+using InvestorData;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvestorAPI.Controllers
@@ -11,15 +12,15 @@ namespace InvestorAPI.Controllers
 
         #region Dependencies
 
-        private readonly IBrandStore _brandStore;
+        private readonly IBrandRepository _brandRepository;
 
         #endregion
 
         #region Constructor
 
-        public BrandsController(IBrandStore brandStore)
+        public BrandsController(IBrandRepository brandRepository)
         {
-            _brandStore = brandStore;
+            _brandRepository = brandRepository;
         }
 
         #endregion
@@ -28,19 +29,22 @@ namespace InvestorAPI.Controllers
         #region Controller Actions
 
         /// <summary>
-        /// Get a page of brands, based on the last fetched brand creation date.
+        /// Get a page of brands, based on the last fetched brand name.
         /// </summary>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BrandOutputDTO>>> PaginateBrandsAsync([FromQuery] DateTime? lastBrandDate = null, [FromQuery] int perPage = 30)
+        public async IAsyncEnumerable<BrandOutputDTO> PaginateBrandsAsync([FromQuery] string? lastBrandName = null, [FromQuery] int perPage = 30)
         {
-            List<Brand> brands;
-            if (lastBrandDate is null)
+            IAsyncEnumerable<Brand> brands;
+            if (lastBrandName is null)
             {
-                brands = await _brandStore.PaginateEntitiesAsync(entitiesPerPage: perPage);
+                brands = _brandRepository.PaginateBrandsAsync(brandsPerPage: perPage);
             }
-            else brands = await _brandStore.PaginateEntitiesAsync(lastBrandDate.Value, perPage);
+            else brands = _brandRepository.PaginateBrandsAsync(lastBrandName, perPage);
 
-            return brands.Select(b => new BrandOutputDTO(b)).ToList();
+            await foreach (var brand in brands)
+            {
+                yield return new BrandOutputDTO(brand);
+            }
         }
 
         /// <summary>
@@ -49,7 +53,7 @@ namespace InvestorAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<BrandOutputDTO>> GetBrandAsync([FromRoute] string id)
         {
-            var brand = await _brandStore.FindAsync(id);
+            var brand = await _brandRepository.FindAsync(id);
             if (brand is null)
             {
                 return NotFound();
@@ -63,11 +67,11 @@ namespace InvestorAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<BrandOutputDTO>> CreateBrandAsync([FromBody] BrandCreateInputDTO brandDTO)
         {
-            var brand = await _brandStore.CreateAsync(brandDTO.Map());
+            var brand = await _brandRepository.CreateAsync(brandDTO.Map());
 
             return CreatedAtAction(nameof(GetBrandAsync), new { id = brand.BrandId }, new BrandOutputDTO(brand));
         }
-
+        
         /// <summary>
         /// Update brand by id.
         /// </summary>
@@ -83,13 +87,13 @@ namespace InvestorAPI.Controllers
                 return ValidationProblem(ModelState);
             }
 
-            var brand = await _brandStore.FindAsync(id);
+            var brand = await _brandRepository.FindAsync(id);
             if (brand is null)
             {
                 return NotFound();
             }
 
-            await _brandStore.UpdateAsync(brandDTO.Update(brand));
+            await _brandRepository.UpdateAsync(brandDTO.Update(brand));
 
             return NoContent();
         }
@@ -100,7 +104,7 @@ namespace InvestorAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBrandAsync([FromRoute] string id)
         {
-            var deleteResult = await _brandStore.DeleteAsync(id);
+            var deleteResult = await _brandRepository.DeleteAsync(id);
 
             if (deleteResult == DeleteResult.EntityNotFound)
             {

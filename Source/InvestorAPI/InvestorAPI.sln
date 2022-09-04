@@ -5,7 +5,11 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvestorAPI.Data", "InvestorAPI.Data\InvestorAPI.Data.csproj", "{74C41227-149E-4552-8C5B-16558BB81E9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InvestorAPI", "InvestorAPI\InvestorAPI.csproj", "{EB26FE37-9179-4A4F-A250-555AEC41E365}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvestorAPI", "InvestorAPI\InvestorAPI.csproj", "{EB26FE37-9179-4A4F-A250-555AEC41E365}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvestorAPI.Core", "InvestorAPI.Core\InvestorAPI.Core.csproj", "{5DB35308-F85A-4174-9AA5-93CDD76CD53C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvestorData", "..\InvestorData\InvestorData\InvestorData.csproj", "{F2FB4AB2-0A5E-4786-87C4-EEA53413F0EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{EB26FE37-9179-4A4F-A250-555AEC41E365}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB26FE37-9179-4A4F-A250-555AEC41E365}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB26FE37-9179-4A4F-A250-555AEC41E365}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DB35308-F85A-4174-9AA5-93CDD76CD53C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DB35308-F85A-4174-9AA5-93CDD76CD53C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DB35308-F85A-4174-9AA5-93CDD76CD53C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DB35308-F85A-4174-9AA5-93CDD76CD53C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2FB4AB2-0A5E-4786-87C4-EEA53413F0EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2FB4AB2-0A5E-4786-87C4-EEA53413F0EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2FB4AB2-0A5E-4786-87C4-EEA53413F0EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2FB4AB2-0A5E-4786-87C4-EEA53413F0EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

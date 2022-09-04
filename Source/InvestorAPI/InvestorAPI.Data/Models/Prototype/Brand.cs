@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorAPI.Data
 {
+    [Index(nameof(Name))]
     public class Brand
     {
 
