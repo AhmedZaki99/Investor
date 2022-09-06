@@ -13,12 +13,13 @@ namespace InvestorData
 
 
         [NotNull]
-        public Account? ExpenseCategory { get; set; }
         public string? ExpenseCategoryId { get; set; }
+        public Account? ExpenseCategory { get; set; }
 
 
         [Required]
-        public string BillId { get; set; } = null!; 
+        public string BillId { get; set; } = null!;
+        [MaybeNull]
         public Bill Bill { get; set; } = null!;
 
     }

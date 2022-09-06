@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
@@ -13,10 +14,12 @@ namespace InvestorData
 
         [Required]
         public string SourceUnitId { get; set; } = null!;
+        [MaybeNull]
         public ScaleUnit SourceUnit { get; set; } = null!;
 
         [Required]
         public string TargetUnitId { get; set; } = null!;
+        [MaybeNull]
         public ScaleUnit TargetUnit { get; set; } = null!;
 
 

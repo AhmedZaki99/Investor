@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
@@ -8,6 +9,7 @@ namespace InvestorData
 
         [Required]
         public string ProductId { get; set; } = null!;
+        [MaybeNull]
         public Product Product { get; set; } = null!;
 
 

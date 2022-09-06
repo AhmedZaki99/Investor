@@ -13,16 +13,18 @@ namespace InvestorData
 
         [Required]
         public string BusinessId { get; set; } = null!;
+        [MaybeNull]
         public Business Business { get; set; } = null!;
 
 
         [NotNull]
-        public Vendor? Vendor { get; set; }
         public string? VendorId { get; set; } 
+        public Vendor? Vendor { get; set; }
 
 
         [Required]
         public string PaymentMethodId { get; set; } = null!;
+        [MaybeNull]
         public PaymentMethod PaymentMethod { get; set; } = null!;
 
     }
