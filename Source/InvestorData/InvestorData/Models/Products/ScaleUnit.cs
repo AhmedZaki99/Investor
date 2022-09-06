@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InvestorData
 {
     [Index(nameof(Name), IsUnique = true)]
-    public class ScaleUnit : DatedEntity
+    public class ScaleUnit : DatedEntity, IStringId
     {
 
         [Key]

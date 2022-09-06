@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
-    public class CreditPayment : PaymentBase
+    public class CreditPayment : PaymentBase, IStringId
     {
 
         [Key]

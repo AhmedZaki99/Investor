@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorData
 {
-    public class UnitConversion
+    public class UnitConversion : IStringId
     {
 
         [Key]

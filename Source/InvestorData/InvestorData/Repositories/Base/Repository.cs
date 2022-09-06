@@ -9,12 +9,24 @@ namespace InvestorData
     /// with a default entity key type of string.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    public abstract class Repository<TEntity> : Repository<TEntity, string>, IRepository<TEntity> where TEntity : class
+    public abstract class Repository<TEntity> : Repository<TEntity, string>, IRepository<TEntity> where TEntity : class, IStringId
     {
         protected Repository(InvestorDbContext dbContext, DbSet<TEntity> dbSet) : base(dbContext, dbSet)
         {
             
         }
+
+
+        protected override Expression<Func<TEntity, string>> KeyProperty()
+        {
+            return e => e.Id;
+        }
+
+        protected override Expression<Func<TEntity, bool>> HasKey(string key)
+        {
+            return e => e.Id == key;
+    }
+
     }
 
     /// <summary>

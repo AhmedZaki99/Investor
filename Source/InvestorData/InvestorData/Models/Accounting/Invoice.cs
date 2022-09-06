@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
-    public class Invoice : InvoiceBillBase
+    public class Invoice : InvoiceBillBase, IStringId
     {
 
         [Key]

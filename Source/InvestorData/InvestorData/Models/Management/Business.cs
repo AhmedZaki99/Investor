@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
-    public class Business : DatedEntity
+    public class Business : DatedEntity, IStringId
     {
 
         [Key]

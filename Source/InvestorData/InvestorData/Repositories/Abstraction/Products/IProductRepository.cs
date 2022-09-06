@@ -49,9 +49,9 @@
         /// Filter products by category.
         /// </summary>
         /// <param name="businessId">Business to get products from.</param>
-        /// <param name="category">The category to filter on.</param>
+        /// <param name="categoryId">The category to filter on.</param>
         /// <returns>Filterd products.</returns>
-        IAsyncEnumerable<Product> FilterByCategory(string businessId, Category category);
+        IAsyncEnumerable<Product> FilterByCategory(string businessId, string categoryId);
 
         #endregion
 

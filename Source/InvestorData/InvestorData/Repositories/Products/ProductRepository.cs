@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
 
 namespace InvestorData
 {
@@ -60,9 +59,9 @@ namespace InvestorData
         }
 
         /// <inheritdoc/>
-        public IAsyncEnumerable<Product> FilterByCategory(string businessId, Category category)
+        public IAsyncEnumerable<Product> FilterByCategory(string businessId, string categoryId)
         {
-            return DbSet.Where(p => p.BusinessId == businessId && p.CategoryId == category.Id)
+            return DbSet.Where(p => p.BusinessId == businessId && p.CategoryId == categoryId)
                         .AsNoTracking()
                         .AsAsyncEnumerable();
         }
@@ -100,15 +99,7 @@ namespace InvestorData
 
         #region Abstract Implementation
 
-        protected override Expression<Func<Product, string>> KeyProperty()
-        {
-            return p => p.Id;
-        }
         
-        protected override Expression<Func<Product, bool>> HasKey(string key)
-        {
-            return p => p.Id == key;
-        }
 
         #endregion
 

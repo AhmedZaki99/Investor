@@ -8,7 +8,7 @@ namespace InvestorData
     /// with a default entity key type of string.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    public interface IRepository<TEntity> : IRepository<TEntity, string> where TEntity : class
+    public interface IRepository<TEntity> : IRepository<TEntity, string> where TEntity : class, IStringId
     { 
 
     }

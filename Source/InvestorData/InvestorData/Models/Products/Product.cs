@@ -8,7 +8,7 @@ namespace InvestorData
     [Index(nameof(IsService))]
     [Index(nameof(Name), IsUnique = true)]
     [Index(nameof(Code), IsUnique = true)]
-    public class Product : DatedEntity, IComparable<Product>
+    public class Product : DatedEntity, IStringId, IComparable<Product>
     {
 
         #region Common Data
