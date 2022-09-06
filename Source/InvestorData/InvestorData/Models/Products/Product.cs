@@ -19,8 +19,7 @@ namespace InvestorData
 
         [Required]
         public string BusinessId { get; set; } = null!;
-        [MaybeNull]
-        public Business Business { get; set; } = null!;
+        public Business? Business { get; set; }
 
 
         [Required]
@@ -35,8 +34,8 @@ namespace InvestorData
         public string? Code { get; set; }
 
 
-        public Category? Category { get; set; }
         public string? CategoryId { get; set; }
+        public Category? Category { get; set; }
 
 
         public decimal? SalesPrice { get; set; }
@@ -44,8 +43,8 @@ namespace InvestorData
         [MaxLength(1024)]
         public string? SalesDescription { get; set; }
 
-        public Account? IncomeAccount { get; set; }
         public string? IncomeAccountId { get; set; }
+        public Account? IncomeAccount { get; set; }
 
 
         public decimal? Cost { get; set; }
@@ -53,8 +52,8 @@ namespace InvestorData
         [MaxLength(1024)]
         public string? PurchaseDescription { get; set; }
 
-        public Account? ExpenseAccount { get; set; }
         public string? ExpenseAccountId { get; set; }
+        public Account? ExpenseAccount { get; set; }
 
         #endregion
 
@@ -66,14 +65,14 @@ namespace InvestorData
 
         public double? Quantity { get; set; }
 
-        public ScaleUnit? ScaleUnit { get; set; }
         public string? ScaleUnitId { get; set; }
+        public ScaleUnit? ScaleUnit { get; set; }
 
         public int? ReorderPoint { get; set; }
 
         [NotNull]
-        public Account? InventoryAccount { get; set; }
         public string? InventoryAccountId { get; set; }
+        public Account? InventoryAccount { get; set; }
 
         #endregion
 

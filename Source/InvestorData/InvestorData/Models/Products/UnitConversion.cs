@@ -14,13 +14,11 @@ namespace InvestorData
 
         [Required]
         public string SourceUnitId { get; set; } = null!;
-        [MaybeNull]
-        public ScaleUnit SourceUnit { get; set; } = null!;
+        public ScaleUnit? SourceUnit { get; set; }
 
         [Required]
         public string TargetUnitId { get; set; } = null!;
-        [MaybeNull]
-        public ScaleUnit TargetUnit { get; set; } = null!;
+        public ScaleUnit? TargetUnit { get; set; }
 
 
         [Required]

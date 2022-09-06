@@ -19,8 +19,7 @@ namespace InvestorData
 
         [Required]
         public string BillId { get; set; } = null!;
-        [MaybeNull]
-        public Bill Bill { get; set; } = null!;
+        public Bill? Bill { get; set; }
 
     }
 

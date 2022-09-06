@@ -9,8 +9,7 @@ namespace InvestorData
 
         [Required]
         public string ProductId { get; set; } = null!;
-        [MaybeNull]
-        public Product Product { get; set; } = null!;
+        public Product? Product { get; set; }
 
 
         [MaxLength(1024)]

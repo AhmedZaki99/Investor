@@ -14,8 +14,7 @@ namespace InvestorData
 
         [Required]
         public string InvoiceId { get; set; } = null!;
-        [MaybeNull]
-        public Invoice Invoice { get; set; } = null!;
+        public Invoice? Invoice { get; set; }
 
     }
 

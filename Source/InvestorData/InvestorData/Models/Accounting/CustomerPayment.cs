@@ -13,8 +13,7 @@ namespace InvestorData
 
         [Required]
         public string BusinessId { get; set; } = null!;
-        [MaybeNull]
-        public Business Business { get; set; } = null!;
+        public Business? Business { get; set; }
 
 
         [NotNull]
@@ -24,8 +23,7 @@ namespace InvestorData
 
         [Required]
         public string PaymentMethodId { get; set; } = null!;
-        [MaybeNull]
-        public PaymentMethod PaymentMethod { get; set; } = null!;
+        public PaymentMethod? PaymentMethod { get; set; }
 
     }
 }

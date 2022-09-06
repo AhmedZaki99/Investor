@@ -6,7 +6,7 @@ namespace InvestorAPI.Data
     /// <summary>
     /// Provides an abstraction for a repository which manages <see cref="Brand"/> entities.
     /// </summary>
-    public interface IBrandRepository : IRepository<Brand>
+    public interface IBrandRepository : IRepository<Brand, string>
     {
 
         #region Pagination

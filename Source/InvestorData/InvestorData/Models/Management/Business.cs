@@ -33,6 +33,8 @@ namespace InvestorData
 
         #region Navigation Properties
 
+        // TODO: Study the difference bet. assigning nav. properties as Lists vs IEnumerables..
+
         public List<Account> Accounts { get; set; } = new();
 
         public List<ScaleUnit> ScaleUnits { get; set; } = new();

@@ -10,20 +10,20 @@ namespace InvestorData
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; } = null!;
 
-        public Business? Business { get; set; }
         public string? BusinessId { get; set; }
+        public Business? Business { get; set; }
         
 
-        public BusinessType? BusinessType { get; set; }
         public string? BusinessTypeId { get; set; }
+        public BusinessType? BusinessType { get; set; }
 
 
         [Required]
         public AccountType AccountType { get; set; }
 
 
-        public Account? ParentAccount { get; set; }
         public string? ParentAccountId { get; set; }
+        public Account? ParentAccount { get; set; }
         public bool IsSubAccount => ParentAccount != null;
 
 

@@ -8,7 +8,7 @@ namespace InvestorAPI.Data
     /// <summary>
     /// A repository that manages <see cref="Brand"/> entities.
     /// </summary>
-    internal class BrandRepository : Repository<Brand>, IBrandRepository
+    internal class BrandRepository : Repository<Brand, string>, IBrandRepository
     {
 
         #region Constructor
@@ -54,6 +54,17 @@ namespace InvestorAPI.Data
         protected override Expression<Func<Brand, bool>> HasKey(string key)
         {
             return b => b.BrandId == key;
+        }
+
+
+        protected override IQueryable<Brand> QueryIncludingMinimalData()
+        {
+            return DbSet;
+        }
+
+        protected override IQueryable<Brand> QueryIncludingFullData()
+        {
+            return DbSet;
         }
 
         #endregion

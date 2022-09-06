@@ -13,8 +13,7 @@ namespace InvestorData
 
         [Required]
         public string BusinessId { get; set; } = null!;
-        [MaybeNull]
-        public Business Business { get; set; } = null!;
+        public Business? Business { get; set; }
 
 
         [NotNull]
