@@ -21,7 +21,6 @@ namespace InvestorData
 
         #region Read
 
-        // TODO: Try to add a base class containing common business methods.
         /// <inheritdoc/>
         public IAsyncEnumerable<ScaleUnit> GetEntitiesAsync(string businessId)
         {

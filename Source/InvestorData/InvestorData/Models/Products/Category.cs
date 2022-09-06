@@ -12,8 +12,8 @@ namespace InvestorData
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; } = null!;
 
-        public Business? Business { get; set; }
         public string? BusinessId { get; set; }
+        public Business? Business { get; set; }
 
 
         [Required]
