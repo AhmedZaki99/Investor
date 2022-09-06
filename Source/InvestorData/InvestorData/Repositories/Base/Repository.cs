@@ -25,7 +25,7 @@ namespace InvestorData
         protected override Expression<Func<TEntity, bool>> HasKey(string key)
         {
             return e => e.Id == key;
-    }
+        }
 
     }
 
@@ -66,6 +66,20 @@ namespace InvestorData
         {
             return DbSet.FindAsync(key);
         }
+
+
+        /// <inheritdoc/>
+        public Task<TEntity?> GetMinimalDataAsync(TKey key)
+        {
+            return QueryIncludingMinimalData().FirstOrDefaultAsync(HasKey(key));
+        }
+
+        /// <inheritdoc/>
+        public Task<TEntity?> GetFullDataAsync(TKey key)
+        {
+            return QueryIncludingFullData().FirstOrDefaultAsync(HasKey(key));
+        }
+
 
         /// <inheritdoc/>
         public virtual IAsyncEnumerable<TEntity> ListEntitiesAsync(Expression<Func<TEntity, bool>>? condition = null)
@@ -139,6 +153,17 @@ namespace InvestorData
         /// Returns the expression of key-matching predicate. 
         /// </summary>
         protected abstract Expression<Func<TEntity, bool>> HasKey(TKey key);
+
+
+        /// <summary>
+        /// Returns the query that includes minimal navigation data required. 
+        /// </summary>
+        protected abstract IQueryable<TEntity> QueryIncludingMinimalData();
+
+        /// <summary>
+        /// Returns the query that includes full navigation data. 
+        /// </summary>
+        protected abstract IQueryable<TEntity> QueryIncludingFullData();
 
         #endregion
 

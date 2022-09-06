@@ -28,6 +28,18 @@ namespace InvestorData
         /// </summary>
         ValueTask<TEntity?> FindAsync(TKey key);
 
+
+        /// <summary>
+        /// Get Entity by key, including minimal navigational data required.
+        /// </summary>
+        Task<TEntity?> GetMinimalDataAsync(TKey key);
+
+        /// <summary>
+        /// Get Entity by key, including full navigational data.
+        /// </summary>
+        Task<TEntity?> GetFullDataAsync(TKey key);
+
+
         /// <summary>
         /// Returns all entities in the database, based on a condition.
         /// </summary>

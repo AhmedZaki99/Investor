@@ -53,17 +53,19 @@ namespace InvestorData
         /// <inheritdoc/>
         public IAsyncEnumerable<Product> FilterByType(string businessId, bool isService)
         {
-            return DbSet.Where(p => p.BusinessId == businessId && p.IsService == isService)
-                        .AsNoTracking()
-                        .AsAsyncEnumerable();
+            return QueryIncludingMinimalData()
+                .Where(p => p.BusinessId == businessId && p.IsService == isService)
+                .AsNoTracking()
+                .AsAsyncEnumerable();
         }
 
         /// <inheritdoc/>
         public IAsyncEnumerable<Product> FilterByCategory(string businessId, string categoryId)
         {
-            return DbSet.Where(p => p.BusinessId == businessId && p.CategoryId == categoryId)
-                        .AsNoTracking()
-                        .AsAsyncEnumerable();
+            return QueryIncludingMinimalData()
+                .Where(p => p.BusinessId == businessId && p.CategoryId == categoryId)
+                .AsNoTracking()
+                .AsAsyncEnumerable();
         }
 
         #endregion
@@ -78,9 +80,8 @@ namespace InvestorData
                 throw new ArgumentException($"{nameof(productsPerPage)} argument cannot be less than 1.", nameof(productsPerPage));
             }
 
-            IQueryable<Product> query = DbSet.Where(p => p.BusinessId == businessId)
-                                             .Include(p => p.Category)
-                                             .OrderBy(p => p);
+            IQueryable<Product> query = QueryIncludingFullData().Where(p => p.BusinessId == businessId)
+                                                                .OrderBy(p => p);
 
             Product? lastProduct = await DbSet.Include(p => p.Category)
                                               .FirstOrDefaultAsync(p => p.Id == lastProductId);
@@ -99,7 +100,19 @@ namespace InvestorData
 
         #region Abstract Implementation
 
-        
+        protected override IQueryable<Product> QueryIncludingMinimalData()
+        {
+            return DbSet.Include(p => p.Category)
+                        .Include(p => p.ScaleUnit);
+        }
+
+        protected override IQueryable<Product> QueryIncludingFullData()
+        {
+            return QueryIncludingMinimalData()
+                .Include(p => p.IncomeAccount)
+                .Include(p => p.ExpenseAccount)
+                .Include(p => p.InventoryAccount);
+        }
 
         #endregion
 
