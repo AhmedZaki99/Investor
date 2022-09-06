@@ -82,7 +82,7 @@ namespace InvestorData
 
 
         /// <inheritdoc/>
-        public virtual IAsyncEnumerable<TEntity> ListEntitiesAsync(Expression<Func<TEntity, bool>>? condition = null)
+        public virtual IAsyncEnumerable<TEntity> GetEntitiesAsync(Expression<Func<TEntity, bool>>? condition = null)
         {
             IQueryable<TEntity> query = condition is not null ? DbSet.Where(condition) : DbSet;
 

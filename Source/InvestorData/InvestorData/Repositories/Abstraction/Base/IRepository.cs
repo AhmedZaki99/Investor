@@ -47,7 +47,7 @@ namespace InvestorData
         /// <remarks>
         /// This method is not preferred to use in case of big data handling.
         /// </remarks>
-        IAsyncEnumerable<TEntity> ListEntitiesAsync(Expression<Func<TEntity, bool>>? condition = null);
+        IAsyncEnumerable<TEntity> GetEntitiesAsync(Expression<Func<TEntity, bool>>? condition = null);
 
         #endregion
 

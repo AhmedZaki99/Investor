@@ -16,7 +16,7 @@ namespace InvestorData
         [MaxLength(256)]
         public string Name { get; set; } = null!;
 
-
+        // TODO: Correct null attributes for properties.
         [NotNull]
         public BusinessType? BusinessType { get; set; }
         public string? BusinessTypeId { get; set; }
