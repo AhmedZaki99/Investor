@@ -17,6 +17,9 @@ namespace InvestorData
             ArgumentNullException.ThrowIfNull(services, nameof(services));
 
             // Add repositories.
+            services.AddScoped<IBusinessTypeRepository, BusinessTypeRepository<TContext>>();
+            services.AddScoped<IBusinessRepository, BusinessRepository<TContext>>();
+
             services.AddScoped<IProductRepository, ProductRepository<TContext>>();
 
             return services;

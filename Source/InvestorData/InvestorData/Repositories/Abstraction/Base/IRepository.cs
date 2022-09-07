@@ -76,7 +76,7 @@ namespace InvestorData
         #region Helpers
         
         /// <summary>
-        /// Determines wheather the entity exists.
+        /// Determines wheather an entity exists.
         /// </summary>
         bool EntityExists(TKey key);
 

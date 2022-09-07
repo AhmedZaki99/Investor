@@ -28,8 +28,10 @@ namespace InvestorAPI
 
         private static void ConfigureServices(WebApplicationBuilder builder)
         {
-            builder.Services.AddControllers(options =>
-                options.SuppressAsyncSuffixInActionNames = false);
+            builder.Services
+                .AddControllers(options =>
+                    options.SuppressAsyncSuffixInActionNames = false)
+                .AddNewtonsoftJson();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
