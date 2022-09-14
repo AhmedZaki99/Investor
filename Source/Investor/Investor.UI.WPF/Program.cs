@@ -17,11 +17,13 @@ namespace Investor.UI.WPF
                               .ConfigureServices(ConfigureServices);
 
             using var host = builder.Build();
-            App app = host.Services.GetRequiredService<App>();
+            var wpf = host.Services.GetRequiredService<IWpfService>();
 
             host.Start();
-            app.Run();
+            wpf.RunApplication();
             host.WaitForShutdown();
+
+            // IMPORTANT: Mark classes not targeted for inheritance as sealed.
         }
 
         /// <summary>
@@ -29,17 +31,13 @@ namespace Investor.UI.WPF
         /// </summary>
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
         {
-            // Application Entry.
-            services.AddSingleton<App>();
+            // Wpf Service (App Entry).
+            services.AddSingleton<IWpfService, WpfService>();
 
             // Application Services.
             services.AddApplicationServices()
                 .AddApiServer(hostContext.Configuration["ApiServerAddress"])
                 .AddUI<UIService>();
-
-
-            // TODO: Study the pros & cons of adding MainViewModel as a service.
-            //services.AddSingleton<MainViewModel>();
         }
 
     }
