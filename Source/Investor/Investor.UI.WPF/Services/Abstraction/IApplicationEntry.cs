@@ -1,6 +1,9 @@
 ﻿namespace Investor.UI.WPF
 {
-    internal interface IWpfService
+    /// <summary>
+    /// Provides an abstraction for application entry and lifetime management functionality.
+    /// </summary>
+    internal interface IApplicationEntry
     {
 
         /// <summary>

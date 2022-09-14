@@ -17,10 +17,10 @@ namespace Investor.UI.WPF
                               .ConfigureServices(ConfigureServices);
 
             using var host = builder.Build();
-            var wpf = host.Services.GetRequiredService<IWpfService>();
+            var app = host.Services.GetRequiredService<IApplicationEntry>();
 
             host.Start();
-            wpf.RunApplication();
+            app.RunApplication();
             host.WaitForShutdown();
 
             // IMPORTANT: Mark classes not targeted for inheritance as sealed.
@@ -31,8 +31,8 @@ namespace Investor.UI.WPF
         /// </summary>
         private static void ConfigureServices(HostBuilderContext hostContext, IServiceCollection services)
         {
-            // Wpf Service (App Entry).
-            services.AddSingleton<IWpfService, WpfService>();
+            // Application Entry.
+            services.AddSingleton<IApplicationEntry, ApplicationEntry>();
 
             // Application Services.
             services.AddApplicationServices()

@@ -5,7 +5,10 @@ using System.Windows;
 
 namespace Investor.UI.WPF
 {
-    internal sealed class WpfService : IWpfService
+    /// <summary>
+    /// Provides application entry and lifetime management functionality.
+    /// </summary>
+    internal sealed class ApplicationEntry : IApplicationEntry
     {
 
         #region Private Properites
@@ -29,7 +32,7 @@ namespace Investor.UI.WPF
 
         #region Constructor
 
-        public WpfService(IHostApplicationLifetime applicationLifetime, IApplicationCore applicationCore)
+        public ApplicationEntry(IHostApplicationLifetime applicationLifetime, IApplicationCore applicationCore)
         {
             // Dependencies..
             _applicationLifetime = applicationLifetime;
