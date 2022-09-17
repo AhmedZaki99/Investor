@@ -1,6 +1,4 @@
-﻿using Investor.UI.Core;
-using Microsoft.Extensions.Hosting;
-using System.Windows;
+﻿using System.Windows;
 
 namespace Investor.UI.WPF
 {
@@ -10,28 +8,18 @@ namespace Investor.UI.WPF
     public partial class App : Application
     {
 
-        #region Private Fields
+        #region Properties
 
-        private bool _appShuttingDown = false;
-
-        #endregion
-
-
-        #region Dependencies
-
-        private readonly IHostApplicationLifetime _applicationLifetime;
-        private readonly IApplicationCore _applicationCore;
+        public bool AppShuttingDown { get; private set; }
 
         #endregion
+
 
         #region Constructors
 
-        public App(IHostApplicationLifetime applicationLifetime, IApplicationCore applicationCore)
+        public App()
         {
-            _applicationLifetime = applicationLifetime;
-            _applicationCore = applicationCore;
-
-            applicationLifetime.ApplicationStopping.Register(HostStopping);
+            AppShuttingDown = false;
 
             InitializeComponent();
         }
@@ -39,44 +27,14 @@ namespace Investor.UI.WPF
         #endregion
 
 
-        #region Host Event Handlers
-
-        private void HostStopping()
-        {
-            // Check if application is already shutting down.
-            if (!_appShuttingDown)
-            {
-                // Shutdown the application when host stops.
-                this.Shutdown();
-            }
-        }
-
-        #endregion
-
         #region Application Event Handlers
-
-        protected override void OnStartup(StartupEventArgs e)
-        {
-            base.OnStartup(e);
-
-            // Startup Application.
-            _applicationCore.StartupApplication();
-        }
 
         protected override void OnExit(ExitEventArgs e)
         {
             // Set a flag to announce that application is shutting down.
-            _appShuttingDown = true;
+            AppShuttingDown = true;
 
             base.OnExit(e);
-
-            // Check if the host is already stopping.
-            if (!_applicationLifetime.ApplicationStopping.IsCancellationRequested)
-            {
-                // In case the application itself is exiting first; nevertheless,
-                // the host should remain the source of lifetime management.
-                _applicationLifetime.StopApplication();
-            }
         }
 
         #endregion
