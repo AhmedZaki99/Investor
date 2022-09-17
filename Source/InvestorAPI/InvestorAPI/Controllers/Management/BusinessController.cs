@@ -59,7 +59,7 @@ namespace InvestorAPI.Controllers
         /// Create new business.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<BusinessOutputDTO>> CreateBusinessAsync([FromBody] BusinessCreateInputDTO businessDTO)
+        public async Task<ActionResult<BusinessOutputDTO>> CreateBusinessAsync([FromBody] BusinessInputDTO businessDTO)
         {
             if (businessDTO.BusinessTypeId is not null && !_businessTypeRepository.EntityExists(businessDTO.BusinessTypeId))
             {
@@ -69,7 +69,7 @@ namespace InvestorAPI.Controllers
             {
                 return ValidationProblem(ModelState);
             }
-
+            
             var business = await _businessRepository.CreateAsync(businessDTO.Map());
 
             return CreatedAtAction(nameof(GetBusinessAsync), new { id = business.Id }, new BusinessOutputDTO(business));
@@ -87,7 +87,11 @@ namespace InvestorAPI.Controllers
                 return NotFound();
             }
 
-            patchDoc.ApplyTo(business, ModelState);
+            patchDoc.TryApplyTo(business, ModelState, new string[]
+            {
+                nameof(Business.Id),
+                nameof(Business.BusinessTypeId)
+            });
 
             if (!ModelState.IsValid)
             {

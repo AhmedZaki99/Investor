@@ -56,7 +56,7 @@ namespace InvestorAPI.Controllers
         /// Create new business type.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<BusinessTypeOutputDTO>> CreateBusinessTypeAsync([FromBody] BusinessTypeCreateInputDTO businessTypeDTO)
+        public async Task<ActionResult<BusinessTypeOutputDTO>> CreateBusinessTypeAsync([FromBody] BusinessTypeInputDTO businessTypeDTO)
         {
             var businessType = await _businessTypeRepository.CreateAsync(businessTypeDTO.Map());
 
@@ -75,7 +75,10 @@ namespace InvestorAPI.Controllers
                 return NotFound();
             }
 
-            patchDoc.ApplyTo(businessType, ModelState);
+            patchDoc.TryApplyTo(businessType, ModelState, new string[]
+            {
+                nameof(BusinessType.Id)
+            });
 
             if (!ModelState.IsValid)
             {
