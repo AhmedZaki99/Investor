@@ -2,7 +2,7 @@
 
 namespace InvestorAPI.Models
 {
-    public class ProductOutputDTO
+    public class ProductOutputDto
     {
 
         #region Public Properties
@@ -14,7 +14,7 @@ namespace InvestorAPI.Models
 
         #region Constructors
 
-        public ProductOutputDTO(Product brand)
+        public ProductOutputDto(Product brand)
         {
 
         }

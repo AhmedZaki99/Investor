@@ -32,7 +32,7 @@ namespace InvestorAPI.Controllers
         /// Get a page of brands, based on the last fetched brand name.
         /// </summary>
         [HttpGet]
-        public async IAsyncEnumerable<BrandOutputDTO> PaginateBrandsAsync([FromQuery] string? lastBrandName = null, [FromQuery] int perPage = 30)
+        public async IAsyncEnumerable<BrandOutputDto> PaginateBrandsAsync([FromQuery] string? lastBrandName = null, [FromQuery] int perPage = 30)
         {
             IAsyncEnumerable<Brand> brands;
             if (lastBrandName is null)
@@ -43,7 +43,7 @@ namespace InvestorAPI.Controllers
 
             await foreach (var brand in brands)
             {
-                yield return new BrandOutputDTO(brand);
+                yield return new BrandOutputDto(brand);
             }
         }
 
@@ -51,36 +51,36 @@ namespace InvestorAPI.Controllers
         /// Get brand by id
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<BrandOutputDTO>> GetBrandAsync([FromRoute] string id)
+        public async Task<ActionResult<BrandOutputDto>> GetBrandAsync([FromRoute] string id)
         {
             var brand = await _brandRepository.FindAsync(id);
             if (brand is null)
             {
                 return NotFound();
             }
-            return new BrandOutputDTO(brand);
+            return new BrandOutputDto(brand);
         }
 
         /// <summary>
         /// Create new brand.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<BrandOutputDTO>> CreateBrandAsync([FromBody] BrandCreateInputDTO brandDTO)
+        public async Task<ActionResult<BrandOutputDto>> CreateBrandAsync([FromBody] BrandCreateInputDto brandDto)
         {
-            var brand = await _brandRepository.CreateAsync(brandDTO.Map());
+            var brand = await _brandRepository.CreateAsync(brandDto.Map());
 
-            return CreatedAtAction(nameof(GetBrandAsync), new { id = brand.BrandId }, new BrandOutputDTO(brand));
+            return CreatedAtAction(nameof(GetBrandAsync), new { id = brand.BrandId }, new BrandOutputDto(brand));
         }
         
         /// <summary>
         /// Update brand by id.
         /// </summary>
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBrandAsync([FromRoute] string id, [FromBody] BrandUpdateInputDTO brandDTO)
+        public async Task<IActionResult> UpdateBrandAsync([FromRoute] string id, [FromBody] BrandUpdateInputDto brandDto)
         {
-            if (brandDTO.BrandId != id)
+            if (brandDto.BrandId != id)
             {
-                ModelState.AddModelError(nameof(brandDTO.BrandId), "Brand Id provided doesn't match with the Brand Id in route.");
+                ModelState.AddModelError(nameof(brandDto.BrandId), "Brand Id provided doesn't match with the Brand Id in route.");
             }
             if (!ModelState.IsValid)
             {
@@ -93,7 +93,7 @@ namespace InvestorAPI.Controllers
                 return NotFound();
             }
 
-            await _brandRepository.UpdateAsync(brandDTO.Update(brand));
+            await _brandRepository.UpdateAsync(brandDto.Update(brand));
 
             return NoContent();
         }

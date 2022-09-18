@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InvestorAPI.Models
 {
-    public class BrandCreateInputDTO
+    public class BrandCreateInputDto
     {
 
         #region Public Properties

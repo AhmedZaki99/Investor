@@ -10,13 +10,13 @@ namespace InvestorAPI
         public DomainToDtoProfile()
         {
             // BusinessType.
-            CreateMap<BusinessType, BusinessTypeOutputDTO>();
-            CreateMap<BusinessTypeInputDTO, BusinessType>().ReverseMap();
+            CreateMap<BusinessType, BusinessTypeOutputDto>();
+            CreateMap<BusinessTypeInputDto, BusinessType>().ReverseMap();
 
             // Business.
-            CreateMap<Business, BusinessOutputDTO>();
-            CreateMap<BusinessCreateInputDTO, Business>();
-            CreateMap<BusinessUpdateInputDTO, Business>().ReverseMap();
+            CreateMap<Business, BusinessOutputDto>();
+            CreateMap<BusinessCreateInputDto, Business>();
+            CreateMap<BusinessUpdateInputDto, Business>().ReverseMap();
         }
 
     }

@@ -1,6 +1,6 @@
 ﻿namespace InvestorAPI.Models
 {
-    public class BusinessTypeOutputDTO
+    public class BusinessTypeOutputDto
     {
 
         public string Id { get; set; } = null!;

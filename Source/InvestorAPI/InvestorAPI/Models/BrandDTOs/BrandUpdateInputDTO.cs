@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InvestorAPI.Models
 {
-    public class BrandUpdateInputDTO
+    public class BrandUpdateInputDto
     {
 
         #region Public Properties
@@ -39,7 +39,7 @@ namespace InvestorAPI.Models
         {
             if (brand.BrandId != BrandId)
             {
-                throw new InvalidOperationException("Brand id provided must match with the DTO.");
+                throw new InvalidOperationException("Brand id provided must match with the Dto.");
             }
             brand.Name = Name ?? throw new NullReferenceException("Brand name must be provided.");
             brand.ScaleUnit = ScaleUnit ?? "Unit";

@@ -2,7 +2,7 @@
 
 namespace InvestorAPI.Models
 {
-    public class BrandOutputDTO
+    public class BrandOutputDto
     {
 
         #region Public Properties
@@ -24,7 +24,7 @@ namespace InvestorAPI.Models
 
         #region Constructors
 
-        public BrandOutputDTO(Brand brand)
+        public BrandOutputDto(Brand brand)
         {
             BrandId = brand.BrandId;
             Name = brand.Name;

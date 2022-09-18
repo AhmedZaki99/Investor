@@ -31,7 +31,7 @@ namespace InvestorAPI.Controllers
         /// Get a page of products, based on the business id and the last fetched product id.
         /// </summary>
         [HttpGet("{businessId}")]
-        public async IAsyncEnumerable<ProductOutputDTO> PaginateBrandsAsync([FromRoute] string businessId, [FromQuery] string? lastProductId = null, [FromQuery] int perPage = 70)
+        public async IAsyncEnumerable<ProductOutputDto> PaginateBrandsAsync([FromRoute] string businessId, [FromQuery] string? lastProductId = null, [FromQuery] int perPage = 70)
         {
             IAsyncEnumerable<Product> products;
             if (lastProductId is null)
@@ -42,7 +42,7 @@ namespace InvestorAPI.Controllers
 
             await foreach (var product in products)
             {
-                yield return new ProductOutputDTO(product);
+                yield return new ProductOutputDto(product);
             }
         }
 
@@ -50,14 +50,14 @@ namespace InvestorAPI.Controllers
         /// Get product by id
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductOutputDTO>> GetProductAsync([FromRoute] string id)
+        public async Task<ActionResult<ProductOutputDto>> GetProductAsync([FromRoute] string id)
         {
             var product = await _productRepository.FindAsync(id);
             if (product is null)
             {
                 return NotFound();
             }
-            return new ProductOutputDTO(product);
+            return new ProductOutputDto(product);
         }
 
         #endregion

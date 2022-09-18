@@ -2,7 +2,7 @@
 
 namespace InvestorAPI.Models
 {
-    public class BusinessTypeInputDTO
+    public class BusinessTypeInputDto
     {
 
         [Required(ErrorMessage = "{0} is required and cannot be empty.")]

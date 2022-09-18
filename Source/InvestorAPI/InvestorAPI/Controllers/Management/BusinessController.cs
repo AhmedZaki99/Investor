@@ -38,52 +38,52 @@ namespace InvestorAPI.Controllers
         /// Get the set of available businesses.
         /// </summary>
         [HttpGet]
-        public IAsyncEnumerable<BusinessOutputDTO> GetBusinessesAsync()
+        public IAsyncEnumerable<BusinessOutputDto> GetBusinessesAsync()
         {
             return _businessRepository
                 .GetEntitiesAsync()
-                .Select(_mapper.Map<BusinessOutputDTO>);
+                .Select(_mapper.Map<BusinessOutputDto>);
         }
 
         /// <summary>
         /// Get business by id
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<BusinessOutputDTO>> GetBusinessAsync([FromRoute] string id)
+        public async Task<ActionResult<BusinessOutputDto>> GetBusinessAsync([FromRoute] string id)
         {
             var business = await _businessRepository.GetFullDataAsync(id);
             if (business is null)
             {
                 return NotFound();
             }
-            return _mapper.Map<BusinessOutputDTO>(business);
+            return _mapper.Map<BusinessOutputDto>(business);
         }
 
         /// <summary>
         /// Create new business.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<BusinessOutputDTO>> CreateBusinessAsync([FromBody] BusinessCreateInputDTO businessDTO)
+        public async Task<ActionResult<BusinessOutputDto>> CreateBusinessAsync([FromBody] BusinessCreateInputDto businessDto)
         {
-            if (businessDTO.BusinessTypeId is not null && !_businessTypeRepository.EntityExists(businessDTO.BusinessTypeId))
+            if (businessDto.BusinessTypeId is not null && !_businessTypeRepository.EntityExists(businessDto.BusinessTypeId))
             {
-                ModelState.AddModelError(nameof(businessDTO.BusinessTypeId), "There's no BusinessType found with the Id provided.");
+                ModelState.AddModelError(nameof(businessDto.BusinessTypeId), "There's no BusinessType found with the Id provided.");
             }
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
             }
             
-            var business = await _businessRepository.CreateAsync(_mapper.Map<Business>(businessDTO));
+            var business = await _businessRepository.CreateAsync(_mapper.Map<Business>(businessDto));
 
-            return CreatedAtAction(nameof(GetBusinessAsync), new { id = business.Id }, _mapper.Map<BusinessOutputDTO>(business));
+            return CreatedAtAction(nameof(GetBusinessAsync), new { id = business.Id }, _mapper.Map<BusinessOutputDto>(business));
         }
 
         /// <summary>
         /// Update business by id.
         /// </summary>
         [HttpPatch("{id}")]
-        public async Task<ActionResult<BusinessOutputDTO>> UpdateBusinessAsync([FromRoute] string id, [FromBody] JsonPatchDocument<BusinessUpdateInputDTO> patchDoc)
+        public async Task<ActionResult<BusinessOutputDto>> UpdateBusinessAsync([FromRoute] string id, [FromBody] JsonPatchDocument<BusinessUpdateInputDto> patchDoc)
         {
             var business = await _businessRepository.FindAsync(id);
             if (business is null)
@@ -91,7 +91,7 @@ namespace InvestorAPI.Controllers
                 return NotFound();
             }
 
-            var dto = _mapper.Map<BusinessUpdateInputDTO>(business);
+            var dto = _mapper.Map<BusinessUpdateInputDto>(business);
             patchDoc.TryApplyTo(dto, ModelState);
 
             if (!ModelState.IsValid)
@@ -102,7 +102,7 @@ namespace InvestorAPI.Controllers
 
             await _businessRepository.UpdateAsync(business);
 
-            return _mapper.Map<BusinessOutputDTO>(business);
+            return _mapper.Map<BusinessOutputDto>(business);
         }
 
         /// <summary>

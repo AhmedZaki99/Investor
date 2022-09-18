@@ -34,43 +34,43 @@ namespace InvestorAPI.Controllers
         /// Get the set of available business types.
         /// </summary>
         [HttpGet]
-        public IAsyncEnumerable<BusinessTypeOutputDTO> GetBusinessTypesAsync()
+        public IAsyncEnumerable<BusinessTypeOutputDto> GetBusinessTypesAsync()
         {
             return _businessTypeRepository
                 .GetEntitiesAsync()
-                .Select(_mapper.Map<BusinessTypeOutputDTO>);
+                .Select(_mapper.Map<BusinessTypeOutputDto>);
         }
 
         /// <summary>
         /// Get business by id
         /// </summary>
         [HttpGet("{id}")]
-        public async Task<ActionResult<BusinessTypeOutputDTO>> GetBusinessTypeAsync([FromRoute] string id)
+        public async Task<ActionResult<BusinessTypeOutputDto>> GetBusinessTypeAsync([FromRoute] string id)
         {
             var businessType = await _businessTypeRepository.GetFullDataAsync(id);
             if (businessType is null)
             {
                 return NotFound();
             }
-            return _mapper.Map<BusinessTypeOutputDTO>(businessType);
+            return _mapper.Map<BusinessTypeOutputDto>(businessType);
         }
 
         /// <summary>
         /// Create new business type.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<BusinessTypeOutputDTO>> CreateBusinessTypeAsync([FromBody] BusinessTypeInputDTO businessTypeDTO)
+        public async Task<ActionResult<BusinessTypeOutputDto>> CreateBusinessTypeAsync([FromBody] BusinessTypeInputDto businessTypeDto)
         {
-            var businessType = await _businessTypeRepository.CreateAsync(_mapper.Map<BusinessType>(businessTypeDTO));
+            var businessType = await _businessTypeRepository.CreateAsync(_mapper.Map<BusinessType>(businessTypeDto));
 
-            return CreatedAtAction(nameof(GetBusinessTypeAsync), new { id = businessType.Id }, _mapper.Map<BusinessTypeOutputDTO>(businessType));
+            return CreatedAtAction(nameof(GetBusinessTypeAsync), new { id = businessType.Id }, _mapper.Map<BusinessTypeOutputDto>(businessType));
         }
 
         /// <summary>
         /// Update business type by id.
         /// </summary>
         [HttpPatch("{id}")]
-        public async Task<ActionResult<BusinessTypeOutputDTO>> UpdateBusinessTypeAsync([FromRoute] string id, [FromBody] JsonPatchDocument<BusinessTypeInputDTO> patchDoc)
+        public async Task<ActionResult<BusinessTypeOutputDto>> UpdateBusinessTypeAsync([FromRoute] string id, [FromBody] JsonPatchDocument<BusinessTypeInputDto> patchDoc)
         {
             var businessType = await _businessTypeRepository.FindAsync(id);
             if (businessType is null)
@@ -78,7 +78,7 @@ namespace InvestorAPI.Controllers
                 return NotFound();
             }
 
-            var dto = _mapper.Map<BusinessTypeInputDTO>(businessType);
+            var dto = _mapper.Map<BusinessTypeInputDto>(businessType);
             patchDoc.TryApplyTo(dto, ModelState);
 
             if (!ModelState.IsValid)
@@ -89,7 +89,7 @@ namespace InvestorAPI.Controllers
 
             await _businessTypeRepository.UpdateAsync(businessType);
 
-            return _mapper.Map<BusinessTypeOutputDTO>(businessType);
+            return _mapper.Map<BusinessTypeOutputDto>(businessType);
         }
 
         /// <summary>

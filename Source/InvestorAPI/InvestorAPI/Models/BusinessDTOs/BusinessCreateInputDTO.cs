@@ -2,7 +2,7 @@
 
 namespace InvestorAPI.Models
 {
-    public class BusinessCreateInputDTO
+    public class BusinessCreateInputDto
     {
 
         [Required(ErrorMessage = "{0} is required to create a new business.")]
