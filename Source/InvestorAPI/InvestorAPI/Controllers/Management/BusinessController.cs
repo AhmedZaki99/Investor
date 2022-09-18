@@ -1,4 +1,5 @@
-﻿using InvestorAPI.Models;
+﻿using AutoMapper;
+using InvestorAPI.Models;
 using InvestorData;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -15,14 +16,17 @@ namespace InvestorAPI.Controllers
         private readonly IBusinessRepository _businessRepository;
         private readonly IBusinessTypeRepository _businessTypeRepository;
 
+        private readonly IMapper _mapper;
+
         #endregion
 
         #region Constructor
 
-        public BusinessController(IBusinessRepository businessRepository, IBusinessTypeRepository businessTypeRepository)
+        public BusinessController(IBusinessRepository businessRepository, IBusinessTypeRepository businessTypeRepository, IMapper mapper)
         {
             _businessRepository = businessRepository;
             _businessTypeRepository = businessTypeRepository;
+            _mapper = mapper;
         }
 
         #endregion
@@ -38,7 +42,7 @@ namespace InvestorAPI.Controllers
         {
             return _businessRepository
                 .GetEntitiesAsync()
-                .Select(b => new BusinessOutputDTO(b));
+                .Select(_mapper.Map<BusinessOutputDTO>);
         }
 
         /// <summary>
@@ -52,14 +56,14 @@ namespace InvestorAPI.Controllers
             {
                 return NotFound();
             }
-            return new BusinessOutputDTO(business);
+            return _mapper.Map<BusinessOutputDTO>(business);
         }
 
         /// <summary>
         /// Create new business.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<BusinessOutputDTO>> CreateBusinessAsync([FromBody] BusinessInputDTO businessDTO)
+        public async Task<ActionResult<BusinessOutputDTO>> CreateBusinessAsync([FromBody] BusinessCreateInputDTO businessDTO)
         {
             if (businessDTO.BusinessTypeId is not null && !_businessTypeRepository.EntityExists(businessDTO.BusinessTypeId))
             {
@@ -70,9 +74,9 @@ namespace InvestorAPI.Controllers
                 return ValidationProblem(ModelState);
             }
             
-            var business = await _businessRepository.CreateAsync(businessDTO.Map());
+            var business = await _businessRepository.CreateAsync(_mapper.Map<Business>(businessDTO));
 
-            return CreatedAtAction(nameof(GetBusinessAsync), new { id = business.Id }, new BusinessOutputDTO(business));
+            return CreatedAtAction(nameof(GetBusinessAsync), new { id = business.Id }, _mapper.Map<BusinessOutputDTO>(business));
         }
 
         /// <summary>
@@ -87,6 +91,8 @@ namespace InvestorAPI.Controllers
                 return NotFound();
             }
 
+            // IMPORTANT: Add the ability to validate Patch Document operations based on a DTO, to prevent both overposting and invalid values.
+
             patchDoc.TryApplyTo(business, ModelState, new string[]
             {
                 nameof(Business.Id),
@@ -100,7 +106,7 @@ namespace InvestorAPI.Controllers
 
             await _businessRepository.UpdateAsync(business);
 
-            return new BusinessOutputDTO(business);
+            return _mapper.Map<BusinessOutputDTO>(business);
         }
 
         /// <summary>

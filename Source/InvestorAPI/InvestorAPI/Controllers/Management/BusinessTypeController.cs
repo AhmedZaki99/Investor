@@ -1,4 +1,5 @@
-﻿using InvestorAPI.Models;
+﻿using AutoMapper;
+using InvestorAPI.Models;
 using InvestorData;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -13,14 +14,16 @@ namespace InvestorAPI.Controllers
         #region Dependencies
 
         private readonly IBusinessTypeRepository _businessTypeRepository;
+        private readonly IMapper _mapper;
 
         #endregion
 
         #region Constructor
 
-        public BusinessTypeController(IBusinessTypeRepository businessTypeRepository)
+        public BusinessTypeController(IBusinessTypeRepository businessTypeRepository, IMapper mapper)
         {
             _businessTypeRepository = businessTypeRepository;
+            _mapper = mapper;
         }
 
         #endregion
@@ -35,7 +38,7 @@ namespace InvestorAPI.Controllers
         {
             return _businessTypeRepository
                 .GetEntitiesAsync()
-                .Select(t => new BusinessTypeOutputDTO(t));
+                .Select(_mapper.Map<BusinessTypeOutputDTO>);
         }
 
         /// <summary>
@@ -49,18 +52,18 @@ namespace InvestorAPI.Controllers
             {
                 return NotFound();
             }
-            return new BusinessTypeOutputDTO(businessType);
+            return _mapper.Map<BusinessTypeOutputDTO>(businessType);
         }
 
         /// <summary>
         /// Create new business type.
         /// </summary>
         [HttpPost]
-        public async Task<ActionResult<BusinessTypeOutputDTO>> CreateBusinessTypeAsync([FromBody] BusinessTypeInputDTO businessTypeDTO)
+        public async Task<ActionResult<BusinessTypeOutputDTO>> CreateBusinessTypeAsync([FromBody] BusinessTypeCreateInputDTO businessTypeDTO)
         {
-            var businessType = await _businessTypeRepository.CreateAsync(businessTypeDTO.Map());
+            var businessType = await _businessTypeRepository.CreateAsync(_mapper.Map<BusinessType>(businessTypeDTO));
 
-            return CreatedAtAction(nameof(GetBusinessTypeAsync), new { id = businessType.Id }, new BusinessTypeOutputDTO(businessType));
+            return CreatedAtAction(nameof(GetBusinessTypeAsync), new { id = businessType.Id }, _mapper.Map<BusinessTypeOutputDTO>(businessType));
         }
 
         /// <summary>
@@ -87,7 +90,7 @@ namespace InvestorAPI.Controllers
 
             await _businessTypeRepository.UpdateAsync(businessType);
 
-            return new BusinessTypeOutputDTO(businessType);
+            return _mapper.Map<BusinessTypeOutputDTO>(businessType);
         }
 
         /// <summary>

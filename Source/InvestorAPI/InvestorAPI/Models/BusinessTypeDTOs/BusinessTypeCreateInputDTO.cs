@@ -3,10 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InvestorAPI.Models
 {
-    public class BusinessTypeInputDTO
+    public class BusinessTypeCreateInputDTO
     {
-
-        #region Public Properties
 
         [Required(ErrorMessage = "{0} is required to create a new business type.")]
         [StringLength(200, ErrorMessage = "{0} should not be more than {1} characters.")]
@@ -20,20 +18,5 @@ namespace InvestorAPI.Models
         public bool NoInventory { get; set; } = false;
         public bool SalesOnly { get; set; } = false;
 
-        #endregion
-
-        #region Helper Methods
-
-        public BusinessType Map() => new()
-        {
-            Name = Name ?? throw new NullReferenceException("BusinessType name must be provided."),
-            Description = Description,
-            DisableServices = DisableServices,
-            DisableProducts = DisableProducts,
-            NoInventory = NoInventory,
-            SalesOnly = SalesOnly
-        };
-
-        #endregion
     }
 }
