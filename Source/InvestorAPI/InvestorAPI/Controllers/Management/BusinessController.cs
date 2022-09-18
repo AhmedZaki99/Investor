@@ -83,7 +83,7 @@ namespace InvestorAPI.Controllers
         /// Update business by id.
         /// </summary>
         [HttpPatch("{id}")]
-        public async Task<ActionResult<BusinessOutputDTO>> UpdateBusinessAsync([FromRoute] string id, [FromBody] JsonPatchDocument<Business> patchDoc)
+        public async Task<ActionResult<BusinessOutputDTO>> UpdateBusinessAsync([FromRoute] string id, [FromBody] JsonPatchDocument<BusinessUpdateInputDTO> patchDoc)
         {
             var business = await _businessRepository.FindAsync(id);
             if (business is null)
@@ -91,18 +91,14 @@ namespace InvestorAPI.Controllers
                 return NotFound();
             }
 
-            // IMPORTANT: Add the ability to validate Patch Document operations based on a DTO, to prevent both overposting and invalid values.
-
-            patchDoc.TryApplyTo(business, ModelState, new string[]
-            {
-                nameof(Business.Id),
-                nameof(Business.BusinessTypeId)
-            });
+            var dto = _mapper.Map<BusinessUpdateInputDTO>(business);
+            patchDoc.TryApplyTo(dto, ModelState);
 
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
             }
+            business = _mapper.Map(dto, business);
 
             await _businessRepository.UpdateAsync(business);
 

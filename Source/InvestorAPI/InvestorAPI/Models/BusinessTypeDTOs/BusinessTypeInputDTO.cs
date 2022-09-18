@@ -1,12 +1,11 @@
-﻿using InvestorData;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace InvestorAPI.Models
 {
-    public class BusinessTypeCreateInputDTO
+    public class BusinessTypeInputDTO
     {
 
-        [Required(ErrorMessage = "{0} is required to create a new business type.")]
+        [Required(ErrorMessage = "{0} is required and cannot be empty.")]
         [StringLength(200, ErrorMessage = "{0} should not be more than {1} characters.")]
         public string? Name { get; set; }
 

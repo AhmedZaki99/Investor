@@ -11,11 +11,12 @@ namespace InvestorAPI
         {
             // BusinessType.
             CreateMap<BusinessType, BusinessTypeOutputDTO>();
-            CreateMap<BusinessTypeCreateInputDTO, BusinessType>();
+            CreateMap<BusinessTypeInputDTO, BusinessType>().ReverseMap();
 
             // Business.
             CreateMap<Business, BusinessOutputDTO>();
             CreateMap<BusinessCreateInputDTO, Business>();
+            CreateMap<BusinessUpdateInputDTO, Business>().ReverseMap();
         }
 
     }
