@@ -7,7 +7,7 @@ namespace InvestorAPI.Models
 
         [Required(ErrorMessage = "{0} is required to create a new business.")]
         [StringLength(200, ErrorMessage = "{0} should not be more than {1} characters.")]
-        public string? Name { get; set; }
+        public string Name { get; set; } = null!;
 
 
         public string? BusinessTypeId { get; set; }

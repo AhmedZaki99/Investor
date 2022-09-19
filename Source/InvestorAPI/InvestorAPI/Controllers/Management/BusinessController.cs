@@ -46,7 +46,7 @@ namespace InvestorAPI.Controllers
         }
 
         /// <summary>
-        /// Get business by id
+        /// Get business by id.
         /// </summary>
         [HttpGet("{id}")]
         public async Task<ActionResult<BusinessOutputDto>> GetBusinessAsync([FromRoute] string id)
