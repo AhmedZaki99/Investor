@@ -1,10 +1,14 @@
 using InvestorAPI.Data;
+using InvestorAPI.JsonConverters;
 using Microsoft.EntityFrameworkCore;
 
 namespace InvestorAPI
 {
     public class Program
     {
+
+        #region Application Entry
+
         public static void Main(string[] args)
         {
             // Initialize the application builder.
@@ -25,19 +29,29 @@ namespace InvestorAPI
             app.Run();
         }
 
+        #endregion
+
+        #region Configuration
 
         private static void ConfigureServices(WebApplicationBuilder builder)
         {
             builder.Services
                 .AddControllers(options =>
-                    options.SuppressAsyncSuffixInActionNames = false)
-                .AddNewtonsoftJson();
+                {
+                    options.SuppressAsyncSuffixInActionNames = false;
+                    options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+                })
+                .AddNewtonsoftJson(options =>
+                    options.SerializerSettings.Converters.Add(new EnumJsonConverter()));
+
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
                 sqlOptions.CommandTimeout(60)));
 
+
             builder.Services.AddAutoMapper(typeof(Program));
+
 
             // Add data access repositories.
             builder.Services.AddApplicationRepositories();
@@ -50,6 +64,8 @@ namespace InvestorAPI
 
             app.MapControllers();
         }
+
+        #endregion
 
     }
 }

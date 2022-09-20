@@ -16,11 +16,16 @@ namespace InvestorData
         {
             ArgumentNullException.ThrowIfNull(services, nameof(services));
 
-            // Add repositories.
+            // Add repositories..
+
             services.AddScoped<IBusinessTypeRepository, BusinessTypeRepository<TContext>>();
             services.AddScoped<IBusinessRepository, BusinessRepository<TContext>>();
+            services.AddScoped<IAccountRepository, AccountRepository<TContext>>();
 
+            services.AddScoped<IScaleUnitRepository, ScaleUnitRepository<TContext>>();
+            services.AddScoped<ICategoryRepository, CategoryRepository<TContext>>();
             services.AddScoped<IProductRepository, ProductRepository<TContext>>();
+
 
             return services;
         }
