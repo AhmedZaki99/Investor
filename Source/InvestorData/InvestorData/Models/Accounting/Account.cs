@@ -24,7 +24,7 @@ namespace InvestorData
 
         public string? ParentAccountId { get; set; }
         public Account? ParentAccount { get; set; }
-        public bool IsSubAccount => ParentAccount != null;
+        public bool IsSubAccount => ParentAccountId != null;
 
 
         [Required]
@@ -41,11 +41,12 @@ namespace InvestorData
 
     public enum AccountType
     {
-        AssetsAccount,
-        LiabilitiesAccount,
-        IncomeAccount,
-        ExpenseAccount,
-        EquityAccount
+        None = 0,
+        AssetsAccount = 1,
+        LiabilitiesAccount = 2,
+        IncomeAccount = 3,
+        ExpenseAccount = 4,
+        EquityAccount= 5
     }
 
 }
