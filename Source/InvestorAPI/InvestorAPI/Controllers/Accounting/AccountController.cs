@@ -4,6 +4,7 @@ using InvestorData;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
+using System.Security.Principal;
 
 namespace InvestorAPI.Controllers
 {
@@ -101,29 +102,7 @@ namespace InvestorAPI.Controllers
         {
             // TODO: Try adding services dedicated for validation.
 
-            if (!ValidateId(_businessRepository, accountDto.BusinessId) || !ValidateId(_businessTypeRepository, accountDto.BusinessTypeId))
-            {
-                return ValidationProblem(ModelState);
-            }
-
-            if (accountDto.BusinessId is not null && accountDto.BusinessTypeId is not null)
-            {
-                ModelState.AddModelError("BusinessId / BusinessTypeId", "Accounts can't be assigned for both Business and BusinessType, try providing only one of them.");
-            }
-            if (accountDto.ParentAccountId is not null)
-            {
-                var parentAccount = await _accountRepository.GetMinimalDataAsync(accountDto.ParentAccountId);
-
-                string? errorMsg = parentAccount is not null ?
-                                   parentAccount.IsSubAccount ?
-                                   "The account provided has a parent account on its own, thus it can't be assigned as a parent account." : null :
-                                   "There's no Account found with the Id provided.";
-                if (errorMsg is not null)
-                {
-                    ModelState.AddModelError(nameof(accountDto.ParentAccountId), errorMsg);
-                }
-            }
-            if (!ModelState.IsValid)
+            if (!await ValidateAccountAsync(accountDto))
             {
                 return ValidationProblem(ModelState);
             }
@@ -150,7 +129,7 @@ namespace InvestorAPI.Controllers
             var dto = _mapper.Map<AccountInputDto>(account);
             patchDoc.TryApplyTo(dto, ModelState);
 
-            if (!ModelState.IsValid)
+            if (!await ValidateAccountAsync(dto, account))
             {
                 return ValidationProblem(ModelState);
             }
@@ -184,6 +163,40 @@ namespace InvestorAPI.Controllers
         #endregion
 
         #region Helper Methods
+
+        private async Task<bool> ValidateAccountAsync(AccountInputDto dto, Account? original = null)
+        {
+            if (dto.BusinessId != original?.BusinessId && !ValidateId(_businessRepository, dto.BusinessId))
+            {
+                return false;
+            }
+            if (dto.BusinessTypeId != original?.BusinessTypeId && !ValidateId(_businessTypeRepository, dto.BusinessTypeId))
+            {
+                return false;
+            }
+
+            if (dto.BusinessId is not null && dto.BusinessTypeId is not null)
+            {
+                ModelState.AddModelError("BusinessId / BusinessTypeId", "Accounts can't be assigned for both Business and BusinessType, try providing only one of them.");
+                return false;
+            }
+            if (dto.ParentAccountId != original?.ParentAccountId && dto.ParentAccountId is not null)
+            {
+                var parentAccount = await _accountRepository.GetMinimalDataAsync(dto.ParentAccountId);
+
+                string? errorMsg = parentAccount is not null ?
+                                   parentAccount.IsSubAccount ?
+                                   "The account provided has a parent account on its own, thus it can't be assigned as a parent account." : null :
+                                   "There's no Account found with the Id provided.";
+                if (errorMsg is not null)
+                {
+                    ModelState.AddModelError(nameof(dto.ParentAccountId), errorMsg);
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         private bool ValidateId<T>(IRepository<T> repository, string? id) where T : class, IStringId
         {

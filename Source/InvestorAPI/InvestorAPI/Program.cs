@@ -35,6 +35,8 @@ namespace InvestorAPI
 
         private static void ConfigureServices(WebApplicationBuilder builder)
         {
+            // TODO: Study the possibility of changing the way that MVC formatters handle errors.
+
             builder.Services
                 .AddControllers(options =>
                 {
