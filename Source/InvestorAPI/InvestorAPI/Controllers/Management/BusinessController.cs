@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using InvestorAPI.Models;
+using InvestorAPI.Core;
 using InvestorData;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;

@@ -1,6 +1,6 @@
 ﻿using InvestorData;
 
-namespace InvestorAPI.Models
+namespace InvestorAPI.Core
 {
     public class AccountOutputDto
     {

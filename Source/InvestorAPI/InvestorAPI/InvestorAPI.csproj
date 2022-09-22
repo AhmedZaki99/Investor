@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\InvestorAPI.Data\InvestorAPI.Data.csproj" />
+    <ProjectReference Include="..\InvestorAPI.Core\InvestorAPI.Core.csproj" />
   </ItemGroup>
 
 </Project>
