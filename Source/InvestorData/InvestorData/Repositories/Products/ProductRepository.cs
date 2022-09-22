@@ -4,7 +4,7 @@ namespace InvestorData
 {
 
     /// <summary>
-    /// A data store that manages <see cref="Product"/> entities.
+    /// A repository that manages <see cref="Product"/> entities.
     /// </summary>
     internal class ProductRepository<TContext> : Repository<Product>, IProductRepository where TContext : InvestorDbContext
     {

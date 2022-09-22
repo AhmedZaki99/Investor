@@ -2,7 +2,7 @@
 {
 
     /// <summary>
-    /// A data store that manages <see cref="BusinessType"/> entities.
+    /// A repository that manages <see cref="BusinessType"/> entities.
     /// </summary>
     internal class BusinessTypeRepository<TContext> : Repository<BusinessType>, IBusinessTypeRepository where TContext : InvestorDbContext
     {

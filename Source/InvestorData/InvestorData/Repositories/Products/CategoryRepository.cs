@@ -4,7 +4,7 @@ namespace InvestorData
 {
 
     /// <summary>
-    /// A data store that manages <see cref="Category"/> entities.
+    /// A repository that manages <see cref="Category"/> entities.
     /// </summary>
     internal class CategoryRepository<TContext> : Repository<Category>, ICategoryRepository where TContext : InvestorDbContext
     {

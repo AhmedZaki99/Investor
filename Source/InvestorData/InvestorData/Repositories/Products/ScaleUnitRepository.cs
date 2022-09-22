@@ -4,7 +4,7 @@ namespace InvestorData
 {
 
     /// <summary>
-    /// A data store that manages <see cref="ScaleUnit"/> entities.
+    /// A repository that manages <see cref="ScaleUnit"/> entities.
     /// </summary>
     internal class ScaleUnitRepository<TContext> : Repository<ScaleUnit>, IScaleUnitRepository where TContext : InvestorDbContext
     {
