@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using InvestorData;
+﻿using InvestorData;
 
 namespace InvestorAPI.Core
 {
@@ -15,21 +14,17 @@ namespace InvestorAPI.Core
         private readonly IBusinessRepository _businessRepository;
         private readonly IBusinessTypeRepository _businessTypeRepository;
 
-        private readonly IMapper _mapper;
-
         #endregion
 
         #region Constructor
 
         public AccountService(IAccountRepository accountRepository,
                               IBusinessRepository businessRepository,
-                              IBusinessTypeRepository businessTypeRepository,
-                              IMapper mapper)
+                              IBusinessTypeRepository businessTypeRepository)
         {
             _accountRepository = accountRepository;
             _businessRepository = businessRepository;
             _businessTypeRepository = businessTypeRepository;
-            _mapper = mapper;
         }
 
         #endregion

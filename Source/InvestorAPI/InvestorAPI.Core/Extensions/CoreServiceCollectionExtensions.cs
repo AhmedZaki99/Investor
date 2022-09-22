@@ -15,9 +15,6 @@ namespace InvestorAPI.Core
         {
             ArgumentNullException.ThrowIfNull(services, nameof(services));
 
-            // Add auto mapper.
-            services.AddAutoMapper(typeof(CoreServiceCollectionExtensions));
-
 
             // Add core services..
 

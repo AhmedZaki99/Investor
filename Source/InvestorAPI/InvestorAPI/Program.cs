@@ -50,6 +50,10 @@ namespace InvestorAPI
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
                 sqlOptions.CommandTimeout(60)));
 
+            
+            // Add Auto Mapper.
+            builder.Services.AddAutoMapper(typeof(Program));
+
 
             // Add data access repositories.
             builder.Services.AddApplicationRepositories();
