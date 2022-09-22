@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
+using InvestorAPI.Core;
 using InvestorData;
 
 using Scope = InvestorAPI.Core.AccountOutputDto.AccountScope;
 
-namespace InvestorAPI.Core
+namespace InvestorAPI
 {
     public class DomainToDtoProfile : Profile
     {
