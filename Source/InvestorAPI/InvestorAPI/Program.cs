@@ -1,3 +1,4 @@
+using InvestorAPI.Core;
 using InvestorAPI.Data;
 using InvestorAPI.JsonConverters;
 using Microsoft.EntityFrameworkCore;
@@ -35,8 +36,6 @@ namespace InvestorAPI
 
         private static void ConfigureServices(WebApplicationBuilder builder)
         {
-            // TODO: Study the possibility of changing the way that MVC formatters handle errors.
-
             builder.Services
                 .AddControllers(options =>
                 {
@@ -52,11 +51,11 @@ namespace InvestorAPI
                 sqlOptions.CommandTimeout(60)));
 
 
-            builder.Services.AddAutoMapper(typeof(Program));
-
-
             // Add data access repositories.
             builder.Services.AddApplicationRepositories();
+
+            // Add core services.
+            builder.Services.AddCoreServices();
         }
 
         private static void ConfigurePipeline(WebApplication app)

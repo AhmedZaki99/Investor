@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using InvestorAPI.Models;
+using InvestorAPI.Core;
 using InvestorData;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
-using System.Security.Principal;
 
 namespace InvestorAPI.Controllers
 {
@@ -14,6 +13,8 @@ namespace InvestorAPI.Controllers
     {
 
         #region Dependencies
+
+        private readonly IAccountService _accountService;
 
         private readonly IAccountRepository _accountRepository;
         private readonly IBusinessRepository _businessRepository;
@@ -25,11 +26,14 @@ namespace InvestorAPI.Controllers
 
         #region Constructor
 
-        public AccountController(IAccountRepository accountRepository,
+        public AccountController(IAccountService accountService,
+                                 IAccountRepository accountRepository,
                                  IBusinessRepository businessRepository,
                                  IBusinessTypeRepository businessTypeRepository,
                                  IMapper mapper)
         {
+            _accountService = accountService;
+
             _accountRepository = accountRepository;
             _businessRepository = businessRepository;
             _businessTypeRepository = businessTypeRepository;
@@ -100,10 +104,13 @@ namespace InvestorAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<AccountOutputDto>> CreateAccountAsync([FromBody] AccountInputDto accountDto)
         {
-            // TODO: Try adding services dedicated for validation.
-
-            if (!await ValidateAccountAsync(accountDto))
+            var errors = await _accountService.ValidateAccountAsync(accountDto);
+            if (errors.Count > 0)
             {
+                foreach (var error in errors)
+                {
+                    ModelState.AddModelError(error.Key, error.Value);
+                }
                 return ValidationProblem(ModelState);
             }
             
@@ -118,8 +125,6 @@ namespace InvestorAPI.Controllers
         [HttpPatch("{id}")]
         public async Task<ActionResult<AccountOutputDto>> UpdateAccountAsync([FromRoute] string id, [FromBody] JsonPatchDocument<AccountInputDto> patchDoc)
         {
-            // IMPORTANT: Add validation for updated model.
-
             var account = await _accountRepository.FindAsync(id);
             if (account is null)
             {
@@ -129,7 +134,13 @@ namespace InvestorAPI.Controllers
             var dto = _mapper.Map<AccountInputDto>(account);
             patchDoc.TryApplyTo(dto, ModelState);
 
-            if (!await ValidateAccountAsync(dto, account))
+            var errors = await _accountService.ValidateAccountAsync(dto, account);
+            foreach (var error in errors)
+            {
+                ModelState.AddModelError(error.Key, error.Value);
+            }
+
+            if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
             }
@@ -160,53 +171,6 @@ namespace InvestorAPI.Controllers
             return NoContent();
         }
 
-        #endregion
-
-        #region Helper Methods
-
-        private async Task<bool> ValidateAccountAsync(AccountInputDto dto, Account? original = null)
-        {
-            if (dto.BusinessId != original?.BusinessId && !ValidateId(_businessRepository, dto.BusinessId))
-            {
-                return false;
-            }
-            if (dto.BusinessTypeId != original?.BusinessTypeId && !ValidateId(_businessTypeRepository, dto.BusinessTypeId))
-            {
-                return false;
-            }
-
-            if (dto.BusinessId is not null && dto.BusinessTypeId is not null)
-            {
-                ModelState.AddModelError("BusinessId / BusinessTypeId", "Accounts can't be assigned for both Business and BusinessType, try providing only one of them.");
-                return false;
-            }
-            if (dto.ParentAccountId != original?.ParentAccountId && dto.ParentAccountId is not null)
-            {
-                var parentAccount = await _accountRepository.GetMinimalDataAsync(dto.ParentAccountId);
-
-                string? errorMsg = parentAccount is not null ?
-                                   parentAccount.IsSubAccount ?
-                                   "The account provided has a parent account on its own, thus it can't be assigned as a parent account." : null :
-                                   "There's no Account found with the Id provided.";
-                if (errorMsg is not null)
-                {
-                    ModelState.AddModelError(nameof(dto.ParentAccountId), errorMsg);
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool ValidateId<T>(IRepository<T> repository, string? id) where T : class, IStringId
-        {
-            if (id is not null && !repository.EntityExists(id))
-            {
-                ModelState.AddModelError($"{typeof(T).Name}Id", $"There's no {typeof(T).Name} found with the Id provided.");
-                return false;
-            }
-            return true;
-        }
         #endregion
 
     }

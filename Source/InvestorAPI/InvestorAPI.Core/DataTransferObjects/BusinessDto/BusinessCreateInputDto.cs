@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace InvestorAPI.Models
+namespace InvestorAPI.Core
 {
     public class BusinessCreateInputDto
     {
