@@ -5,6 +5,7 @@ namespace InvestorData
 {
     public class BusinessType : IStringId
     {
+        // TODO: Add Unique Index on name.
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

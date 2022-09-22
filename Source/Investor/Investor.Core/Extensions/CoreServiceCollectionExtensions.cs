@@ -8,7 +8,7 @@ namespace Investor.Core
     public static class CoreServiceCollectionExtensions
     {
 
-        #region Extentions
+        #region Extensions
 
         /// <summary>
         /// Adds the minimum essential Core services to the specified <see cref="IServiceCollection" />. Additional services,

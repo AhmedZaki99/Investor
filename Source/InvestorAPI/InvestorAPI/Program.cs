@@ -46,20 +46,14 @@ namespace InvestorAPI
                     options.SerializerSettings.Converters.Add(new EnumJsonConverter()));
 
 
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
-                sqlOptions.CommandTimeout(60)));
-
-            
-            // Add Auto Mapper.
-            builder.Services.AddAutoMapper(typeof(Program));
+            // Add core services.
+            builder.Services
+                .AddCoreServices()
+                .AddSqlServerDb(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 
             // Add data access repositories.
             builder.Services.AddApplicationRepositories();
-
-            // Add core services.
-            builder.Services.AddCoreServices();
         }
 
         private static void ConfigurePipeline(WebApplication app)
