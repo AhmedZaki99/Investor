@@ -36,6 +36,8 @@ namespace InvestorAPI
 
         private static void ConfigureServices(WebApplicationBuilder builder)
         {
+            // TODO: Use CancellationToken in API endpoints.
+
             builder.Services
                 .AddControllers(options =>
                 {

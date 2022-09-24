@@ -2,11 +2,12 @@
 using InvestorAPI.Data;
 using InvestorData;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace InvestorAPI.Core
 {
     /// <summary>
-    /// A service responsible for handling and processing <see cref="Business"/> data.
+    /// A service responsible for handling and processing <see cref="BusinessType"/> data.
     /// </summary>
     internal class BusinessTypeService : IBusinessTypeService
     {
@@ -57,18 +58,22 @@ namespace InvestorAPI.Core
         #region Create
 
         /// <inheritdoc/>
-        public async Task<OperationResult<BusinessTypeOutputDto>> CreateBusinessTypeAsync(BusinessTypeInputDto dto)
+        public async Task<OperationResult<BusinessTypeOutputDto>> CreateBusinessTypeAsync(BusinessTypeInputDto dto, bool validateDtoProperties = false)
         {
-            if (await ValidateInputAsync(dto) is Dictionary<string, string> validationErrors)
+            var errors = validateDtoProperties ? ValidateObject(dto) : null;
+
+            errors ??= await ValidateInputAsync(dto);
+            if (errors is not null)
             {
-                return new(validationErrors , OperationError.ValidationError);
+                return new(errors , OperationError.ValidationError);
             }
 
             var businessType = _mapper.Map<BusinessType>(dto);
 
             _dbContext.BusinessTypes.Add(businessType);
 
-            if (await TrySaveChangesAsync() is Dictionary<string, string> errors)
+            errors = await TrySaveChangesAsync();
+            if (errors is not null)
             {
                 return new(errors, OperationError.DatabaseError);
             }
@@ -80,8 +85,14 @@ namespace InvestorAPI.Core
         #region Update
 
         /// <inheritdoc/>
-        public Task<OperationResult<BusinessTypeOutputDto>> UpdateBusinessTypeAsync(string id, BusinessTypeInputDto dto)
+        public Task<OperationResult<BusinessTypeOutputDto>> UpdateBusinessTypeAsync(string id, BusinessTypeInputDto dto, bool validateDtoProperties = false)
         {
+            var errors = validateDtoProperties ? ValidateObject(dto) : null;
+            if (errors is not null)
+            {
+                return Task.FromResult(new OperationResult<BusinessTypeOutputDto>(errors, OperationError.ValidationError));
+            }
+
             return UpdateBusinessTypeAsync(id, updateDto =>
             {
                 updateDto = dto;
@@ -90,23 +101,26 @@ namespace InvestorAPI.Core
         }
 
         /// <inheritdoc/>
-        public async Task<OperationResult<BusinessTypeOutputDto>> UpdateBusinessTypeAsync(string id, Func<BusinessTypeInputDto, bool> updateCallback)
+        public async Task<OperationResult<BusinessTypeOutputDto>> UpdateBusinessTypeAsync(string id, Func<BusinessTypeInputDto, bool> updateCallback, bool validateDtoProperties = false)
         {
             var businessType = await _dbContext.BusinessTypes.FindAsync(id);
             if (businessType is null)
             {
                 return new(OperationError.DataNotFound);
             }
-
             var dto = _mapper.Map<BusinessTypeInputDto>(businessType);
 
             if (!updateCallback.Invoke(dto))
             {
                 return new(OperationError.ExternalError);
             }
-            if (await ValidateInputAsync(dto) is Dictionary<string, string> validationErrors)
+
+            var errors = validateDtoProperties ? ValidateObject(dto) : null;
+
+            errors ??= await ValidateInputAsync(dto);
+            if (errors is not null)
             {
-                return new(validationErrors, OperationError.ValidationError);
+                return new(errors, OperationError.ValidationError);
             }
             businessType = _mapper.Map(dto, businessType);
 
@@ -116,7 +130,9 @@ namespace InvestorAPI.Core
             {
                 entry.State = EntityState.Modified;
             }
-            if (await TrySaveChangesAsync() is Dictionary<string, string> errors)
+
+            errors = await TrySaveChangesAsync();
+            if (errors is not null)
             {
                 return new(errors, OperationError.DatabaseError);
             }
@@ -168,6 +184,25 @@ namespace InvestorAPI.Core
             {
                 ["Server Error"] = "Failed to update businessType data."
             };
+        }
+
+        #endregion
+
+        #region Static Helper Methods
+
+        private static Dictionary<string, string>? ValidateObject<T>(T objectToValidate) where T : class
+        {
+            List<ValidationResult> results = new();
+            ValidationContext context = new(objectToValidate);
+
+            Validator.TryValidateObject(objectToValidate, context, results, true);
+
+            if (results.Count > 0)
+            {
+                var pairs = results.Select(e => new KeyValuePair<string, string>(e.MemberNames.First(), e.ErrorMessage ?? "Invalid value."));
+                return new(pairs);
+            }
+            return null;
         }
 
         #endregion

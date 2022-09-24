@@ -3,7 +3,7 @@
 namespace InvestorAPI.Core
 {
     /// <summary>
-    /// Provides an abstraction for a service responsible for handling and processing <see cref="Business"/> data.
+    /// Provides an abstraction for a service responsible for handling and processing <see cref="BusinessType"/> data.
     /// </summary>
     public interface IBusinessTypeService
     {
@@ -31,11 +31,15 @@ namespace InvestorAPI.Core
         /// Create a new <see cref="BusinessType"/> after validating data provided by <see cref="BusinessTypeInputDto"/>.
         /// </summary>
         /// <param name="dto">The object containing data to create the business type of.</param>
+        /// <param name="validateDtoProperties">
+        /// If <see langword="true"/>, also validate the DTO properties using their associated 
+        /// <see cref="System.ComponentModel.DataAnnotations.ValidationAttribute"/> attributes.
+        /// </param>
         /// <returns>
         /// An <see cref="OperationResult{TOutput}"/> wrapping the created business type data,
         /// and providing a dictionary of errors occured in the process, if any.
         /// </returns>
-        Task<OperationResult<BusinessTypeOutputDto>> CreateBusinessTypeAsync(BusinessTypeInputDto dto);
+        Task<OperationResult<BusinessTypeOutputDto>> CreateBusinessTypeAsync(BusinessTypeInputDto dto, bool validateDtoProperties = false);
 
         #endregion
 
@@ -47,11 +51,14 @@ namespace InvestorAPI.Core
         /// </summary>
         /// <param name="id">The id of the <see cref="BusinessType"/> to update.</param>
         /// <param name="dto">The object containing data to update the underlting business type.</param>
-        /// <returns>
+        /// <param name="validateDtoProperties">
+        /// If <see langword="true"/>, also validate the DTO properties using their associated 
+        /// <see cref="System.ComponentModel.DataAnnotations.ValidationAttribute"/> attributes.
+        /// </param>        /// <returns>
         /// An <see cref="OperationResult{TOutput}"/> wrapping the updated business type data,
         /// and providing a dictionary of errors occured in the process, if any.        
         /// </returns>
-        Task<OperationResult<BusinessTypeOutputDto>> UpdateBusinessTypeAsync(string id, BusinessTypeInputDto dto);
+        Task<OperationResult<BusinessTypeOutputDto>> UpdateBusinessTypeAsync(string id, BusinessTypeInputDto dto, bool validateDtoProperties = false);
 
         /// <summary>
         /// Update the underlying <see cref="BusinessType"/> with the callback provided,
@@ -63,11 +70,15 @@ namespace InvestorAPI.Core
         /// which provides a <see cref="BusinessTypeInputDto"/> to make necessary changes,
         /// and returns a <see cref="bool"/> to state whether the changes were made successfully.
         /// </param>
+        /// <param name="validateDtoProperties">
+        /// If <see langword="true"/>, also validate the DTO properties using their associated 
+        /// <see cref="System.ComponentModel.DataAnnotations.ValidationAttribute"/> attributes.
+        /// </param>
         /// <returns>
         /// An <see cref="OperationResult{TOutput}"/> wrapping the updated business type data,
         /// and providing a dictionary of errors occured in the process, if any.        
         /// </returns>
-        Task<OperationResult<BusinessTypeOutputDto>> UpdateBusinessTypeAsync(string id, Func<BusinessTypeInputDto, bool> updateCallback);
+        Task<OperationResult<BusinessTypeOutputDto>> UpdateBusinessTypeAsync(string id, Func<BusinessTypeInputDto, bool> updateCallback, bool validateDtoProperties = false);
 
         #endregion
 
