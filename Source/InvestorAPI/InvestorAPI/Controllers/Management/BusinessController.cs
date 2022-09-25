@@ -58,15 +58,17 @@ namespace InvestorAPI.Controllers
         public async Task<ActionResult<BusinessOutputDto>> CreateBusinessAsync([FromBody] BusinessCreateInputDto businessDto)
         {
             var result = await _businessService.CreateBusinessAsync(businessDto);
-            if (result.Output is not BusinessOutputDto dto)
+            if (result.Output is BusinessOutputDto dto)
             {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(error.Key, error.Value);
-                }
-                return ValidationProblem(ModelState);
+                return CreatedAtAction(nameof(GetBusinessAsync), new { id = dto.Id }, dto);
             }
-            return CreatedAtAction(nameof(GetBusinessAsync), new { id = dto.Id }, dto);
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(error.Key, error.Value);
+            }
+
+            return result.ErrorType == OperationError.UnprocessableEntity ? UnprocessableEntity(ModelState) : ValidationProblem(ModelState);
         }
 
         /// <summary>
@@ -82,7 +84,7 @@ namespace InvestorAPI.Controllers
             {
                 return dto;
             }
-            if (result.ErrorType == OperationError.DataNotFound)
+            if (result.ErrorType == OperationError.EntityNotFound)
             {
                 return NotFound();
             }
@@ -93,7 +95,8 @@ namespace InvestorAPI.Controllers
                     ModelState.AddModelError(error.Key, error.Value);
                 }
             }
-            return ValidationProblem(ModelState);
+
+            return result.ErrorType == OperationError.UnprocessableEntity ? UnprocessableEntity(ModelState) : ValidationProblem(ModelState);
         }
 
         /// <summary>

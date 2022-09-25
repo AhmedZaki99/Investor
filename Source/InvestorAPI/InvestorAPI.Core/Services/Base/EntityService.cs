@@ -60,11 +60,15 @@ namespace InvestorAPI.Core
         protected virtual async Task<OperationResult<TOutputDto>> CreateEntityAsync(TCreateDto dto, bool validateDtoProperties = false)
         {
             var errors = validateDtoProperties ? ValidateObject(dto) : null;
-
-            errors ??= await ValidateCreateInputAsync(dto);
             if (errors is not null)
             {
                 return new(errors, OperationError.ValidationError);
+            }
+
+            errors = await ValidateCreateInputAsync(dto);
+            if (errors is not null)
+            {
+                return new(errors, OperationError.UnprocessableEntity);
             }
 
             var entity = Mapper.Map<TEntity>(dto);
@@ -103,7 +107,7 @@ namespace InvestorAPI.Core
             var entity = await EntityDbSet.FindAsync(id);
             if (entity is null)
             {
-                return new(OperationError.DataNotFound);
+                return new(OperationError.EntityNotFound);
             }
             var dto = Mapper.Map<TUpdateDto>(entity);
 
@@ -113,11 +117,15 @@ namespace InvestorAPI.Core
             }
 
             var errors = validateDtoProperties ? ValidateObject(dto) : null;
-
-            errors ??= await ValidateUpdateInputAsync(dto, entity);
             if (errors is not null)
             {
                 return new(errors, OperationError.ValidationError);
+            }
+
+            errors = await ValidateUpdateInputAsync(dto, entity);
+            if (errors is not null)
+            {
+                return new(errors, OperationError.UnprocessableEntity);
             }
             entity = Mapper.Map(dto, entity);
 
