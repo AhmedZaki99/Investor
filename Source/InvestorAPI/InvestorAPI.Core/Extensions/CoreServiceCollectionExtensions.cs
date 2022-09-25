@@ -27,6 +27,7 @@ namespace InvestorAPI.Core
 
             // Add core services..
 
+            services.AddScoped<IBusinessService, BusinessService>();
             services.AddScoped<IBusinessTypeService, BusinessTypeService>();
 
             services.AddScoped<IAccountService, AccountService>();

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using InvestorAPI.Core;
+﻿using InvestorAPI.Core;
 using InvestorData;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -13,20 +12,15 @@ namespace InvestorAPI.Controllers
 
         #region Dependencies
 
-        private readonly IBusinessRepository _businessRepository;
-        private readonly IBusinessTypeRepository _businessTypeRepository;
-
-        private readonly IMapper _mapper;
+        private readonly IBusinessService _businessService;
 
         #endregion
 
         #region Constructor
 
-        public BusinessController(IBusinessRepository businessRepository, IBusinessTypeRepository businessTypeRepository, IMapper mapper)
+        public BusinessController(IBusinessService businessService)
         {
-            _businessRepository = businessRepository;
-            _businessTypeRepository = businessTypeRepository;
-            _mapper = mapper;
+            _businessService = businessService;
         }
 
         #endregion
@@ -40,9 +34,7 @@ namespace InvestorAPI.Controllers
         [HttpGet]
         public IAsyncEnumerable<BusinessOutputDto> GetBusinessesAsync()
         {
-            return _businessRepository
-                .GetEntitiesAsync()
-                .Select(_mapper.Map<BusinessOutputDto>);
+            return _businessService.GetBusinessesAsync();
         }
 
         /// <summary>
@@ -51,12 +43,12 @@ namespace InvestorAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<BusinessOutputDto>> GetBusinessAsync([FromRoute] string id)
         {
-            var business = await _businessRepository.GetFullDataAsync(id);
+            var business = await _businessService.FindBusinessAsync(id);
             if (business is null)
             {
                 return NotFound();
             }
-            return _mapper.Map<BusinessOutputDto>(business);
+            return business;
         }
 
         /// <summary>
@@ -65,18 +57,16 @@ namespace InvestorAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<BusinessOutputDto>> CreateBusinessAsync([FromBody] BusinessCreateInputDto businessDto)
         {
-            if (businessDto.BusinessTypeId is not null && !_businessTypeRepository.EntityExists(businessDto.BusinessTypeId))
+            var result = await _businessService.CreateBusinessAsync(businessDto);
+            if (result.Output is not BusinessOutputDto dto)
             {
-                ModelState.AddModelError(nameof(businessDto.BusinessTypeId), "There's no BusinessType found with the Id provided.");
-            }
-            if (!ModelState.IsValid)
-            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.Key, error.Value);
+                }
                 return ValidationProblem(ModelState);
             }
-            
-            var business = await _businessRepository.CreateAsync(_mapper.Map<Business>(businessDto));
-
-            return CreatedAtAction(nameof(GetBusinessAsync), new { id = business.Id }, _mapper.Map<BusinessOutputDto>(business));
+            return CreatedAtAction(nameof(GetBusinessAsync), new { id = dto.Id }, dto);
         }
 
         /// <summary>
@@ -85,24 +75,25 @@ namespace InvestorAPI.Controllers
         [HttpPatch("{id}")]
         public async Task<ActionResult<BusinessOutputDto>> UpdateBusinessAsync([FromRoute] string id, [FromBody] JsonPatchDocument<BusinessUpdateInputDto> patchDoc)
         {
-            var business = await _businessRepository.FindAsync(id);
-            if (business is null)
+            var result = await _businessService.UpdateBusinessAsync(id, inputDto =>
+               patchDoc.TryApplyTo(inputDto, ModelState));
+
+            if (result.Output is BusinessOutputDto dto)
+            {
+                return dto;
+            }
+            if (result.ErrorType == OperationError.DataNotFound)
             {
                 return NotFound();
             }
-
-            var dto = _mapper.Map<BusinessUpdateInputDto>(business);
-            patchDoc.TryApplyTo(dto, ModelState);
-
-            if (!ModelState.IsValid)
+            if (result.ErrorType != OperationError.ExternalError)
             {
-                return ValidationProblem(ModelState);
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.Key, error.Value);
+                }
             }
-            business = _mapper.Map(dto, business);
-
-            await _businessRepository.UpdateAsync(business);
-
-            return _mapper.Map<BusinessOutputDto>(business);
+            return ValidationProblem(ModelState);
         }
 
         /// <summary>
@@ -111,7 +102,7 @@ namespace InvestorAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBusinessAsync([FromRoute] string id)
         {
-            var deleteResult = await _businessRepository.DeleteAsync(id);
+            var deleteResult = await _businessService.DeleteBusinessAsync(id);
 
             if (deleteResult == DeleteResult.EntityNotFound)
             {

@@ -50,11 +50,12 @@ namespace InvestorAPI.Core
         /// after validating it.
         /// </summary>
         /// <param name="id">The id of the <see cref="BusinessType"/> to update.</param>
-        /// <param name="dto">The object containing data to update the underlting business type.</param>
+        /// <param name="dto">The object containing data to update the underlying business type.</param>
         /// <param name="validateDtoProperties">
         /// If <see langword="true"/>, also validate the DTO properties using their associated 
         /// <see cref="System.ComponentModel.DataAnnotations.ValidationAttribute"/> attributes.
-        /// </param>        /// <returns>
+        /// </param>
+        /// <returns>
         /// An <see cref="OperationResult{TOutput}"/> wrapping the updated business type data,
         /// and providing a dictionary of errors occured in the process, if any.        
         /// </returns>
@@ -92,6 +93,26 @@ namespace InvestorAPI.Core
         Task<DeleteResult> DeleteBusinessTypeAsync(string id);
 
         #endregion
-        
+
+
+        #region Validation
+
+        /// <summary>
+        /// Check the data given with an Input DTO for any validation errors violating constraints of a <see cref="BusinessType"/> model.
+        /// </summary>
+        /// <remarks>
+        /// Consider providing the original state of the <see cref="BusinessType"/> model if validation is made
+        /// for update operation.
+        /// </remarks>
+        /// <param name="dto">The input object to validate its data.</param>
+        /// <param name="original">
+        /// The original state of the <see cref="BusinessType"/> model, to check only updated properties.
+        /// This parameter should be provided when updating the model.
+        /// </param>
+        /// <returns>A dictionary with the set of validation errors, if any found.</returns>
+        Task<Dictionary<string, string>?> ValidateInputAsync(BusinessTypeInputDto dto, BusinessType? original = null);
+
+        #endregion
+
     }
 }

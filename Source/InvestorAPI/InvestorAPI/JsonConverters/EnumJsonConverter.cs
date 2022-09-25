@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace InvestorAPI.JsonConverters
 {
@@ -13,6 +14,7 @@ namespace InvestorAPI.JsonConverters
     public class EnumJsonConverter : JsonConverter
     {
 
+        [DebuggerStepThrough]
         public override bool CanConvert(Type objectType)
         {
             // True if the type is enum or nullable enum.
