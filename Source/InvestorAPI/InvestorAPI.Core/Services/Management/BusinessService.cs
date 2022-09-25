@@ -2,29 +2,20 @@
 using InvestorAPI.Data;
 using InvestorData;
 using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
 
 namespace InvestorAPI.Core
 {
     /// <summary>
     /// A service responsible for handling and processing <see cref="Business"/> data.
     /// </summary>
-    internal class BusinessService : IBusinessService
+    internal class BusinessService : EntityService<Business, BusinessOutputDto, BusinessCreateInputDto, BusinessUpdateInputDto>, IBusinessService
     {
-
-        #region Dependencies
-
-        private readonly ApplicationDbContext _dbContext;
-        private readonly IMapper _mapper;
-
-        #endregion
 
         #region Constructor
 
-        public BusinessService(ApplicationDbContext dbContext, IMapper mapper)
+        public BusinessService(ApplicationDbContext dbContext, IMapper mapper) : base(dbContext, dbContext.Businesses, mapper)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
+
         }
 
         #endregion
@@ -35,21 +26,23 @@ namespace InvestorAPI.Core
         /// <inheritdoc/>
         public IAsyncEnumerable<BusinessOutputDto> GetBusinessesAsync()
         {
-            return _dbContext.Businesses
-                .AsNoTracking()
-                .AsAsyncEnumerable()
-                .Select(_mapper.Map<BusinessOutputDto>);
+            return GetEntitiesAsync();
         }
 
 
         /// <inheritdoc/>
-        public async Task<BusinessOutputDto?> FindBusinessAsync(string id)
+        public Task<BusinessOutputDto?> FindBusinessAsync(string id)
         {
-            var business = await _dbContext.Businesses
+            return FindEntityAsync(id);
+        }
+
+        protected override async Task<BusinessOutputDto?> FindEntityAsync(string id)
+        {
+            var business = await EntityDbSet
                 .Include(b => b.BusinessType)
                 .FirstOrDefaultAsync(b => b.Id == id);
 
-            return business is null ? null : _mapper.Map<BusinessOutputDto>(business);
+            return business is null ? null : Mapper.Map<BusinessOutputDto>(business);
         }
 
         #endregion
@@ -57,26 +50,9 @@ namespace InvestorAPI.Core
         #region Create
 
         /// <inheritdoc/>
-        public async Task<OperationResult<BusinessOutputDto>> CreateBusinessAsync(BusinessCreateInputDto dto, bool validateDtoProperties = false)
+        public Task<OperationResult<BusinessOutputDto>> CreateBusinessAsync(BusinessCreateInputDto dto, bool validateDtoProperties = false)
         {
-            var errors = validateDtoProperties ? ValidateObject(dto) : null;
-
-            errors ??= await ValidateInputAsync(dto);
-            if (errors is not null)
-            {
-                return new(errors , OperationError.ValidationError);
-            }
-
-            var business = _mapper.Map<Business>(dto);
-
-            _dbContext.Businesses.Add(business);
-
-            errors = await TrySaveChangesAsync();
-            if (errors is not null)
-            {
-                return new(errors, OperationError.DatabaseError);
-            }
-            return new(_mapper.Map<BusinessOutputDto>(business));
+            return CreateEntityAsync(dto, validateDtoProperties);
         }
 
         #endregion
@@ -86,56 +62,13 @@ namespace InvestorAPI.Core
         /// <inheritdoc/>
         public Task<OperationResult<BusinessOutputDto>> UpdateBusinessAsync(string id, BusinessUpdateInputDto dto, bool validateDtoProperties = false)
         {
-            var errors = validateDtoProperties ? ValidateObject(dto) : null;
-            if (errors is not null)
-            {
-                return Task.FromResult(new OperationResult<BusinessOutputDto>(errors, OperationError.ValidationError));
-            }
-
-            return UpdateBusinessAsync(id, updateDto =>
-            {
-                updateDto = dto;
-                return true;
-            });
+            return UpdateEntityAsync(id, dto, validateDtoProperties);
         }
 
         /// <inheritdoc/>
-        public async Task<OperationResult<BusinessOutputDto>> UpdateBusinessAsync(string id, Func<BusinessUpdateInputDto, bool> updateCallback, bool validateDtoProperties = false)
+        public Task<OperationResult<BusinessOutputDto>> UpdateBusinessAsync(string id, Func<BusinessUpdateInputDto, bool> updateCallback, bool validateDtoProperties = false)
         {
-            var business = await _dbContext.Businesses.FindAsync(id);
-            if (business is null)
-            {
-                return new(OperationError.DataNotFound);
-            }
-            var dto = _mapper.Map<BusinessUpdateInputDto>(business);
-
-            if (!updateCallback.Invoke(dto))
-            {
-                return new(OperationError.ExternalError);
-            }
-
-            var errors = validateDtoProperties ? ValidateObject(dto) : null;
-
-            errors ??= await ValidateInputAsync(dto, business);
-            if (errors is not null)
-            {
-                return new(errors, OperationError.ValidationError);
-            }
-            business = _mapper.Map(dto, business);
-
-
-            var entry = _dbContext.Entry(business);
-            if (entry.State == EntityState.Unchanged)
-            {
-                entry.State = EntityState.Modified;
-            }
-
-            errors = await TrySaveChangesAsync();
-            if (errors is not null)
-            {
-                return new(errors, OperationError.DatabaseError);
-            }
-            return new(_mapper.Map<BusinessOutputDto>(business));
+            return UpdateEntityAsync(id, updateCallback, validateDtoProperties);
         }
 
         #endregion
@@ -143,16 +76,9 @@ namespace InvestorAPI.Core
         #region Delete
 
         /// <inheritdoc/>
-        public async Task<DeleteResult> DeleteBusinessAsync(string id)
+        public Task<DeleteResult> DeleteBusinessAsync(string id)
         {
-            var business = await _dbContext.Businesses.FindAsync(id);
-            if (business is null)
-            {
-                return DeleteResult.EntityNotFound;
-            }
-            _dbContext.Businesses.Remove(business);
-
-            return await _dbContext.SaveChangesAsync() > 0 ? DeleteResult.Success : DeleteResult.Failed;
+            return DeleteEntityAsync(id);
         }
 
         #endregion
@@ -165,11 +91,11 @@ namespace InvestorAPI.Core
         {
             var errors = new Dictionary<string, string>();
 
-            if (dto.Name != original?.Name && await _dbContext.Businesses.AnyAsync(b => b.Name == dto.Name))
+            if (dto.Name != original?.Name && await EntityDbSet.AnyAsync(b => b.Name == dto.Name))
             {
                 errors.Add(nameof(dto.Name), "Business name already exists.");
             }
-            if (dto is BusinessCreateInputDto cDto && !await _dbContext.BusinessTypes.AnyAsync(b => b.Id == cDto.BusinessTypeId))
+            if (dto is BusinessCreateInputDto cDto && !await EntityDbSet.AnyAsync(b => b.Id == cDto.BusinessTypeId))
             {
                 errors.Add(nameof(cDto.BusinessTypeId), "There's no BusinessType found with the Id provided.");
             }
@@ -177,37 +103,14 @@ namespace InvestorAPI.Core
             return errors.Count > 0 ? errors : null;
         }
 
-        #endregion
-
-
-        #region Helper Methods
-
-        private async Task<Dictionary<string, string>?> TrySaveChangesAsync()
+        protected override Task<Dictionary<string, string>?> ValidateCreateInputAsync(BusinessCreateInputDto dto)
         {
-            if (await _dbContext.SaveChangesAsync() > 0)
-            {
-                return null;
-            }
-
-            return new Dictionary<string, string>
-            {
-                ["Server Error"] = "Failed to save business data."
-            };
+            return ValidateInputAsync(dto);
         }
 
-        private static Dictionary<string, string>? ValidateObject<T>(T objectToValidate) where T : class
+        protected override Task<Dictionary<string, string>?> ValidateUpdateInputAsync(BusinessUpdateInputDto dto, Business original)
         {
-            List<ValidationResult> results = new();
-            ValidationContext context = new(objectToValidate);
-
-            Validator.TryValidateObject(objectToValidate, context, results, true);
-
-            if (results.Count > 0)
-            {
-                var pairs = results.Select(e => new KeyValuePair<string, string>(e.MemberNames.First(), e.ErrorMessage ?? "Invalid value."));
-                return new(pairs);
-            }
-            return null;
+            return ValidateInputAsync(dto, original);
         }
 
         #endregion
