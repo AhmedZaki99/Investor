@@ -6,9 +6,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InvestorAPI.Core
 {
-    internal abstract class EntityService<TEntity, TOutputDto, TCreateDto, TUpdateDto> 
-        where TEntity : class 
-        where TOutputDto : class
+    internal abstract class EntityService<TEntity, TOutputDto, TCreateDto, TUpdateDto> : IEntityService<TEntity, TOutputDto, TCreateDto, TUpdateDto>
+        where TEntity : class, IStringId
+        where TOutputDto : class, IStringId
         where TCreateDto : class
         where TUpdateDto : class
     {
@@ -37,7 +37,7 @@ namespace InvestorAPI.Core
 
         #region Data Read
 
-        protected virtual IAsyncEnumerable<TOutputDto> GetEntitiesAsync()
+        public virtual IAsyncEnumerable<TOutputDto> GetEntitiesAsync()
         {
             return EntityDbSet
                 .AsNoTracking()
@@ -46,7 +46,7 @@ namespace InvestorAPI.Core
         }
 
 
-        protected virtual async Task<TOutputDto?> FindEntityAsync(string id)
+        public virtual async Task<TOutputDto?> FindEntityAsync(string id)
         {
             var entity = await EntityDbSet.FindAsync(id);
 
@@ -57,7 +57,7 @@ namespace InvestorAPI.Core
 
         #region Create
 
-        protected virtual async Task<OperationResult<TOutputDto>> CreateEntityAsync(TCreateDto dto, bool validateDtoProperties = false)
+        public virtual async Task<OperationResult<TOutputDto>> CreateEntityAsync(TCreateDto dto, bool validateDtoProperties = false)
         {
             var errors = validateDtoProperties ? ValidateObject(dto) : null;
             if (errors is not null)
@@ -87,7 +87,7 @@ namespace InvestorAPI.Core
 
         #region Update
 
-        protected virtual Task<OperationResult<TOutputDto>> UpdateEntityAsync(string id, TUpdateDto dto, bool validateDtoProperties = false)
+        public virtual Task<OperationResult<TOutputDto>> UpdateEntityAsync(string id, TUpdateDto dto, bool validateDtoProperties = false)
         {
             var errors = validateDtoProperties ? ValidateObject(dto) : null;
             if (errors is not null)
@@ -102,7 +102,7 @@ namespace InvestorAPI.Core
             });
         }
 
-        protected virtual async Task<OperationResult<TOutputDto>> UpdateEntityAsync(string id, Func<TUpdateDto, bool> updateCallback, bool validateDtoProperties = false)
+        public virtual async Task<OperationResult<TOutputDto>> UpdateEntityAsync(string id, Func<TUpdateDto, bool> updateCallback, bool validateDtoProperties = false)
         {
             var entity = await EntityDbSet.FindAsync(id);
             if (entity is null)
@@ -148,7 +148,7 @@ namespace InvestorAPI.Core
 
         #region Delete
 
-        protected virtual async Task<DeleteResult> DeleteEntityAsync(string id)
+        public virtual async Task<DeleteResult> DeleteEntityAsync(string id)
         {
             var entity = await EntityDbSet.FindAsync(id);
             if (entity is null)
@@ -165,9 +165,9 @@ namespace InvestorAPI.Core
 
         #region Abstract Methods
 
-        protected abstract Task<Dictionary<string, string>?> ValidateCreateInputAsync(TCreateDto dto);
+        public abstract Task<Dictionary<string, string>?> ValidateCreateInputAsync(TCreateDto dto);
 
-        protected abstract Task<Dictionary<string, string>?> ValidateUpdateInputAsync(TUpdateDto dto, TEntity original);
+        public abstract Task<Dictionary<string, string>?> ValidateUpdateInputAsync(TUpdateDto dto, TEntity original);
 
         #endregion
 

@@ -29,7 +29,10 @@ namespace InvestorAPI
             {
                 patchDoc.ApplyTo(objectToApplyTo, err => modelState.TryAddModelError("JSON Patch", err.ErrorMessage));
 
-                ValidateObject(objectToApplyTo, modelState);
+                if (modelState.IsValid)
+                {
+                    ValidateObject(objectToApplyTo, modelState); 
+                }
             }
             return modelState.IsValid;
         } 

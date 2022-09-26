@@ -37,6 +37,7 @@ namespace InvestorAPI
         private static void ConfigureServices(WebApplicationBuilder builder)
         {
             // TODO: Use CancellationToken in API endpoints.
+            // TODO: Try use SkipWhile for pagination.
 
             builder.Services
                 .AddControllers(options =>

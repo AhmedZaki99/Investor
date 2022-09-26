@@ -21,64 +21,21 @@ namespace InvestorAPI.Core
         #endregion
 
 
-        #region Data Read
-
-        /// <inheritdoc/>
-        public IAsyncEnumerable<BusinessTypeOutputDto> GetBusinessTypesAsync()
-        {
-            return GetEntitiesAsync();
-        }
-
-
-        /// <inheritdoc/>
-        public Task<BusinessTypeOutputDto?> FindBusinessTypeAsync(string id)
-        {
-            return FindEntityAsync(id);
-        }
-
-        #endregion
-
-        #region Create
-
-        /// <inheritdoc/>
-        public Task<OperationResult<BusinessTypeOutputDto>> CreateBusinessTypeAsync(BusinessTypeInputDto dto, bool validateDtoProperties = false)
-        {
-            return CreateEntityAsync(dto, validateDtoProperties);
-        }
-
-        #endregion
-
-        #region Update
-
-        /// <inheritdoc/>
-        public Task<OperationResult<BusinessTypeOutputDto>> UpdateBusinessTypeAsync(string id, BusinessTypeInputDto dto, bool validateDtoProperties = false)
-        {
-            return UpdateEntityAsync(id, dto, validateDtoProperties);
-        }
-
-        /// <inheritdoc/>
-        public Task<OperationResult<BusinessTypeOutputDto>> UpdateBusinessTypeAsync(string id, Func<BusinessTypeInputDto, bool> updateCallback, bool validateDtoProperties = false)
-        {
-            return UpdateEntityAsync(id, updateCallback, validateDtoProperties);
-        }
-
-        #endregion
-
-        #region Delete
-
-        /// <inheritdoc/>
-        public Task<DeleteResult> DeleteBusinessTypeAsync(string id)
-        {
-            return DeleteEntityAsync(id);
-        }
-
-        #endregion
-
-
         #region Validation
 
         /// <inheritdoc/>
-        public async Task<Dictionary<string, string>?> ValidateInputAsync(BusinessTypeInputDto dto, BusinessType? original = null)
+        public override Task<Dictionary<string, string>?> ValidateCreateInputAsync(BusinessTypeInputDto dto)
+        {
+            return ValidateInputAsync(dto);
+        }
+
+        /// <inheritdoc/>
+        public override Task<Dictionary<string, string>?> ValidateUpdateInputAsync(BusinessTypeInputDto dto, BusinessType original)
+        {
+            return ValidateInputAsync(dto, original);
+        }
+
+        private async Task<Dictionary<string, string>?> ValidateInputAsync(BusinessTypeInputDto dto, BusinessType? original = null)
         {
             if (dto.Name != original?.Name && await EntityDbSet.AnyAsync(b => b.Name == dto.Name))
             {
@@ -88,16 +45,6 @@ namespace InvestorAPI.Core
                 };
             }
             return null;
-        }
-
-        protected override Task<Dictionary<string, string>?> ValidateCreateInputAsync(BusinessTypeInputDto dto)
-        {
-            return ValidateInputAsync(dto);
-        }
-
-        protected override Task<Dictionary<string, string>?> ValidateUpdateInputAsync(BusinessTypeInputDto dto, BusinessType original)
-        {
-            return ValidateInputAsync(dto, original);
         }
 
         #endregion

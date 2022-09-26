@@ -2,7 +2,7 @@
 
 namespace InvestorAPI.Core
 {
-    public class AccountOutputDto
+    public class AccountOutputDto : IStringId
     {
 
         public string Id { get; set; } = null!;

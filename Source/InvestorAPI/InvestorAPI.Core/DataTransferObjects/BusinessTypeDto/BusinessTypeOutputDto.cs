@@ -1,6 +1,8 @@
-﻿namespace InvestorAPI.Core
+﻿using InvestorData;
+
+namespace InvestorAPI.Core
 {
-    public class BusinessTypeOutputDto
+    public class BusinessTypeOutputDto : IStringId
     {
 
         public string Id { get; set; } = null!;
