@@ -18,8 +18,7 @@ namespace InvestorData
         public BusinessType? BusinessType { get; set; }
 
 
-        [Required]
-        public AccountType AccountType { get; set; }
+        public AccountType? AccountType { get; set; }
 
 
         public string? ParentAccountId { get; set; }
