@@ -39,10 +39,7 @@ namespace InvestorAPI.Core
         {
             if (dto.Name != original?.Name && await EntityDbSet.AnyAsync(b => b.Name == dto.Name))
             {
-                return new Dictionary<string, string>
-                {
-                    [nameof(dto.Name)] = "BusinessType name already exists."
-                };
+                return OneErrorDictionary(nameof(dto.Name), "BusinessType name already exists.");
             }
             return null;
         }

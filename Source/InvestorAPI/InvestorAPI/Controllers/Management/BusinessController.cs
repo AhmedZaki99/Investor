@@ -26,7 +26,14 @@ namespace InvestorAPI.Controllers
 
         #region Controller Actions
 
-
+        /// <summary>
+        /// Get the set of available businesses.
+        /// </summary>
+        [HttpGet]
+        public IAsyncEnumerable<BusinessOutputDto> GetBusinessesAsync()
+        {
+            return _businessService.GetEntitiesAsync();
+        }
 
         #endregion
 

@@ -1,30 +1,57 @@
-﻿using InvestorData;
+﻿using AutoMapper;
+using InvestorAPI.Data;
+using InvestorData;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace InvestorAPI.Core
 {
     /// <summary>
     /// A service responsible for handling and processing <see cref="Account"/> models.
     /// </summary>
-    internal class AccountService : IAccountService
+    internal class AccountService : EntityService<Account, AccountOutputDto, AccountInputDto, AccountInputDto>, IAccountService
     {
-
-        #region Dependencies
-
-        private readonly IAccountRepository _accountRepository;
-        private readonly IBusinessRepository _businessRepository;
-        private readonly IBusinessTypeRepository _businessTypeRepository;
-
-        #endregion
 
         #region Constructor
 
-        public AccountService(IAccountRepository accountRepository,
-                              IBusinessRepository businessRepository,
-                              IBusinessTypeRepository businessTypeRepository)
+        public AccountService(ApplicationDbContext dbContext, IMapper mapper) : base(dbContext, dbContext.Accounts, mapper)
         {
-            _accountRepository = accountRepository;
-            _businessRepository = businessRepository;
-            _businessTypeRepository = businessTypeRepository;
+
+        }
+
+        #endregion
+
+
+        #region Read
+
+        /// <inheritdoc/>
+        public IAsyncEnumerable<AccountOutputDto> GetEntitiesAsync(string businessId)
+        {
+            ArgumentNullException.ThrowIfNull(businessId, nameof(businessId));
+
+            return FilterAccounts(businessId);
+        }
+
+        #endregion
+
+        #region Filter
+
+        /// <inheritdoc/>
+        public IAsyncEnumerable<AccountOutputDto> FilterByTypeAsync(string? businessId, AccountType accountType)
+        {
+            return businessId is null
+                   ? GetEntitiesAsync(a => a.AccountType == accountType)
+                   : FilterAccounts(businessId, condition: a => a.AccountType == accountType);
+        }
+
+        /// <inheritdoc/>
+        public IAsyncEnumerable<AccountOutputDto> FilterByParentAsync(string? businessId, string parentId)
+        {
+            ArgumentNullException.ThrowIfNull(parentId, nameof(parentId));
+
+            return businessId is null
+                   ? GetEntitiesAsync(a => a.ParentAccountId == parentId)
+                   : FilterAccounts(businessId, condition: a => a.ParentAccountId == parentId);
         }
 
         #endregion
@@ -33,41 +60,47 @@ namespace InvestorAPI.Core
         #region Validation
 
         /// <inheritdoc/>
-        public async Task<IDictionary<string, string>> ValidateAccountAsync(AccountInputDto dto, Account? original = null)
+        public override Task<Dictionary<string, string>?> ValidateCreateInputAsync(AccountInputDto dto)
         {
-            IDictionary<string, string> errors = new Dictionary<string, string>();
+            return ValidateAccountAsync(dto);
+        }
 
-            if (dto.BusinessId != original?.BusinessId && !ValidateId(_businessRepository, dto.BusinessId, out errors))
+        /// <inheritdoc/>
+        public override Task<Dictionary<string, string>?> ValidateUpdateInputAsync(AccountInputDto dto, Account original)
+        {
+            return ValidateAccountAsync(dto, original);
+        }
+
+        private async Task<Dictionary<string, string>?> ValidateAccountAsync(AccountInputDto dto, Account? original = null)
+        {
+            var errors = await ValidateId(AppDbContext.Businesses, dto.BusinessId, original?.BusinessId);
+            if (errors is not null)
             {
                 return errors;
             }
-            if (dto.BusinessTypeId != original?.BusinessTypeId && !ValidateId(_businessTypeRepository, dto.BusinessTypeId, out errors))
+            errors = await ValidateId(AppDbContext.BusinessTypes, dto.BusinessTypeId, original?.BusinessTypeId);
+            if (errors is not null)
             {
                 return errors;
             }
-
             if (dto.BusinessId is not null && dto.BusinessTypeId is not null)
             {
-                errors.Add("BusinessId / BusinessTypeId", "Accounts can't be assigned for both Business and BusinessType, try providing only one of them.");
-                return errors;
+                return OneErrorDictionary("BusinessId / BusinessTypeId", "Accounts can't be assigned for both Business and BusinessType, try providing only one of them.");
             }
 
-            if (dto.ParentAccountId != original?.ParentAccountId && dto.ParentAccountId is not null)
+            if (dto.ParentAccountId is not null && dto.ParentAccountId != original?.ParentAccountId)
             {
-                var parentAccount = await _accountRepository.GetMinimalDataAsync(dto.ParentAccountId);
-
-                string? errorMsg = parentAccount is not null ?
-                                   parentAccount.IsSubAccount ?
-                                   "The account provided has a parent account on its own, thus it can't be assigned as a parent account." : null :
-                                   "There's no Account found with the Id provided.";
-                if (errorMsg is not null)
+                var parentAccount = await EntityDbSet.FindAsync(dto.ParentAccountId);
+                if (parentAccount is null)
                 {
-                    errors.Add(nameof(dto.ParentAccountId), errorMsg);
-                    return errors;
+                    return OneErrorDictionary(nameof(dto.ParentAccountId), "There's no Account found with the Id provided.");
+                }
+                if (parentAccount.IsSubAccount)
+                {
+                    return OneErrorDictionary(nameof(dto.ParentAccountId), "The account provided has a parent account on its own, thus it can't be assigned as a parent account.");
                 }
             }
-
-            return errors;
+            return null;
         }
 
         #endregion
@@ -75,16 +108,29 @@ namespace InvestorAPI.Core
 
         #region Helper Methods
 
-        private static bool ValidateId<T>(IRepository<T> repository, string? id, out IDictionary<string, string> errors) where T : class, IStringId
+        private IAsyncEnumerable<AccountOutputDto> FilterAccounts(string businessId, Expression<Func<Account, bool>>? condition = null)
         {
-            errors = new Dictionary<string, string>();
+            ArgumentNullException.ThrowIfNull(businessId, nameof(businessId));
 
-            if (id is not null && !repository.EntityExists(id))
+            var query = EntityDbSet
+                .Include(a => a.Business)
+                .Where(IncludedInBusiness(businessId));
+
+            if (condition is not null)
             {
-                errors.Add($"{typeof(T).Name}Id", $"There's no {typeof(T).Name} found with the Id provided.");
-                return false;
+                query = query.Where(condition);
             }
-            return true;
+
+            return query
+                .AsSplitQuery()
+                .AsNoTracking()
+                .AsAsyncEnumerable()
+                .Select(Mapper.Map<AccountOutputDto>);
+        }
+
+        private static Expression<Func<Account, bool>> IncludedInBusiness(string businessId)
+        {
+            return a => a.BusinessId == businessId || a.BusinessId == null && (a.BusinessTypeId == null || a.BusinessTypeId == a.Business!.BusinessTypeId);
         }
 
         #endregion

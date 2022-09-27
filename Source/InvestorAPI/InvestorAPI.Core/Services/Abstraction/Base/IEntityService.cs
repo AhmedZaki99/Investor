@@ -1,4 +1,5 @@
 ﻿using InvestorData;
+using System.Linq.Expressions;
 
 namespace InvestorAPI.Core
 {
@@ -19,10 +20,14 @@ namespace InvestorAPI.Core
         #region Read
 
         /// <summary>
-        /// Get all entities.
+        /// Get all entities, based on a condition.
         /// </summary>
+        /// <param name="condition">The condition to check.</param>
+        /// <remarks>
+        /// This method is not preferred to use in case of big data handling.
+        /// </remarks>
         /// <returns>An <see cref="IAsyncEnumerable{T}"/> of type <typeparamref name="TEntity"/> mapped to <typeparamref name="TOutputDto"/>.</returns>
-        IAsyncEnumerable<TOutputDto> GetEntitiesAsync();
+        IAsyncEnumerable<TOutputDto> GetEntitiesAsync(Expression<Func<TEntity, bool>>? condition = null);
 
         /// <summary>
         /// Find entity by id.

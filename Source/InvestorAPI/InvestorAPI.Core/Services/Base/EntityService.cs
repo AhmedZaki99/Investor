@@ -3,6 +3,7 @@ using InvestorAPI.Data;
 using InvestorData;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 
 namespace InvestorAPI.Core
 {
@@ -37,9 +38,11 @@ namespace InvestorAPI.Core
 
         #region Data Read
 
-        public virtual IAsyncEnumerable<TOutputDto> GetEntitiesAsync()
+        public virtual IAsyncEnumerable<TOutputDto> GetEntitiesAsync(Expression<Func<TEntity, bool>>? condition = null)
         {
-            return EntityDbSet
+            var query = condition is not null ? EntityDbSet.Where(condition) : EntityDbSet;
+
+            return query
                 .AsNoTracking()
                 .AsAsyncEnumerable()
                 .Select(Mapper.Map<TOutputDto>);
@@ -171,6 +174,24 @@ namespace InvestorAPI.Core
 
         #endregion
 
+        #region Protected Methods
+
+        protected static async Task<Dictionary<string, string>?> ValidateId<T>(DbSet<T> dbSet, string? id, string? originalId) where T : class, IStringId
+        {
+            if (id is not null && id != originalId && !await dbSet.AnyAsync(e => e.Id == id))
+            {
+                return OneErrorDictionary($"{typeof(T).Name}Id", $"There's no {typeof(T).Name} found with the Id provided.");
+            }
+            return null;
+        }
+
+        protected static Dictionary<string, string> OneErrorDictionary(string key, string message) => new()
+        {
+            [key] = message
+        };
+
+        #endregion
+
 
         #region Helper Methods
 
@@ -180,11 +201,7 @@ namespace InvestorAPI.Core
             {
                 return null;
             }
-
-            return new Dictionary<string, string>
-            {
-                ["Server Error"] = "Failed to save data."
-            };
+            return OneErrorDictionary("Server Error", "Failed to save data.");
         }
 
         private static Dictionary<string, string>? ValidateObject<T>(T objectToValidate) where T : class

@@ -23,9 +23,17 @@ namespace InvestorAPI.Controllers
 
         #endregion
 
+
         #region Controller Actions
 
-
+        /// <summary>
+        /// Get the set of available business types.
+        /// </summary>
+        [HttpGet]
+        public IAsyncEnumerable<BusinessTypeOutputDto> GetBusinessTypesAsync()
+        {
+            return _businessTypeService.GetEntitiesAsync();
+        }
 
         #endregion
 

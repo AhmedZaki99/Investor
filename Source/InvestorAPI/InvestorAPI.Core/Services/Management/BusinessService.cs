@@ -58,7 +58,7 @@ namespace InvestorAPI.Core
             {
                 errors.Add(nameof(dto.Name), "Business name already exists.");
             }
-            if (dto is BusinessCreateInputDto cDto && !await EntityDbSet.AnyAsync(b => b.Id == cDto.BusinessTypeId))
+            if (dto is BusinessCreateInputDto cDto && cDto.BusinessTypeId is not null && !await AppDbContext.BusinessTypes.AnyAsync(b => b.Id == cDto.BusinessTypeId))
             {
                 errors.Add(nameof(cDto.BusinessTypeId), "There's no BusinessType found with the Id provided.");
             }

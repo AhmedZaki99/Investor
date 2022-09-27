@@ -34,16 +34,6 @@ namespace InvestorAPI.Controllers
         #region Controller Actions
 
         /// <summary>
-        /// Get the set of available entities.
-        /// </summary>
-        [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public virtual IAsyncEnumerable<TOutputDto> GetEntitiesAsync()
-        {
-            return EntityService.GetEntitiesAsync();
-        }
-
-        /// <summary>
         /// Get entity by id.
         /// </summary>
         [HttpGet("{id}")]
