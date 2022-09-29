@@ -176,7 +176,7 @@ namespace InvestorAPI.Core
 
         #region Protected Methods
 
-        protected static async Task<Dictionary<string, string>?> ValidateId<T>(DbSet<T> dbSet, string? id, string? originalId) where T : class, IStringId
+        protected static async Task<Dictionary<string, string>?> ValidateId<T>(DbSet<T> dbSet, string? id, string? originalId = null) where T : class, IStringId
         {
             if (id is not null && id != originalId && !await dbSet.AnyAsync(e => e.Id == id))
             {

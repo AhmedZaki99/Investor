@@ -18,6 +18,8 @@ namespace InvestorAPI.JsonConverters
             }
             catch (JsonSerializationException)
             {
+                string typeName = Nullable.GetUnderlyingType(objectType) is Type type ? type.Name : objectType.Name;
+
                 string valueDescriptor = reader.TokenType switch
                 {
                     JsonToken.Null => "null value",
@@ -25,7 +27,7 @@ namespace InvestorAPI.JsonConverters
                     JsonToken.StartObject => "object body",
                     _ => $"value '{reader.Value?.ToString()}'"
                 };
-                throw new JsonSerializationException($"Error converting {valueDescriptor} to type '{objectType.Name}'.");
+                throw new JsonSerializationException($"Error converting {valueDescriptor} to type '{typeName}'.");
             }
         }
 

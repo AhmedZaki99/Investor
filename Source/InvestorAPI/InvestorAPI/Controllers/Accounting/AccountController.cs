@@ -6,7 +6,7 @@ namespace InvestorAPI.Controllers
 {
     [ApiController]
     [Route("api/accounts")]
-    public class AccountController : EntityController<Account, AccountOutputDto, AccountInputDto, AccountInputDto>
+    public class AccountController : EntityController<Account, AccountOutputDto, AccountCreateInputDto, AccountUpdateInputDto>
     {
 
         #region Dependencies
@@ -48,7 +48,7 @@ namespace InvestorAPI.Controllers
                            ? _accountService.GetEntitiesAsync()
                            : _accountService.GetEntitiesAsync(businessId)
                            : _accountService.FilterByTypeAsync(businessId, type.Value)
-                           : _accountService.FilterByParentAsync(businessId, parentId);
+                           : _accountService.FilterByParentAsync(parentId);
 
             return Ok(accounts);
         }

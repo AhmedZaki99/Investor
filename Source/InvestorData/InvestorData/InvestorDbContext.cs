@@ -56,6 +56,9 @@ namespace InvestorData
             // Business..
             BuildBusiness(modelBuilder);
 
+            // Account..
+            BuildAccount(modelBuilder);
+
             // Invoice & Bill..
             BuildInvoice(modelBuilder);
 
@@ -124,6 +127,13 @@ namespace InvestorData
 
             #endregion
 
+        }
+
+        private static void BuildAccount(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Account>()
+                .HasOne(a => a.ParentAccount)
+                .WithMany(a => a.ChildAccounts);
         }
         
         private static void BuildInvoice(ModelBuilder modelBuilder)

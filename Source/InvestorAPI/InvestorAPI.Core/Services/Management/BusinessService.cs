@@ -52,18 +52,12 @@ namespace InvestorAPI.Core
 
         private async Task<Dictionary<string, string>?> ValidateInputAsync(BusinessUpdateInputDto dto, Business? original = null)
         {
-            var errors = new Dictionary<string, string>();
-
             if (dto.Name != original?.Name && await EntityDbSet.AnyAsync(b => b.Name == dto.Name))
             {
-                errors.Add(nameof(dto.Name), "Business name already exists.");
-            }
-            if (dto is BusinessCreateInputDto cDto && cDto.BusinessTypeId is not null && !await AppDbContext.BusinessTypes.AnyAsync(b => b.Id == cDto.BusinessTypeId))
-            {
-                errors.Add(nameof(cDto.BusinessTypeId), "There's no BusinessType found with the Id provided.");
+                return OneErrorDictionary(nameof(dto.Name), "Business name already exists.");
             }
 
-            return errors.Count > 0 ? errors : null;
+            return dto is BusinessCreateInputDto cDto ? await ValidateId(AppDbContext.BusinessTypes, cDto.BusinessTypeId) : null;
         }
 
         #endregion

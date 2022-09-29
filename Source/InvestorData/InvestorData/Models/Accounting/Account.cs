@@ -22,7 +22,10 @@ namespace InvestorData
 
 
         public string? ParentAccountId { get; set; }
+
         public Account? ParentAccount { get; set; }
+        public List<Account> ChildAccounts { get; set; } = new();
+
         public bool IsSubAccount => ParentAccountId != null;
 
 

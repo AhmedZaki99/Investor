@@ -5,7 +5,7 @@ namespace InvestorAPI.Core
     /// <summary>
     /// Provides an abstraction for a service responsible for handling and processing <see cref="Account"/> models.
     /// </summary>
-    public interface IAccountService : IEntityService<Account, AccountOutputDto, AccountInputDto, AccountInputDto>
+    public interface IAccountService : IEntityService<Account, AccountOutputDto, AccountCreateInputDto, AccountUpdateInputDto>
     {
 
         #region Read
@@ -34,7 +34,7 @@ namespace InvestorAPI.Core
         /// <param name="businessId">Business to get accounts from.</param>
         /// <param name="parentId">The parent account to filter on.</param>
         /// <returns>Filterd accounts.</returns>
-        IAsyncEnumerable<AccountOutputDto> FilterByParentAsync(string? businessId, string parentId);
+        IAsyncEnumerable<ChildAccountOutputDto> FilterByParentAsync(string parentId);
 
         #endregion
 

@@ -19,13 +19,24 @@ namespace InvestorAPI.Core
             CreateMap<BusinessCreateInputDto, Business>();
             CreateMap<BusinessUpdateInputDto, Business>().ReverseMap();
 
+
             // Account.
             CreateMap<Account, AccountOutputDto>()
                 .ForMember(dest => dest.Scope, src => src.MapFrom(src => 
-                    src.BusinessId == null ? 
-                    src.BusinessTypeId == null ? 
-                    Scope.Global : Scope.BusinessTypeSpecific : Scope.Local));
-            CreateMap<AccountInputDto, Account>().ReverseMap();
+                    src.ParentAccountId == null
+                    ? src.BusinessId == null
+                    ? src.BusinessTypeId == null 
+                    ? Scope.Global 
+                    : Scope.BusinessTypeSpecific 
+                    : Scope.Local
+                    : Scope.SubAccount));
+
+            CreateMap<Account, ChildAccountOutputDto>();
+
+            CreateMap<AccountCreateInputDto, Account>();
+            CreateMap<AccountUpdateInputDto, Account>()
+                .ReverseMap()
+                .ConstructUsing(src => new AccountUpdateInputDto(src.ParentAccountId != null));
         }
 
     }
