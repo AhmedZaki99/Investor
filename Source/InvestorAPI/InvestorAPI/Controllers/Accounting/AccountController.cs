@@ -6,7 +6,7 @@ namespace InvestorAPI.Controllers
 {
     [ApiController]
     [Route("api/accounts")]
-    public class AccountController : EntityController<Account, AccountOutputDto, AccountCreateInputDto, AccountUpdateInputDto>
+    public class AccountController : EntityController<Account, AccountOutputDto, AccountInputDto, AccountInputDto>
     {
 
         #region Dependencies
@@ -28,27 +28,16 @@ namespace InvestorAPI.Controllers
         #region Controller Actions
 
         /// <summary>
-        /// Get the set of accounts related to the specified business, parent, or type.
+        /// Get the set of accounts related to the specified business or type.
         /// </summary>
         [HttpGet]
-        public IActionResult GetAccountsAsync([FromQuery(Name = "business")] string? businessId = null,
-                                              [FromQuery(Name = "parent")] string? parentId = null,
-                                              [FromQuery] AccountType? type = null)
+        public IActionResult GetAccountsAsync([FromQuery] string? businessId = null, [FromQuery] AccountType? type = null)
         {
-            if (parentId is not null && type is not null)
-            {
-                ModelState.AddModelError("query parameters", "Accounts can't be filtered based on both parent and type, either provide only one of them or none.");
-
-                return ValidationProblem(ModelState);
-            }
-
-            var accounts = parentId is null
-                           ? type is null
+            var accounts = type is null
                            ? businessId is null
                            ? _accountService.GetEntitiesAsync()
                            : _accountService.GetEntitiesAsync(businessId)
-                           : _accountService.FilterByTypeAsync(businessId, type.Value)
-                           : _accountService.FilterByParentAsync(parentId);
+                           : _accountService.FilterByTypeAsync(businessId, type.Value);
 
             return Ok(accounts);
         }

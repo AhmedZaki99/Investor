@@ -1,5 +1,4 @@
 using InvestorAPI.Core;
-using InvestorAPI.Data;
 using InvestorAPI.JsonConverters;
 using Microsoft.EntityFrameworkCore;
 
