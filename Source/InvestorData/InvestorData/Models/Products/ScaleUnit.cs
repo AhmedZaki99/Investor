@@ -5,15 +5,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InvestorData
 {
     [Index(nameof(Name), IsUnique = true)]
-    public class ScaleUnit : DatedEntity
+    public class ScaleUnit : DatedEntity, IStringId
     {
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; } = null!;
 
-        public Business? Business { get; set; }
         public string? BusinessId { get; set; }
+        public Business? Business { get; set; }
 
 
         [Required]

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorData
 {
-    public class Vendor : DatedEntity
+    public class Vendor : DatedEntity, IStringId
     {
 
         [Key]
@@ -12,7 +12,7 @@ namespace InvestorData
 
         [Required]
         public string BusinessId { get; set; } = null!;
-        public Business Business { get; set; } = null!;
+        public Business? Business { get; set; }
 
 
         [Required]
@@ -23,11 +23,11 @@ namespace InvestorData
         public string? Notes { get; set; }
 
 
-        public Contact? Contact { get; set; }
         public string? ContactId { get; set; }
+        public Contact? Contact { get; set; }
 
-        public Address? Address { get; set; }
         public string? AddressId { get; set; }
+        public Address? Address { get; set; }
 
 
         public List<Bill> Bills { get; set; } = new();

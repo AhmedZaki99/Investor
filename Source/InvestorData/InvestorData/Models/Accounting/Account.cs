@@ -3,24 +3,30 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorData
 {
-    public class Account : DatedEntity
+    public class Account : DatedEntity, IStringId
     {
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string Id { get; set; } = null!;
 
-        public Business? Business { get; set; }
         public string? BusinessId { get; set; }
+        public Business? Business { get; set; }
+        
+
+        public string? BusinessTypeId { get; set; }
+        public BusinessType? BusinessType { get; set; }
 
 
-        [Required]
-        public AccountType AccountType { get; set; }
+        public AccountType? AccountType { get; set; }
 
+
+        public string? ParentAccountId { get; set; }
 
         public Account? ParentAccount { get; set; }
-        public string? ParentAccountId { get; set; }
-        public bool IsSubAccount => ParentAccount != null;
+        public List<Account> ChildAccounts { get; set; } = new();
+
+        public bool IsSubAccount => ParentAccountId != null;
 
 
         [Required]
@@ -37,11 +43,12 @@ namespace InvestorData
 
     public enum AccountType
     {
-        AssetsAccount,
-        LiabilitiesAccount,
-        IncomeAccount,
-        ExpenseAccount,
-        EquityAccount
+        None = 0,
+        AssetsAccount = 1,
+        LiabilitiesAccount = 2,
+        IncomeAccount = 3,
+        ExpenseAccount = 4,
+        EquityAccount= 5
     }
 
 }

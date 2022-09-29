@@ -1,9 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
-    public class UnitConversion
+    public class UnitConversion : IStringId
     {
 
         [Key]
@@ -13,11 +14,11 @@ namespace InvestorData
 
         [Required]
         public string SourceUnitId { get; set; } = null!;
-        public ScaleUnit SourceUnit { get; set; } = null!;
+        public ScaleUnit? SourceUnit { get; set; }
 
         [Required]
         public string TargetUnitId { get; set; } = null!;
-        public ScaleUnit TargetUnit { get; set; } = null!;
+        public ScaleUnit? TargetUnit { get; set; }
 
 
         [Required]

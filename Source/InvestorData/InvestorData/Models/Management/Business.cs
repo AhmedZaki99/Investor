@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
-    public class Business : DatedEntity
+    public class Business : DatedEntity, IStringId
     {
 
         [Key]
@@ -18,8 +18,8 @@ namespace InvestorData
 
 
         [NotNull]
-        public BusinessType? BusinessType { get; set; }
         public string? BusinessTypeId { get; set; }
+        public BusinessType? BusinessType { get; set; }
 
 
         [MaxLength(32)]
@@ -32,6 +32,8 @@ namespace InvestorData
 
 
         #region Navigation Properties
+
+        // TODO: Study the difference bet. assigning nav. properties as Lists vs IEnumerables..
 
         public List<Account> Accounts { get; set; } = new();
 

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorData
 {
-    public class Contact : DatedEntity
+    public class Contact : DatedEntity, IStringId
     {
 
         [Key]

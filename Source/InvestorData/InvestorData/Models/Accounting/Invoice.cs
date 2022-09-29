@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
-    public class Invoice : InvoiceBillBase
+    public class Invoice : InvoiceBillBase, IStringId
     {
 
         [Key]
@@ -13,12 +13,12 @@ namespace InvestorData
 
         [Required]
         public string BusinessId { get; set; } = null!;
-        public Business Business { get; set; } = null!;
+        public Business? Business { get; set; }
 
 
         [NotNull]
-        public Customer? Customer { get; set; }
         public string? CustomerId { get; set; }
+        public Customer? Customer { get; set; }
 
 
         public List<InvoiceItem> Items { get; set; } = new();
