@@ -9,7 +9,7 @@ namespace InvestorAPI.Core
     /// <summary>
     /// A service responsible for handling and processing <see cref="Account"/> models.
     /// </summary>
-    internal class AccountService : EntityService<Account, AccountOutputDto, AccountCreateInputDto, AccountUpdateInputDto>, IAccountService
+    internal class AccountService : EntityService<Account, AccountOutputDto, AccountInputDto, AccountInputDto>, IAccountService
     {
 
         #region Constructor
@@ -25,25 +25,11 @@ namespace InvestorAPI.Core
         #region Read
 
         /// <inheritdoc/>
-        public override IAsyncEnumerable<AccountOutputDto> GetEntitiesAsync(Expression<Func<Account, bool>>? condition = null)
-        {
-            var query = condition is not null ? EntityDbSet.Where(condition) : EntityDbSet;
-
-            return query
-                .Where(a => a.ParentAccountId == null)
-                .Include(a => a.ChildAccounts)
-                .AsSplitQuery()
-                .AsNoTracking()
-                .AsAsyncEnumerable()
-                .Select(Mapper.Map<AccountOutputDto>);
-        }
-
-        /// <inheritdoc/>
         public IAsyncEnumerable<AccountOutputDto> GetEntitiesAsync(string businessId)
         {
             ArgumentNullException.ThrowIfNull(businessId, nameof(businessId));
 
-            return FilterAccounts(businessId);
+            return FilterAccountsAsync(businessId);
         }
 
         #endregion
@@ -55,19 +41,7 @@ namespace InvestorAPI.Core
         {
             return businessId is null
                    ? GetEntitiesAsync(a => a.AccountType == accountType)
-                   : FilterAccounts(businessId, condition: a => a.AccountType == accountType);
-        }
-
-        /// <inheritdoc/>
-        public IAsyncEnumerable<ChildAccountOutputDto> FilterByParentAsync(string parentId)
-        {
-            ArgumentNullException.ThrowIfNull(parentId, nameof(parentId));
-
-            return EntityDbSet
-                .Where(a => a.ParentAccountId == parentId)
-                .AsNoTracking()
-                .AsAsyncEnumerable()
-                .Select(Mapper.Map<ChildAccountOutputDto>);
+                   : FilterAccountsAsync(businessId, condition: a => a.AccountType == accountType);
         }
 
         #endregion
@@ -76,18 +50,18 @@ namespace InvestorAPI.Core
         #region Validation
 
         /// <inheritdoc/>
-        public override Task<Dictionary<string, string>?> ValidateCreateInputAsync(AccountCreateInputDto dto)
+        public override Task<Dictionary<string, string>?> ValidateCreateInputAsync(AccountInputDto dto)
         {
             return ValidateAccountAsync(dto);
         }
 
         /// <inheritdoc/>
-        public override Task<Dictionary<string, string>?> ValidateUpdateInputAsync(AccountUpdateInputDto dto, Account original)
+        public override Task<Dictionary<string, string>?> ValidateUpdateInputAsync(AccountInputDto dto, Account original)
         {
             return ValidateAccountAsync(dto, original);
         }
 
-        private async Task<Dictionary<string, string>?> ValidateAccountAsync(AccountUpdateInputDto dto, Account? original = null)
+        private async Task<Dictionary<string, string>?> ValidateAccountAsync(AccountInputDto dto, Account? original = null)
         {
             if (dto.Name != original?.Name && await EntityDbSet.AnyAsync(a => a.Name == dto.Name))
             {
@@ -105,18 +79,6 @@ namespace InvestorAPI.Core
                 return errors;
             }
 
-            if (dto is AccountCreateInputDto cDto && cDto.ParentAccountId is not null)
-            {
-                var parentAccount = await EntityDbSet.FindAsync(cDto.ParentAccountId);
-                if (parentAccount is null)
-                {
-                    return OneErrorDictionary(nameof(cDto.ParentAccountId), "There's no Account found with the Id provided.");
-                }
-                if (parentAccount.IsSubAccount)
-                {
-                    return OneErrorDictionary(nameof(cDto.ParentAccountId), "The account provided has a parent account on its own, thus it can't be assigned as a parent account.");
-                }
-            }
             return null;
         }
 
@@ -125,13 +87,12 @@ namespace InvestorAPI.Core
 
         #region Helper Methods
 
-        private IAsyncEnumerable<AccountOutputDto> FilterAccounts(string businessId, Expression<Func<Account, bool>>? condition = null)
+        private IAsyncEnumerable<AccountOutputDto> FilterAccountsAsync(string businessId, Expression<Func<Account, bool>>? condition = null)
         {
             ArgumentNullException.ThrowIfNull(businessId, nameof(businessId));
 
             var query = EntityDbSet
-                .Include(a => a.Business)
-                .Include(a => a.ChildAccounts)
+                .Include(a => a.Business) // TODO: Try not to include business.
                 .Where(IncludedInBusiness(businessId));
 
             if (condition is not null)
@@ -148,7 +109,7 @@ namespace InvestorAPI.Core
 
         private static Expression<Func<Account, bool>> IncludedInBusiness(string businessId)
         {
-            return a => a.ParentAccountId == null && (a.BusinessId == businessId || a.BusinessId == null && (a.BusinessTypeId == null || a.BusinessTypeId == a.Business!.BusinessTypeId));
+            return a => a.BusinessId == businessId || a.BusinessId == null && (a.BusinessTypeId == null || a.BusinessTypeId == a.Business!.BusinessTypeId);
         }
 
         #endregion
