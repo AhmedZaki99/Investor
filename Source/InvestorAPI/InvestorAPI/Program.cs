@@ -53,10 +53,6 @@ namespace InvestorAPI
             builder.Services
                 .AddCoreServices()
                 .AddSqlServerDb(builder.Configuration.GetConnectionString("DefaultConnection"));
-
-
-            // Add data access repositories.
-            builder.Services.AddApplicationRepositories();
         }
 
         private static void ConfigurePipeline(WebApplication app)

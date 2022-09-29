@@ -8,11 +8,6 @@ namespace InvestorAPI.Data
 
         #region Entity Sets
 
-        #region Prototype
-
-        public DbSet<Brand> Brands => Set<Brand>();
-
-        #endregion
 
 
         #endregion
@@ -34,18 +29,6 @@ namespace InvestorAPI.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            #region Prototype
-
-            // Brand Model..
-            modelBuilder.Entity<Brand>()
-                .Property(b => b.ScaleUnit)
-                .HasDefaultValue("Unit");
-
-            modelBuilder.Entity<Brand>()
-                .Property(b => b.DateCreated)
-                .HasDefaultValueSql("GETUTCDATE()");
-
-            #endregion
 
         }
 
