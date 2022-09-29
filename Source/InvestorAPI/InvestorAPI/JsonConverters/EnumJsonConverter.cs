@@ -1,41 +1,25 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace InvestorAPI.JsonConverters
 {
     /// <summary>
-    /// An implementation of <see cref="JsonConverter"/> that's used to provide custom
-    /// conversion for <see langword="enum"/> data types.
+    /// An extension of <see cref="StringEnumConverter"/> that's used to provide custom
+    /// exception handling with a better error message.
     /// </summary>
-    /// <remarks>
-    /// The difference from default conversion is focused on providing better error messages for
-    /// the client when conversion fails.
-    /// </remarks>
-    public class EnumJsonConverter : JsonConverter
+    public class EnumJsonConverter : StringEnumConverter
     {
-
-        public override bool CanConvert(Type objectType)
-        {
-            // True if the type is enum or nullable enum.
-            return objectType.IsEnum || Nullable.GetUnderlyingType(objectType)?.IsEnum == true;
-        }
-
 
         public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
         {
-            // Check if enum is nullable.
-            if (Nullable.GetUnderlyingType(objectType) is Type type)
+            try
             {
-                if (reader.Value is null)
-                {
-                    return null;
-                }
-                // Set to the underlying type.
-                objectType = type;
+                return base.ReadJson(reader, objectType, existingValue, serializer);
             }
-
-            // Try parse if the value provided is in string or numeral format.
-            if (!(reader.Value is string or long or int && Enum.TryParse(objectType, reader.Value.ToString(), out object? result)))
+            catch (JsonSerializationException)
             {
+                string typeName = Nullable.GetUnderlyingType(objectType) is Type type ? type.Name : objectType.Name;
+
                 string valueDescriptor = reader.TokenType switch
                 {
                     JsonToken.Null => "null value",
@@ -43,14 +27,8 @@ namespace InvestorAPI.JsonConverters
                     JsonToken.StartObject => "object body",
                     _ => $"value '{reader.Value?.ToString()}'"
                 };
-                throw new JsonSerializationException($"Error converting {valueDescriptor} to type '{objectType.Name}'.");
+                throw new JsonSerializationException($"Error converting {valueDescriptor} to type '{typeName}'.");
             }
-            return result;
-        }
-
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
-        {
-            writer.WriteValue(value?.ToString());
         }
 
     }

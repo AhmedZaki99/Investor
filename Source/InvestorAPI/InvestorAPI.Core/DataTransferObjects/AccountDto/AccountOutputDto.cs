@@ -2,29 +2,39 @@
 
 namespace InvestorAPI.Core
 {
-    public class AccountOutputDto
+    public class AccountOutputDto : ChildAccountOutputDto
     {
 
-        public string Id { get; set; } = null!;
+        public AccountType? AccountType { get; set; }
 
-        public string Name { get; set; } = null!;
-        public string? Description { get; set; }
-
-        public AccountType AccountType { get; set; }
-        public decimal? Balance { get; set; }
-
-        public string? ParentAccountId { get; set; }
 
         public AccountScope Scope { get; set; }
         public string? BusinessId { get; set; }
 
 
+        public List<ChildAccountOutputDto>? ChildAccounts { get; set; }
+
+
         public enum AccountScope
         {
             None = 0,
-            Local = 1,
-            Global = 2,
-            BusinessTypeSpecific = 3,
+            SubAccount = 1,
+            Local = 2,
+            Global = 3,
+            BusinessTypeSpecific = 4,
         }
+    }
+
+    public class ChildAccountOutputDto : IStringId
+    {
+
+        public string Id { get; set; } = null!;
+        public string? ParentAccountId { get; set; }
+
+        public string Name { get; set; } = null!;
+        public string? Description { get; set; }
+
+        public decimal? Balance { get; set; }
+
     }
 }

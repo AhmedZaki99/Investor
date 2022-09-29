@@ -19,7 +19,7 @@ namespace InvestorAPI
         /// <param name="patchDoc">The <see cref="JsonPatchDocument{T}"/>.</param>
         /// <param name="objectToApplyTo">The entity on which <see cref="JsonPatchDocument{T}"/> is applied.</param>
         /// <param name="modelState">The <see cref="ModelStateDictionary"/> to add errors.</param>
-        public static void TryApplyTo<T>(this JsonPatchDocument<T> patchDoc, T objectToApplyTo, ModelStateDictionary modelState) where T : class
+        public static bool TryApplyTo<T>(this JsonPatchDocument<T> patchDoc, T objectToApplyTo, ModelStateDictionary modelState) where T : class
         {
             ArgumentNullException.ThrowIfNull(patchDoc);
             ArgumentNullException.ThrowIfNull(objectToApplyTo);
@@ -29,8 +29,12 @@ namespace InvestorAPI
             {
                 patchDoc.ApplyTo(objectToApplyTo, err => modelState.TryAddModelError("JSON Patch", err.ErrorMessage));
 
-                ValidateObject(objectToApplyTo, modelState);
+                if (modelState.IsValid)
+                {
+                    ValidateObject(objectToApplyTo, modelState); 
+                }
             }
+            return modelState.IsValid;
         } 
         
         /// <summary>
@@ -41,7 +45,7 @@ namespace InvestorAPI
         /// <param name="objectToApplyTo">The entity on which <see cref="JsonPatchDocument{T}"/> is applied.</param>
         /// <param name="modelState">The <see cref="ModelStateDictionary"/> to add errors.</param>
         /// <param name="restricted">The collection of restricted path segments.</param>
-        public static void TryApplyTo<T>(this JsonPatchDocument<T> patchDoc, T objectToApplyTo, ModelStateDictionary modelState, IEnumerable<string> restricted) where T : class
+        public static bool TryApplyTo<T>(this JsonPatchDocument<T> patchDoc, T objectToApplyTo, ModelStateDictionary modelState, IEnumerable<string> restricted) where T : class
         {
             ArgumentNullException.ThrowIfNull(patchDoc);
             ArgumentNullException.ThrowIfNull(objectToApplyTo);
@@ -60,6 +64,7 @@ namespace InvestorAPI
 
                 ValidateObject(objectToApplyTo, modelState);
             }
+            return modelState.IsValid;
         }
 
         #endregion

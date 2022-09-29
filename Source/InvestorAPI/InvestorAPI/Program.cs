@@ -36,6 +36,9 @@ namespace InvestorAPI
 
         private static void ConfigureServices(WebApplicationBuilder builder)
         {
+            // TODO: Use CancellationToken in API endpoints.
+            // TODO: Try use SkipWhile for pagination.
+
             builder.Services
                 .AddControllers(options =>
                 {
@@ -46,20 +49,10 @@ namespace InvestorAPI
                     options.SerializerSettings.Converters.Add(new EnumJsonConverter()));
 
 
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), sqlOptions =>
-                sqlOptions.CommandTimeout(60)));
-
-            
-            // Add Auto Mapper.
-            builder.Services.AddAutoMapper(typeof(Program));
-
-
-            // Add data access repositories.
-            builder.Services.AddApplicationRepositories();
-
             // Add core services.
-            builder.Services.AddCoreServices();
+            builder.Services
+                .AddCoreServices()
+                .AddSqlServerDb(builder.Configuration.GetConnectionString("DefaultConnection"));
         }
 
         private static void ConfigurePipeline(WebApplication app)
