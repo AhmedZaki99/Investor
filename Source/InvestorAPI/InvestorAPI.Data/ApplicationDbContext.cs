@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InvestorAPI.Data
 {
-    public abstract class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : DbContext
     {
 
         #region Entity Sets
@@ -40,7 +40,7 @@ namespace InvestorAPI.Data
 
         #region Constructors
 
-        public ApplicationDbContext(DbContextOptions options) : base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
 
         }
@@ -56,9 +56,6 @@ namespace InvestorAPI.Data
 
             // Business..
             BuildBusiness(modelBuilder);
-
-            // Account..
-            BuildAccount(modelBuilder);
 
             // Invoice & Bill..
             BuildInvoice(modelBuilder);
@@ -128,13 +125,6 @@ namespace InvestorAPI.Data
 
             #endregion
 
-        }
-
-        private static void BuildAccount(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Account>()
-                .HasOne(a => a.ParentAccount)
-                .WithMany(a => a.ChildAccounts);
         }
 
         private static void BuildInvoice(ModelBuilder modelBuilder)
