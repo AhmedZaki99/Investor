@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using InvestorAPI.Data;
 using InvestorData;
 using Microsoft.EntityFrameworkCore;
@@ -43,17 +44,17 @@ namespace InvestorAPI.Core
             var query = condition is not null ? EntityDbSet.Where(condition) : EntityDbSet;
 
             return query
+                .ProjectTo<TOutputDto>(Mapper.ConfigurationProvider)
                 .AsNoTracking()
-                .AsAsyncEnumerable()
-                .Select(Mapper.Map<TOutputDto>);
+                .AsAsyncEnumerable();
         }
 
 
-        public virtual async Task<TOutputDto?> FindEntityAsync(string id)
+        public virtual Task<TOutputDto?> FindEntityAsync(string id)
         {
-            var entity = await EntityDbSet.FindAsync(id);
-
-            return entity is null ? null : Mapper.Map<TOutputDto>(entity);
+            return EntityDbSet
+                .ProjectTo<TOutputDto>(Mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(e => e.Id == id);
         }
 
         #endregion

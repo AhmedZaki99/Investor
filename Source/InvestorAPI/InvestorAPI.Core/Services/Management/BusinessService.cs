@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using InvestorAPI.Data;
 using InvestorData;
 using Microsoft.EntityFrameworkCore;
@@ -24,13 +25,11 @@ namespace InvestorAPI.Core
         #region Read
 
         /// <inheritdoc/>
-        public override async Task<BusinessOutputDto?> FindEntityAsync(string id)
+        public override Task<BusinessOutputDto?> FindEntityAsync(string id)
         {
-            var business = await EntityDbSet
-                .Include(b => b.BusinessType)
+            return EntityDbSet
+                .ProjectTo<BusinessOutputDto>(Mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(b => b.Id == id);
-
-            return business is null ? null : Mapper.Map<BusinessOutputDto>(business);
         }
 
         #endregion

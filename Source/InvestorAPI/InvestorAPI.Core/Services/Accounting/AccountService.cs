@@ -29,7 +29,7 @@ namespace InvestorAPI.Core
         {
             ArgumentNullException.ThrowIfNull(businessId, nameof(businessId));
 
-            return FilterAccountsAsync(businessId);
+            return GetEntitiesAsync(IncludedInBusiness(businessId));
         }
 
         #endregion
@@ -41,7 +41,7 @@ namespace InvestorAPI.Core
         {
             return businessId is null
                    ? GetEntitiesAsync(a => a.AccountType == accountType)
-                   : FilterAccountsAsync(businessId, condition: a => a.AccountType == accountType);
+                   : GetEntitiesAsync(IncludedInBusinessWithType(businessId, accountType));
         }
 
         #endregion
@@ -85,31 +85,16 @@ namespace InvestorAPI.Core
         #endregion
 
 
-        #region Helper Methods
-
-        private IAsyncEnumerable<AccountOutputDto> FilterAccountsAsync(string businessId, Expression<Func<Account, bool>>? condition = null)
-        {
-            ArgumentNullException.ThrowIfNull(businessId, nameof(businessId));
-
-            var query = EntityDbSet
-                .Include(a => a.Business) // TODO: Try not to include business.
-                .Where(IncludedInBusiness(businessId));
-
-            if (condition is not null)
-            {
-                query = query.Where(condition);
-            }
-
-            return query
-                .AsSplitQuery()
-                .AsNoTracking()
-                .AsAsyncEnumerable()
-                .Select(Mapper.Map<AccountOutputDto>);
-        }
+        #region Filter Expressions
 
         private static Expression<Func<Account, bool>> IncludedInBusiness(string businessId)
         {
             return a => a.BusinessId == businessId || a.BusinessId == null && (a.BusinessTypeId == null || a.BusinessTypeId == a.Business!.BusinessTypeId);
+        }
+
+        private static Expression<Func<Account, bool>> IncludedInBusinessWithType(string businessId, AccountType type)
+        {
+            return a => a.AccountType == type && (a.BusinessId == businessId || a.BusinessId == null && (a.BusinessTypeId == null || a.BusinessTypeId == a.Business!.BusinessTypeId));
         }
 
         #endregion
