@@ -2,6 +2,15 @@
 
 namespace InvestorAPI.Core
 {
+
+    public class BusinessCreateInputDto : BusinessUpdateInputDto
+    {
+
+        public string? BusinessTypeId { get; set; }
+
+    }
+
+
     public class BusinessUpdateInputDto
     {
 
@@ -17,4 +26,5 @@ namespace InvestorAPI.Core
         public string? Currency { get; set; }
 
     }
+
 }
