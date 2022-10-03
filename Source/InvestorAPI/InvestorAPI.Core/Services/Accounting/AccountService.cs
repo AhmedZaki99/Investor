@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using InvestorAPI.Data;
 using InvestorData;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace InvestorAPI.Core
@@ -29,7 +28,12 @@ namespace InvestorAPI.Core
         {
             ArgumentNullException.ThrowIfNull(businessId, nameof(businessId));
 
-            return GetEntitiesAsync(IncludedInBusiness(businessId));
+            var business = AppDbContext.Businesses.FirstOrDefault(b => b.Id == businessId);
+            if (business is null)
+            {
+                return AsyncEnumerable.Empty<AccountOutputDto>();
+            }
+            return GetEntitiesAsync(IncludedInBusiness(business));
         }
 
         #endregion
@@ -39,9 +43,17 @@ namespace InvestorAPI.Core
         /// <inheritdoc/>
         public IAsyncEnumerable<AccountOutputDto> FilterByTypeAsync(string? businessId, AccountType accountType)
         {
-            return businessId is null
-                   ? GetEntitiesAsync(a => a.AccountType == accountType)
-                   : GetEntitiesAsync(a => a.AccountType == accountType, IncludedInBusiness(businessId));
+            if (businessId is null)
+            {
+                return GetEntitiesAsync(a => a.AccountType == accountType);
+            }
+
+            var business = AppDbContext.Businesses.FirstOrDefault(b => b.Id == businessId);
+            if (business is null)
+            {
+                return AsyncEnumerable.Empty<AccountOutputDto>();
+            }
+            return GetEntitiesAsync(a => a.AccountType == accountType, IncludedInBusiness(business));
         }
 
         #endregion
@@ -63,23 +75,11 @@ namespace InvestorAPI.Core
 
         private async Task<Dictionary<string, string>?> ValidateAccountAsync(AccountInputDto dto, Account? original = null)
         {
-            if (dto.Name != original?.Name && await EntityDbSet.AnyAsync(a => a.Name == dto.Name))
-            {
-                return OneErrorDictionary(nameof(dto.Name), "Account name already exists.");
-            }
+            var errors = await ValidateName(dto.Name!, original?.Name);
+            errors ??= await ValidateId(AppDbContext.Businesses, dto.BusinessId, original?.BusinessId);
+            errors ??= await ValidateId(AppDbContext.BusinessTypes, dto.BusinessTypeId, original?.BusinessTypeId);
 
-            var errors = await ValidateId(AppDbContext.Businesses, dto.BusinessId, original?.BusinessId);
-            if (errors is not null)
-            {
-                return errors;
-            }
-            errors = await ValidateId(AppDbContext.BusinessTypes, dto.BusinessTypeId, original?.BusinessTypeId);
-            if (errors is not null)
-            {
-                return errors;
-            }
-
-            return null;
+            return errors;
         }
 
         #endregion
@@ -87,9 +87,11 @@ namespace InvestorAPI.Core
 
         #region Filter Expressions
 
-        private static Expression<Func<Account, bool>> IncludedInBusiness(string businessId)
+        private static Expression<Func<Account, bool>> IncludedInBusiness(Business business)
         {
-            return a => a.BusinessId == businessId || a.BusinessId == null && (a.BusinessTypeId == null || a.BusinessTypeId == a.Business!.BusinessTypeId);
+            return a => a.AccountScope == AccountScope.Global
+                     || a.AccountScope == AccountScope.Local && a.BusinessId == business.Id
+                     || a.AccountScope == AccountScope.BusinessTypeSpecific && a.BusinessTypeId == business.BusinessTypeId;
         }
 
         #endregion

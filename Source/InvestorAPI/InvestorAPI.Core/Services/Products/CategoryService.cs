@@ -1,14 +1,13 @@
 ﻿using AutoMapper;
 using InvestorAPI.Data;
 using InvestorData;
-using Microsoft.EntityFrameworkCore;
 
 namespace InvestorAPI.Core
 {
     /// <summary>
     /// A service responsible for handling and processing <see cref="Category"/> data.
     /// </summary>
-    internal class CategoryService : EntityService<Category, CategoryOutputDto, CategortCreateInputDto, CategoryUpdateInputDto>, ICategoryService
+    internal class CategoryService : EntityService<Category, CategoryOutputDto, CategoryCreateInputDto, CategoryUpdateInputDto>, ICategoryService
     {
 
         #region Constructor
@@ -37,7 +36,7 @@ namespace InvestorAPI.Core
         #region Validation
 
         /// <inheritdoc/>
-        public override Task<Dictionary<string, string>?> ValidateCreateInputAsync(CategortCreateInputDto dto)
+        public override Task<Dictionary<string, string>?> ValidateCreateInputAsync(CategoryCreateInputDto dto)
         {
             return ValidateInputAsync(dto);
         }
@@ -50,14 +49,13 @@ namespace InvestorAPI.Core
 
         private async Task<Dictionary<string, string>?> ValidateInputAsync(CategoryUpdateInputDto dto, Category? original = null)
         {
-            // TODO: Add a generalized logic to check for unique names.
+            var errors = await ValidateName(dto.Name!, original?.Name);
 
-            if (dto.Name != original?.Name && await EntityDbSet.AnyAsync(c => c.Name == dto.Name))
-            {
-                return OneErrorDictionary(nameof(dto.Name), "Category name already exists.");
-            }
+            errors ??= dto is CategoryCreateInputDto cDto 
+                ? await ValidateId(AppDbContext.Businesses, cDto.BusinessId) 
+                : null;
 
-            return dto is CategortCreateInputDto cDto ? await ValidateId(AppDbContext.Businesses, cDto.BusinessId) : null;
+            return errors;
         }
 
         #endregion

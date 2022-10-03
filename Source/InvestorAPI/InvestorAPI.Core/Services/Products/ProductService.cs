@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using InvestorAPI.Data;
 using InvestorData;
-using Microsoft.EntityFrameworkCore;
 
 namespace InvestorAPI.Core
 {
@@ -89,18 +87,13 @@ namespace InvestorAPI.Core
 
         private async Task<Dictionary<string, string>?> ValidateAccountAsync(ProductUpdateInputDto dto, Product? original = null)
         {
-            if (dto.Name != original?.Name && await EntityDbSet.AnyAsync(a => a.Name == dto.Name))
-            {
-                return OneErrorDictionary(nameof(dto.Name), "Product name already exists.");
-            }
+            var errors = await ValidateName(dto.Name!, original?.Name);
 
-            var errors = dto is ProductCreateInputDto cDto ? await ValidateId(AppDbContext.Businesses, cDto.BusinessId) : null;
-            if (errors is not null)
-            {
-                return errors;
-            }
+            errors ??= dto is ProductCreateInputDto cDto 
+                ? await ValidateId(AppDbContext.Businesses, cDto.BusinessId) 
+                : null;
 
-            return null;
+            return errors;
         }
 
         #endregion
