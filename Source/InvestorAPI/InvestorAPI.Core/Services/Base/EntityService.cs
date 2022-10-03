@@ -39,9 +39,13 @@ namespace InvestorAPI.Core
 
         #region Data Read
 
-        public virtual IAsyncEnumerable<TOutputDto> GetEntitiesAsync(Expression<Func<TEntity, bool>>? condition = null)
+        public virtual IAsyncEnumerable<TOutputDto> GetEntitiesAsync(params Expression<Func<TEntity, bool>>[] conditions)
         {
-            var query = condition is not null ? EntityDbSet.Where(condition) : EntityDbSet;
+            var query = EntityDbSet.AsQueryable();
+            foreach (var condition in conditions)
+            {
+                query = query.Where(condition);
+            }
 
             return query
                 .ProjectTo<TOutputDto>(Mapper.ConfigurationProvider)

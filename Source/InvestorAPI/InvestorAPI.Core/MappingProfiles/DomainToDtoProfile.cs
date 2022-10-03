@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using InvestorData;
-
-using Scope = InvestorAPI.Core.AccountOutputDto.AccountScope;
+using static InvestorAPI.Core.AccountOutputDto;
 
 namespace InvestorAPI.Core
 {
@@ -22,14 +21,17 @@ namespace InvestorAPI.Core
 
             // Account.
             CreateMap<Account, AccountOutputDto>()
-                .ForMember(dest => dest.Scope, src => src.MapFrom(src => 
-                    src.BusinessId == null
-                    ? src.BusinessTypeId == null 
-                    ? Scope.Global 
-                    : Scope.BusinessTypeSpecific 
-                    : Scope.Local));
+                .ForMember(dto => dto.Scope, config => config.MapFrom(model => 
+                    model.BusinessId == null
+                    ? model.BusinessTypeId == null 
+                    ? AccountScope.Global 
+                    : AccountScope.BusinessTypeSpecific 
+                    : AccountScope.Local));
 
             CreateMap<AccountInputDto, Account>().ReverseMap();
+
+
+            // Product.
         }
 
     }

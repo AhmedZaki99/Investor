@@ -46,6 +46,8 @@ namespace InvestorData
         public string? IncomeAccountId { get; set; }
         public Account? IncomeAccount { get; set; }
 
+        public bool IsSellable => IncomeAccountId != null;
+
 
         public decimal? Cost { get; set; }
 
@@ -54,6 +56,8 @@ namespace InvestorData
 
         public string? ExpenseAccountId { get; set; }
         public Account? ExpenseAccount { get; set; }
+
+        public bool IsPurchasable => ExpenseAccountId != null;
 
         #endregion
 
@@ -68,7 +72,7 @@ namespace InvestorData
         public string? ScaleUnitId { get; set; }
         public ScaleUnit? ScaleUnit { get; set; }
 
-        public int? ReorderPoint { get; set; }
+        public int? ReorderPoint { get; set; } // IMPORTANT: Change to double
 
         [NotNull]
         public string? InventoryAccountId { get; set; }

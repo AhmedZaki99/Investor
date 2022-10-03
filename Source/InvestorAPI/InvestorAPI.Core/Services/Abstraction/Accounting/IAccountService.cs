@@ -5,18 +5,8 @@ namespace InvestorAPI.Core
     /// <summary>
     /// Provides an abstraction for a service responsible for handling and processing <see cref="Account"/> models.
     /// </summary>
-    public interface IAccountService : IEntityService<Account, AccountOutputDto, AccountInputDto, AccountInputDto>
+    public interface IAccountService : IBusinessEntityService<Account, AccountOutputDto, AccountInputDto, AccountInputDto>
     {
-
-        #region Read
-
-        /// <summary>
-        /// Returns all entities for a given business.
-        /// </summary>
-        /// <param name="businessId">Business to get entities for.</param>
-        IAsyncEnumerable<AccountOutputDto> GetEntitiesAsync(string businessId);
-
-        #endregion
 
         #region Filter
 

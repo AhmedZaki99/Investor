@@ -27,7 +27,7 @@ namespace InvestorAPI.Core
         /// This method is not preferred to use in case of big data handling.
         /// </remarks>
         /// <returns>An <see cref="IAsyncEnumerable{T}"/> of type <typeparamref name="TEntity"/> mapped to <typeparamref name="TOutputDto"/>.</returns>
-        IAsyncEnumerable<TOutputDto> GetEntitiesAsync(Expression<Func<TEntity, bool>>? condition = null);
+        IAsyncEnumerable<TOutputDto> GetEntitiesAsync(params Expression<Func<TEntity, bool>>[] conditions);
 
         /// <summary>
         /// Find entity by id.

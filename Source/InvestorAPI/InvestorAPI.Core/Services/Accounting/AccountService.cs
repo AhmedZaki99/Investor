@@ -41,7 +41,7 @@ namespace InvestorAPI.Core
         {
             return businessId is null
                    ? GetEntitiesAsync(a => a.AccountType == accountType)
-                   : GetEntitiesAsync(IncludedInBusinessWithType(businessId, accountType));
+                   : GetEntitiesAsync(a => a.AccountType == accountType, IncludedInBusiness(businessId));
         }
 
         #endregion
@@ -90,11 +90,6 @@ namespace InvestorAPI.Core
         private static Expression<Func<Account, bool>> IncludedInBusiness(string businessId)
         {
             return a => a.BusinessId == businessId || a.BusinessId == null && (a.BusinessTypeId == null || a.BusinessTypeId == a.Business!.BusinessTypeId);
-        }
-
-        private static Expression<Func<Account, bool>> IncludedInBusinessWithType(string businessId, AccountType type)
-        {
-            return a => a.AccountType == type && (a.BusinessId == businessId || a.BusinessId == null && (a.BusinessTypeId == null || a.BusinessTypeId == a.Business!.BusinessTypeId));
         }
 
         #endregion

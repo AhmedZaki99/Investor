@@ -21,6 +21,19 @@ namespace InvestorAPI.Core
         #endregion
 
 
+        #region Read
+
+        /// <inheritdoc/>
+        public IAsyncEnumerable<CategoryOutputDto> GetEntitiesAsync(string businessId)
+        {
+            ArgumentNullException.ThrowIfNull(businessId, nameof(businessId));
+
+            return GetEntitiesAsync(c => c.BusinessId == null || c.BusinessId == businessId);
+        }
+
+        #endregion
+
+
         #region Validation
 
         /// <inheritdoc/>
