@@ -1,16 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
-    public class UnitConversion : IStringId
+    public class UnitConversion : EntityBase
     {
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; } = null!;
-
 
         [Required]
         public string SourceUnitId { get; set; } = null!;

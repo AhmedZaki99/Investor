@@ -1,16 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
-    public class Business : DatedEntity, IStringId
+    public class Business : DatedEntity, IUniqueName
     {
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; } = null!;
-
 
         [Required]
         [MaxLength(256)]

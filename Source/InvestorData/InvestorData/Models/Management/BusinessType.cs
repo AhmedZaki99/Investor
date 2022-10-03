@@ -1,15 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorData
 {
-    public class BusinessType : IStringId
+    public class BusinessType : EntityBase, IUniqueName
     {
         // TODO: Add Unique Index on name.
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; } = null!;
 
 
         [Required]

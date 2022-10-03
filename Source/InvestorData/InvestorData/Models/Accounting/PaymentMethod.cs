@@ -1,18 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorData
 {
-    public class PaymentMethod : IStringId
+    public class PaymentMethod : EntityBase, IUniqueName
     {
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; } = null!;
-
-        public string? BusinessId { get; set; }
-        public Business? Business { get; set; }
-
 
         [Required]
         [MaxLength(256)]

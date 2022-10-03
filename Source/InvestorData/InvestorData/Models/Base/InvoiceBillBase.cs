@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InvestorData
 {
-    public abstract class InvoiceBillBase : DatedEntity
+    public abstract class InvoiceBillBase : BusinessEntity
     {
 
         public int? Number { get; set; }
@@ -13,7 +13,7 @@ namespace InvestorData
         public decimal TotalAmount { get; set; }
 
         public decimal? AmountDue { get; set; }
-        public bool IsDue => AmountDue is not null;
+        public bool IsDue => AmountDue != null;
 
 
         [Required]

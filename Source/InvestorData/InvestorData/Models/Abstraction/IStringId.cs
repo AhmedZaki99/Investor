@@ -9,4 +9,6 @@
         string Id { get; set; }
 
     }
+
+    // IMPORTANT: Marked for deletion.
 }

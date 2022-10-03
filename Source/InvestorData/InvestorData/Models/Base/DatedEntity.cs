@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorData
 {
-    public abstract class DatedEntity
+    public abstract class DatedEntity : EntityBase
     {
 
         [Required]

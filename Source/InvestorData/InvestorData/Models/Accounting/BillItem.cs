@@ -1,16 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
-    public class BillItem : ItemBase, IStringId
+    public class BillItem : ItemBase
     {
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; } = null!;
-
 
         [NotNull]
         public string? ExpenseCategoryId { get; set; }

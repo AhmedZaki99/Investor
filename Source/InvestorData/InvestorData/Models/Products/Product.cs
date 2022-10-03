@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
@@ -8,19 +7,10 @@ namespace InvestorData
     [Index(nameof(IsService))]
     [Index(nameof(Name), IsUnique = true)]
     [Index(nameof(Code), IsUnique = true)]
-    public class Product : DatedEntity, IStringId, IComparable<Product>
+    public class Product : BusinessEntity, IUniqueName, IComparable<Product>
     {
 
         #region Common Data
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; } = null!;
-
-        [Required]
-        public string BusinessId { get; set; } = null!;
-        public Business? Business { get; set; }
-
 
         [Required]
         public bool IsService { get; set; }
