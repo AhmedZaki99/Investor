@@ -1,18 +1,26 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
-    public abstract class PaymentBase : BusinessEntity
+    [Index(nameof(PaymentType), nameof(TraderId))]
+    public class Payment : BusinessEntity
     {
+
+        [NotNull]
+        public string? TraderId { get; set; }
+        public Trader? Trader { get; set; }
+
+
+        public PaymentType PaymentType { get; set; }
+
 
         public int? Number { get; set; }
 
-        [Required]
         public decimal Amount { get; set; }
 
 
-        [Required]
         [Precision(0)]
         public DateTime PaymentDate { get; set; }
 
@@ -26,4 +34,12 @@ namespace InvestorData
         public PaymentMethod? PaymentMethod { get; set; }
 
     }
+
+
+    public enum PaymentType
+    {
+        CustomerPayment = 0,
+        CreditPayment = 1
+    }
+
 }

@@ -14,7 +14,6 @@ namespace InvestorData
         public ScaleUnit? TargetUnit { get; set; }
 
 
-        [Required]
         public double ConversionValue { get; set; }
 
 

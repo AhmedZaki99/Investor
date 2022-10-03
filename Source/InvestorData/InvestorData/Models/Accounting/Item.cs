@@ -3,8 +3,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorData
 {
-    public class ItemBase : EntityBase
+    public class Item : EntityBase
     {
+
+        [Required]
+        public string InvoiceId { get; set; } = null!;
+        public Invoice? Invoice { get; set; }
+
 
         [Required]
         public string ProductId { get; set; } = null!;
@@ -15,10 +20,7 @@ namespace InvestorData
         public string? Description { get; set; }
 
 
-        [Required]
-        public int Quantity { get; set; }
-
-        [Required]
+        public double Quantity { get; set; }
         public decimal Price { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]

@@ -21,18 +21,13 @@ namespace InvestorAPI.Data
 
         public DbSet<Address> Addresses => Set<Address>();
         public DbSet<Contact> Contacts => Set<Contact>();
-        public DbSet<Customer> Customers => Set<Customer>();
-        public DbSet<Vendor> Vendors => Set<Vendor>();
+        public DbSet<Trader> Traders => Set<Trader>();
 
-        public DbSet<InvoiceItem> InvoiceItems => Set<InvoiceItem>();
+        public DbSet<Item> Items => Set<Item>();
         public DbSet<Invoice> Invoices => Set<Invoice>();
 
-        public DbSet<BillItem> BillItems => Set<BillItem>();
-        public DbSet<Bill> Bills => Set<Bill>();
-
         public DbSet<PaymentMethod> PaymentMethods => Set<PaymentMethod>();
-        public DbSet<CustomerPayment> CustomerPayments => Set<CustomerPayment>();
-        public DbSet<CreditPayment> CreditPayments => Set<CreditPayment>();
+        public DbSet<Payment> Payments => Set<Payment>();
 
 
         #endregion
@@ -99,28 +94,13 @@ namespace InvestorAPI.Data
                 .OnDelete(DeleteBehavior.ClientCascade);
 
             modelBuilder.Entity<Business>()
-                .HasMany(b => b.Bills)
-                .WithOne(b => b.Business)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            modelBuilder.Entity<Business>()
-                .HasMany(b => b.CustomerPayments)
+                .HasMany(b => b.Payments)
                 .WithOne(c => c.Business)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
             modelBuilder.Entity<Business>()
-                .HasMany(b => b.CreditPayments)
-                .WithOne(v => v.Business)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            modelBuilder.Entity<Business>()
-                .HasMany(b => b.Customers)
+                .HasMany(b => b.Traders)
                 .WithOne(c => c.Business)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            modelBuilder.Entity<Business>()
-                .HasMany(b => b.Vendors)
-                .WithOne(v => v.Business)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
             #endregion
@@ -129,9 +109,9 @@ namespace InvestorAPI.Data
 
         private static void BuildInvoice(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<InvoiceItem>()
+            modelBuilder.Entity<Item>()
                 .Property(i => i.Amount)
-                .HasComputedColumnSql($"[{nameof(InvoiceItem.Quantity)}] * [{nameof(InvoiceItem.Price)}]");
+                .HasComputedColumnSql($"[{nameof(Item.Quantity)}] * [{nameof(Item.Price)}]");
         }
 
         private static void BuildScaleUnit(ModelBuilder modelBuilder)

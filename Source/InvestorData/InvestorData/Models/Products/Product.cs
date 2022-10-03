@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
-    [Index(nameof(IsService))]
+    [Index(nameof(IsService), nameof(BusinessId))]
     [Index(nameof(Name), IsUnique = true)]
     [Index(nameof(Code), IsUnique = true)]
     public class Product : BusinessEntity, IUniqueName, IComparable<Product>
@@ -12,7 +12,6 @@ namespace InvestorData
 
         #region Common Data
 
-        [Required]
         public bool IsService { get; set; }
 
 
@@ -58,7 +57,7 @@ namespace InvestorData
         public string? ScaleUnitId { get; set; }
         public ScaleUnit? ScaleUnit { get; set; }
 
-        public int? ReorderPoint { get; set; }
+        public int? ReorderPoint { get; set; } // double.
 
         [NotNull]
         public string? InventoryAccountId { get; set; }

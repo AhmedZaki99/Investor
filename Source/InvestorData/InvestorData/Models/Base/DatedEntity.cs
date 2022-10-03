@@ -7,7 +7,6 @@ namespace InvestorData
     public abstract class DatedEntity : EntityBase
     {
 
-        [Required]
         [Precision(3)]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public DateTime DateCreated { get; set; }

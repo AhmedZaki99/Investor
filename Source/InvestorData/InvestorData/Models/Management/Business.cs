@@ -1,8 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
+    [Index(nameof(Name), IsUnique = true)]
     public class Business : DatedEntity, IUniqueName
     {
 
@@ -35,14 +37,9 @@ namespace InvestorData
         public List<Category> Categories { get; set; } = new();
         public List<Product> Products { get; set; } = new();
 
-        public List<Customer> Customers { get; set; } = new();
-        public List<Vendor> Vendors { get; set; } = new();
-
+        public List<Trader> Traders { get; set; } = new();
         public List<Invoice> Invoices { get; set; } = new();
-        public List<Bill> Bills { get; set; } = new();
-        
-        public List<CustomerPayment> CustomerPayments { get; set; } = new();
-        public List<CreditPayment> CreditPayments { get; set; } = new();
+        public List<Payment> Payments { get; set; } = new();
 
         #endregion
 
