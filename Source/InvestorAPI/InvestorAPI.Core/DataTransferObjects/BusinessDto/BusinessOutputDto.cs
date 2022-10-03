@@ -2,10 +2,8 @@
 
 namespace InvestorAPI.Core
 {
-    public class BusinessOutputDto : IStringId
+    public class BusinessOutputDto : OutputDtoBase
     {
-
-        public string Id { get; set; } = null!;
 
         public string Name { get; set; } = null!;
 

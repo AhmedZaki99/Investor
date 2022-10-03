@@ -61,15 +61,7 @@ namespace InvestorAPI.Core
         /// <inheritdoc/>
         public IAsyncEnumerable<ProductOutputDto> FilterByType(string businessId, bool isService)
         {
-            var query = EntityDbSet
-                .Include(p => p.Category)
-                .Include(p => p.ScaleUnit);
-
-            return query
-                .Where(p => p.BusinessId == businessId && p.IsService == isService)
-                .ProjectTo<ProductOutputDto>(Mapper.ConfigurationProvider)
-                .AsNoTracking()
-                .AsAsyncEnumerable();
+            throw new NotImplementedException();
         }
 
         /// <inheritdoc/>

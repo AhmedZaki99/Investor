@@ -11,11 +11,10 @@ namespace InvestorData
 
     }
 
-    public abstract class OptionalBusinessEntity : DatedEntity
+    public abstract class OptionalBusinessEntity : BusinessEntity
     {
 
-        public string? BusinessId { get; set; }
-        public Business? Business { get; set; }
+        public new string? BusinessId { get; set; }
 
     }
 }

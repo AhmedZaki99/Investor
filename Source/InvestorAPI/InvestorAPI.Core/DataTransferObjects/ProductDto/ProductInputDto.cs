@@ -10,7 +10,7 @@ namespace InvestorAPI.Core
         public string? BusinessId { get; set; }
 
 
-        [Required(ErrorMessage = "{0} is required and cannot be empty.")] // TODO: Move fixed messages to constant references.
+        [Required(ErrorMessage = "{0} is required and cannot be empty.")] // IMPORTANT: Move fixed messages to constant references.
         public bool IsService { get; set; }
 
     }
@@ -27,10 +27,10 @@ namespace InvestorAPI.Core
 
         public string? CategoryId { get; set; }
 
-        public TradingInfoDto? SalesInformation { get; set; }
-        public TradingInfoDto? PurchasingInformation { get; set; }
+        public TradingInfoInputDto? SalesInformation { get; set; }
+        public TradingInfoInputDto? PurchasingInformation { get; set; }
 
-        public InventoryInfoDto? InventoryDetails { get; set; }
+        public InventoryInfoInputDto? InventoryDetails { get; set; }
 
     }
 }

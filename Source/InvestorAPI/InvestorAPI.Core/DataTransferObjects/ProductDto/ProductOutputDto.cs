@@ -1,11 +1,8 @@
-﻿using InvestorData;
-
-namespace InvestorAPI.Core
+﻿namespace InvestorAPI.Core
 {
-    public class ProductOutputDto : IStringId
+    public class ProductOutputDto : OutputDtoBase
     {
 
-        public string Id { get; set; } = null!;
         public string BusinessId { get; set; } = null!;
 
         public bool IsService { get; set; }
@@ -14,11 +11,13 @@ namespace InvestorAPI.Core
         public string? Code { get; set; }
 
         public string? CategoryId { get; set; }
+        public string? CategoryName { get; set; }
 
-        public TradingInfoDto? SalesInformation { get; set; }
-        public TradingInfoDto? PurchasingInformation { get; set; }
 
-        public InventoryInfoDto? InventoryDetails { get; set; }
+        public TradingInfoOutputDto? SalesInformation { get; set; }
+        public TradingInfoOutputDto? PurchasingInformation { get; set; }
+
+        public InventoryInfoOutputDto? InventoryDetails { get; set; }
 
     }
 }

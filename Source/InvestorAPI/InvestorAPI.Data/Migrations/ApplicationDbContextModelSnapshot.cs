@@ -74,7 +74,7 @@ namespace InvestorAPI.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Accounts");
+                    b.ToTable("Accounts", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.Address", b =>
@@ -110,7 +110,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.Business", b =>
@@ -152,7 +152,7 @@ namespace InvestorAPI.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Businesses");
+                    b.ToTable("Businesses", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.BusinessType", b =>
@@ -187,7 +187,7 @@ namespace InvestorAPI.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("BusinessTypes");
+                    b.ToTable("BusinessTypes", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.Category", b =>
@@ -225,7 +225,7 @@ namespace InvestorAPI.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.Contact", b =>
@@ -262,7 +262,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Contacts");
+                    b.ToTable("Contacts", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.InventoryInfo", b =>
@@ -293,7 +293,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("ScaleUnitId");
 
-                    b.ToTable("InventoryInfos");
+                    b.ToTable("InventoryInfos", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.Invoice", b =>
@@ -356,7 +356,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("InvoiceType", "TraderId");
 
-                    b.ToTable("Invoices");
+                    b.ToTable("Invoices", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.Item", b =>
@@ -396,7 +396,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Items");
+                    b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.Payment", b =>
@@ -454,7 +454,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("PaymentType", "TraderId");
 
-                    b.ToTable("Payments");
+                    b.ToTable("Payments", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.PaymentMethod", b =>
@@ -477,7 +477,7 @@ namespace InvestorAPI.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("PaymentMethods");
+                    b.ToTable("PaymentMethods", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.Product", b =>
@@ -551,7 +551,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("IsService", "BusinessId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.ScaleUnit", b =>
@@ -589,7 +589,7 @@ namespace InvestorAPI.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("ScaleUnits");
+                    b.ToTable("ScaleUnits", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.Trader", b =>
@@ -643,7 +643,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("TraderType", "BusinessId");
 
-                    b.ToTable("Traders");
+                    b.ToTable("Traders", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.TradingInfo", b =>
@@ -667,7 +667,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("TradingInfos");
+                    b.ToTable("TradingInfos", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.UnitConversion", b =>
@@ -697,7 +697,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("TargetUnitId");
 
-                    b.ToTable("UnitConversions");
+                    b.ToTable("UnitConversions", (string)null);
                 });
 
             modelBuilder.Entity("InvestorData.Account", b =>

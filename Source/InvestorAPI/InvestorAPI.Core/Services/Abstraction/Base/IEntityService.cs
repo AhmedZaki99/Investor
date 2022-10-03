@@ -11,8 +11,8 @@ namespace InvestorAPI.Core
     /// <typeparam name="TCreateDto">Type of the input data transfer object used for entity creation.</typeparam>
     /// <typeparam name="TUpdateDto">Type of the input data transfer object used for entity update.</typeparam>
     public interface IEntityService<TEntity, TOutputDto, TCreateDto, TUpdateDto>
-        where TEntity : class, IStringId
-        where TOutputDto : class, IStringId
+        where TEntity : EntityBase
+        where TOutputDto : OutputDtoBase
         where TCreateDto : class
         where TUpdateDto : class
     {
