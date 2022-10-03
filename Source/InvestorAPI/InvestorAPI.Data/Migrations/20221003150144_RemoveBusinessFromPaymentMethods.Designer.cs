@@ -4,6 +4,7 @@ using InvestorAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvestorAPI.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221003150144_RemoveBusinessFromPaymentMethods")]
+    partial class RemoveBusinessFromPaymentMethods
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,11 +29,6 @@ namespace InvestorAPI.Data.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccountScope")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("int")
-                        .HasComputedColumnSql("\r\n                        CASE\r\n                            WHEN [BusinessId] IS NULL\r\n                            THEN CASE\r\n		                        WHEN [BusinessTypeId] IS NULL\r\n		                        THEN CAST(2 AS INT)\r\n		                        ELSE CAST(3 AS INT)\r\n	                        END\r\n	                        ELSE CAST(1 AS INT)\r\n                        END\r\n                    ");
 
                     b.Property<int>("AccountType")
                         .HasColumnType("int");
@@ -70,9 +67,6 @@ namespace InvestorAPI.Data.Migrations
                     b.HasIndex("BusinessId");
 
                     b.HasIndex("BusinessTypeId");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("Accounts");
                 });
@@ -113,6 +107,111 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("Addresses");
                 });
 
+            modelBuilder.Entity("InvestorData.Bill", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal?>("AmountDue")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<string>("BusinessId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
+                    b.Property<bool>("IsReturn")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsTracked")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("IssueDate")
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<int?>("Number")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("PaymentDue")
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<string>("VendorId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BusinessId");
+
+                    b.HasIndex("VendorId");
+
+                    b.ToTable("Bills");
+                });
+
+            modelBuilder.Entity("InvestorData.BillItem", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Amount")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasPrecision(19, 4)
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<string>("BillId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<string>("ExpenseCategoryId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BillId");
+
+                    b.HasIndex("ExpenseCategoryId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("BillItems");
+                });
+
             modelBuilder.Entity("InvestorData.Business", b =>
                 {
                     b.Property<string>("Id")
@@ -149,9 +248,6 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("BusinessTypeId");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
                     b.ToTable("Businesses");
                 });
 
@@ -183,9 +279,6 @@ namespace InvestorAPI.Data.Migrations
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("BusinessTypes");
                 });
@@ -265,141 +358,7 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("Contacts");
                 });
 
-            modelBuilder.Entity("InvestorData.InventoryInfo", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("InventoryAccountId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("ReorderPoint")
-                        .HasColumnType("float");
-
-                    b.Property<string>("SKU")
-                        .HasMaxLength(128)
-                        .HasColumnType("nvarchar(128)");
-
-                    b.Property<string>("ScaleUnitId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InventoryAccountId");
-
-                    b.HasIndex("ScaleUnitId");
-
-                    b.ToTable("InventoryInfos");
-                });
-
-            modelBuilder.Entity("InvestorData.Invoice", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal?>("AmountDue")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("decimal(19,4)");
-
-                    b.Property<string>("BusinessId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(3)
-                        .HasColumnType("datetime2(3)")
-                        .HasDefaultValueSql("GETUTCDATE()");
-
-                    b.Property<DateTime?>("DateModified")
-                        .HasPrecision(3)
-                        .HasColumnType("datetime2(3)");
-
-                    b.Property<int>("InvoiceType")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsTracked")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("IssueDate")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime2(0)");
-
-                    b.Property<string>("Notes")
-                        .HasMaxLength(1024)
-                        .HasColumnType("nvarchar(1024)");
-
-                    b.Property<int?>("Number")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("PaymentDue")
-                        .HasPrecision(0)
-                        .HasColumnType("datetime2(0)");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("decimal(19,4)");
-
-                    b.Property<string>("TraderId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BusinessId");
-
-                    b.HasIndex("TraderId");
-
-                    b.HasIndex("InvoiceType", "TraderId");
-
-                    b.ToTable("Invoices");
-                });
-
-            modelBuilder.Entity("InvestorData.Item", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal>("Amount")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasPrecision(19, 4)
-                        .HasColumnType("decimal(19,4)")
-                        .HasComputedColumnSql("[Quantity] * [Price]");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1024)
-                        .HasColumnType("nvarchar(1024)");
-
-                    b.Property<string>("InvoiceId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<decimal>("Price")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("decimal(19,4)");
-
-                    b.Property<string>("ProductId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<double>("Quantity")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InvoiceId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("Items");
-                });
-
-            modelBuilder.Entity("InvestorData.Payment", b =>
+            modelBuilder.Entity("InvestorData.CreditPayment", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -438,10 +397,7 @@ namespace InvestorAPI.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("PaymentType")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TraderId")
+                    b.Property<string>("VendorId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -450,11 +406,209 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("PaymentMethodId");
 
-                    b.HasIndex("TraderId");
+                    b.HasIndex("VendorId");
 
-                    b.HasIndex("PaymentType", "TraderId");
+                    b.ToTable("CreditPayments");
+                });
 
-                    b.ToTable("Payments");
+            modelBuilder.Entity("InvestorData.Customer", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AddressId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BusinessId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ContactId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("BusinessId");
+
+                    b.HasIndex("ContactId");
+
+                    b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("InvestorData.CustomerPayment", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Amount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<string>("BusinessId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<int?>("Number")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)");
+
+                    b.Property<string>("PaymentMethodId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BusinessId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("PaymentMethodId");
+
+                    b.ToTable("CustomerPayments");
+                });
+
+            modelBuilder.Entity("InvestorData.Invoice", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal?>("AmountDue")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<string>("BusinessId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("CustomerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)")
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime?>("DateModified")
+                        .HasPrecision(3)
+                        .HasColumnType("datetime2(3)");
+
+                    b.Property<bool>("IsReturn")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsTracked")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("IssueDate")
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<int?>("Number")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("PaymentDue")
+                        .HasPrecision(0)
+                        .HasColumnType("datetime2(0)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("decimal(19,4)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BusinessId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("Invoices");
+                });
+
+            modelBuilder.Entity("InvestorData.InvoiceItem", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Amount")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasPrecision(19, 4)
+                        .HasColumnType("decimal(19,4)")
+                        .HasComputedColumnSql("[Quantity] * [Price]");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<string>("InvoiceId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<string>("ProductId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InvoiceId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("InvoiceItems");
                 });
 
             modelBuilder.Entity("InvestorData.PaymentMethod", b =>
@@ -473,9 +627,6 @@ namespace InvestorAPI.Data.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("PaymentMethods");
                 });
@@ -497,6 +648,10 @@ namespace InvestorAPI.Data.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("nvarchar(64)");
 
+                    b.Property<decimal?>("Cost")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("decimal(19,4)");
+
                     b.Property<DateTime>("DateCreated")
                         .ValueGeneratedOnAdd()
                         .HasPrecision(3)
@@ -507,7 +662,13 @@ namespace InvestorAPI.Data.Migrations
                         .HasPrecision(3)
                         .HasColumnType("datetime2(3)");
 
-                    b.Property<string>("InventoryDetailsId")
+                    b.Property<string>("ExpenseAccountId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("IncomeAccountId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("InventoryAccountId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("IsService")
@@ -518,10 +679,29 @@ namespace InvestorAPI.Data.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("PurchasingInformationId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("PurchaseDescription")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
 
-                    b.Property<string>("SalesInformationId")
+                    b.Property<double?>("Quantity")
+                        .HasColumnType("float");
+
+                    b.Property<int?>("ReorderPoint")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SKU")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<string>("SalesDescription")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<decimal?>("SalesPrice")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("decimal(19,4)");
+
+                    b.Property<string>("ScaleUnitId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -534,22 +714,18 @@ namespace InvestorAPI.Data.Migrations
                         .IsUnique()
                         .HasFilter("[Code] IS NOT NULL");
 
-                    b.HasIndex("InventoryDetailsId")
-                        .IsUnique()
-                        .HasFilter("[InventoryDetailsId] IS NOT NULL");
+                    b.HasIndex("ExpenseAccountId");
+
+                    b.HasIndex("IncomeAccountId");
+
+                    b.HasIndex("InventoryAccountId");
+
+                    b.HasIndex("IsService");
 
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.HasIndex("PurchasingInformationId")
-                        .IsUnique()
-                        .HasFilter("[PurchasingInformationId] IS NOT NULL");
-
-                    b.HasIndex("SalesInformationId")
-                        .IsUnique()
-                        .HasFilter("[SalesInformationId] IS NOT NULL");
-
-                    b.HasIndex("IsService", "BusinessId");
+                    b.HasIndex("ScaleUnitId");
 
                     b.ToTable("Products");
                 });
@@ -592,7 +768,37 @@ namespace InvestorAPI.Data.Migrations
                     b.ToTable("ScaleUnits");
                 });
 
-            modelBuilder.Entity("InvestorData.Trader", b =>
+            modelBuilder.Entity("InvestorData.UnitConversion", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<double>("ConversionValue")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1024)
+                        .HasColumnType("nvarchar(1024)");
+
+                    b.Property<string>("SourceUnitId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("TargetUnitId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SourceUnitId");
+
+                    b.HasIndex("TargetUnitId");
+
+                    b.ToTable("UnitConversions");
+                });
+
+            modelBuilder.Entity("InvestorData.Vendor", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
@@ -627,9 +833,6 @@ namespace InvestorAPI.Data.Migrations
                         .HasMaxLength(1024)
                         .HasColumnType("nvarchar(1024)");
 
-                    b.Property<int>("TraderType")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId");
@@ -638,66 +841,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("ContactId");
 
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.HasIndex("TraderType", "BusinessId");
-
-                    b.ToTable("Traders");
-                });
-
-            modelBuilder.Entity("InvestorData.TradingInfo", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AccountId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1024)
-                        .HasColumnType("nvarchar(1024)");
-
-                    b.Property<decimal>("Price")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("decimal(19,4)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.ToTable("TradingInfos");
-                });
-
-            modelBuilder.Entity("InvestorData.UnitConversion", b =>
-                {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<double>("ConversionValue")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(1024)
-                        .HasColumnType("nvarchar(1024)");
-
-                    b.Property<string>("SourceUnitId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("TargetUnitId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SourceUnitId");
-
-                    b.HasIndex("TargetUnitId");
-
-                    b.ToTable("UnitConversions");
+                    b.ToTable("Vendors");
                 });
 
             modelBuilder.Entity("InvestorData.Account", b =>
@@ -714,6 +858,48 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("Business");
 
                     b.Navigation("BusinessType");
+                });
+
+            modelBuilder.Entity("InvestorData.Bill", b =>
+                {
+                    b.HasOne("InvestorData.Business", "Business")
+                        .WithMany("Bills")
+                        .HasForeignKey("BusinessId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.HasOne("InvestorData.Vendor", "Vendor")
+                        .WithMany("Bills")
+                        .HasForeignKey("VendorId");
+
+                    b.Navigation("Business");
+
+                    b.Navigation("Vendor");
+                });
+
+            modelBuilder.Entity("InvestorData.BillItem", b =>
+                {
+                    b.HasOne("InvestorData.Bill", "Bill")
+                        .WithMany("Items")
+                        .HasForeignKey("BillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("InvestorData.Account", "ExpenseCategory")
+                        .WithMany()
+                        .HasForeignKey("ExpenseCategoryId");
+
+                    b.HasOne("InvestorData.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bill");
+
+                    b.Navigation("ExpenseCategory");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("InvestorData.Business", b =>
@@ -735,19 +921,77 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("Business");
                 });
 
-            modelBuilder.Entity("InvestorData.InventoryInfo", b =>
+            modelBuilder.Entity("InvestorData.CreditPayment", b =>
                 {
-                    b.HasOne("InvestorData.Account", "InventoryAccount")
+                    b.HasOne("InvestorData.Business", "Business")
+                        .WithMany("CreditPayments")
+                        .HasForeignKey("BusinessId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.HasOne("InvestorData.PaymentMethod", "PaymentMethod")
                         .WithMany()
-                        .HasForeignKey("InventoryAccountId");
+                        .HasForeignKey("PaymentMethodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("InvestorData.ScaleUnit", "ScaleUnit")
+                    b.HasOne("InvestorData.Vendor", "Vendor")
+                        .WithMany("Payments")
+                        .HasForeignKey("VendorId");
+
+                    b.Navigation("Business");
+
+                    b.Navigation("PaymentMethod");
+
+                    b.Navigation("Vendor");
+                });
+
+            modelBuilder.Entity("InvestorData.Customer", b =>
+                {
+                    b.HasOne("InvestorData.Address", "Address")
                         .WithMany()
-                        .HasForeignKey("ScaleUnitId");
+                        .HasForeignKey("AddressId");
 
-                    b.Navigation("InventoryAccount");
+                    b.HasOne("InvestorData.Business", "Business")
+                        .WithMany("Customers")
+                        .HasForeignKey("BusinessId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
 
-                    b.Navigation("ScaleUnit");
+                    b.HasOne("InvestorData.Contact", "Contact")
+                        .WithMany()
+                        .HasForeignKey("ContactId");
+
+                    b.Navigation("Address");
+
+                    b.Navigation("Business");
+
+                    b.Navigation("Contact");
+                });
+
+            modelBuilder.Entity("InvestorData.CustomerPayment", b =>
+                {
+                    b.HasOne("InvestorData.Business", "Business")
+                        .WithMany("CustomerPayments")
+                        .HasForeignKey("BusinessId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.HasOne("InvestorData.Customer", "Customer")
+                        .WithMany("Payments")
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("InvestorData.PaymentMethod", "PaymentMethod")
+                        .WithMany()
+                        .HasForeignKey("PaymentMethodId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Business");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("PaymentMethod");
                 });
 
             modelBuilder.Entity("InvestorData.Invoice", b =>
@@ -758,16 +1002,16 @@ namespace InvestorAPI.Data.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("InvestorData.Trader", "Trader")
+                    b.HasOne("InvestorData.Customer", "Customer")
                         .WithMany("Invoices")
-                        .HasForeignKey("TraderId");
+                        .HasForeignKey("CustomerId");
 
                     b.Navigation("Business");
 
-                    b.Navigation("Trader");
+                    b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("InvestorData.Item", b =>
+            modelBuilder.Entity("InvestorData.InvoiceItem", b =>
                 {
                     b.HasOne("InvestorData.Invoice", "Invoice")
                         .WithMany("Items")
@@ -786,31 +1030,6 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("InvestorData.Payment", b =>
-                {
-                    b.HasOne("InvestorData.Business", "Business")
-                        .WithMany("Payments")
-                        .HasForeignKey("BusinessId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.HasOne("InvestorData.PaymentMethod", "PaymentMethod")
-                        .WithMany()
-                        .HasForeignKey("PaymentMethodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("InvestorData.Trader", "Trader")
-                        .WithMany("Payments")
-                        .HasForeignKey("TraderId");
-
-                    b.Navigation("Business");
-
-                    b.Navigation("PaymentMethod");
-
-                    b.Navigation("Trader");
-                });
-
             modelBuilder.Entity("InvestorData.Product", b =>
                 {
                     b.HasOne("InvestorData.Business", "Business")
@@ -823,27 +1042,33 @@ namespace InvestorAPI.Data.Migrations
                         .WithMany("Products")
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("InvestorData.InventoryInfo", "InventoryDetails")
-                        .WithOne()
-                        .HasForeignKey("InvestorData.Product", "InventoryDetailsId");
+                    b.HasOne("InvestorData.Account", "ExpenseAccount")
+                        .WithMany()
+                        .HasForeignKey("ExpenseAccountId");
 
-                    b.HasOne("InvestorData.TradingInfo", "PurchasingInformation")
-                        .WithOne()
-                        .HasForeignKey("InvestorData.Product", "PurchasingInformationId");
+                    b.HasOne("InvestorData.Account", "IncomeAccount")
+                        .WithMany()
+                        .HasForeignKey("IncomeAccountId");
 
-                    b.HasOne("InvestorData.TradingInfo", "SalesInformation")
-                        .WithOne()
-                        .HasForeignKey("InvestorData.Product", "SalesInformationId");
+                    b.HasOne("InvestorData.Account", "InventoryAccount")
+                        .WithMany()
+                        .HasForeignKey("InventoryAccountId");
+
+                    b.HasOne("InvestorData.ScaleUnit", "ScaleUnit")
+                        .WithMany()
+                        .HasForeignKey("ScaleUnitId");
 
                     b.Navigation("Business");
 
                     b.Navigation("Category");
 
-                    b.Navigation("InventoryDetails");
+                    b.Navigation("ExpenseAccount");
 
-                    b.Navigation("PurchasingInformation");
+                    b.Navigation("IncomeAccount");
 
-                    b.Navigation("SalesInformation");
+                    b.Navigation("InventoryAccount");
+
+                    b.Navigation("ScaleUnit");
                 });
 
             modelBuilder.Entity("InvestorData.ScaleUnit", b =>
@@ -854,38 +1079,6 @@ namespace InvestorAPI.Data.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade);
 
                     b.Navigation("Business");
-                });
-
-            modelBuilder.Entity("InvestorData.Trader", b =>
-                {
-                    b.HasOne("InvestorData.Address", "Address")
-                        .WithMany()
-                        .HasForeignKey("AddressId");
-
-                    b.HasOne("InvestorData.Business", "Business")
-                        .WithMany("Traders")
-                        .HasForeignKey("BusinessId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.HasOne("InvestorData.Contact", "Contact")
-                        .WithMany()
-                        .HasForeignKey("ContactId");
-
-                    b.Navigation("Address");
-
-                    b.Navigation("Business");
-
-                    b.Navigation("Contact");
-                });
-
-            modelBuilder.Entity("InvestorData.TradingInfo", b =>
-                {
-                    b.HasOne("InvestorData.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId");
-
-                    b.Navigation("Account");
                 });
 
             modelBuilder.Entity("InvestorData.UnitConversion", b =>
@@ -907,21 +1100,55 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("TargetUnit");
                 });
 
+            modelBuilder.Entity("InvestorData.Vendor", b =>
+                {
+                    b.HasOne("InvestorData.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId");
+
+                    b.HasOne("InvestorData.Business", "Business")
+                        .WithMany("Vendors")
+                        .HasForeignKey("BusinessId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.HasOne("InvestorData.Contact", "Contact")
+                        .WithMany()
+                        .HasForeignKey("ContactId");
+
+                    b.Navigation("Address");
+
+                    b.Navigation("Business");
+
+                    b.Navigation("Contact");
+                });
+
+            modelBuilder.Entity("InvestorData.Bill", b =>
+                {
+                    b.Navigation("Items");
+                });
+
             modelBuilder.Entity("InvestorData.Business", b =>
                 {
                     b.Navigation("Accounts");
 
+                    b.Navigation("Bills");
+
                     b.Navigation("Categories");
 
-                    b.Navigation("Invoices");
+                    b.Navigation("CreditPayments");
 
-                    b.Navigation("Payments");
+                    b.Navigation("CustomerPayments");
+
+                    b.Navigation("Customers");
+
+                    b.Navigation("Invoices");
 
                     b.Navigation("Products");
 
                     b.Navigation("ScaleUnits");
 
-                    b.Navigation("Traders");
+                    b.Navigation("Vendors");
                 });
 
             modelBuilder.Entity("InvestorData.Category", b =>
@@ -929,14 +1156,21 @@ namespace InvestorAPI.Data.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("InvestorData.Customer", b =>
+                {
+                    b.Navigation("Invoices");
+
+                    b.Navigation("Payments");
+                });
+
             modelBuilder.Entity("InvestorData.Invoice", b =>
                 {
                     b.Navigation("Items");
                 });
 
-            modelBuilder.Entity("InvestorData.Trader", b =>
+            modelBuilder.Entity("InvestorData.Vendor", b =>
                 {
-                    b.Navigation("Invoices");
+                    b.Navigation("Bills");
 
                     b.Navigation("Payments");
                 });

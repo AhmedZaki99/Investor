@@ -1,16 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace InvestorData
 {
-    public class BusinessType : IStringId
+    [Index(nameof(Name), IsUnique = true)]
+    public class BusinessType : EntityBase, IUniqueName
     {
-        // TODO: Add Unique Index on name.
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; } = null!;
-
 
         [Required]
         [MaxLength(256)]
@@ -22,16 +17,12 @@ namespace InvestorData
 
         #region Rules
 
-        [Required]
         public bool DisableServices { get; set; } = false;
 
-        [Required]
         public bool DisableProducts { get; set; } = false;
 
-        [Required]
         public bool NoInventory { get; set; } = false;
 
-        [Required]
         public bool SalesOnly { get; set; } = false;
 
         #endregion
