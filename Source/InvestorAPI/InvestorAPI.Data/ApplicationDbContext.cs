@@ -16,6 +16,9 @@ namespace InvestorAPI.Data
         public DbSet<ScaleUnit> ScaleUnits => Set<ScaleUnit>();
         public DbSet<UnitConversion> UnitConversions => Set<UnitConversion>();
 
+        public DbSet<TradingInfo> TradingInfos => Set<TradingInfo>();
+        public DbSet<InventoryInfo> InventoryInfos => Set<InventoryInfo>();
+
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Product> Products => Set<Product>();
 
@@ -60,6 +63,9 @@ namespace InvestorAPI.Data
 
             // ScaleUnit..
             BuildScaleUnit(modelBuilder);
+
+            // Product..
+            BuildProduct(modelBuilder);
 
             // Dated Entities..
             BuildDatedEntities(modelBuilder);
@@ -146,6 +152,21 @@ namespace InvestorAPI.Data
                 .HasOne(c => c.TargetUnit)
                 .WithMany()
                 .OnDelete(DeleteBehavior.ClientCascade);
+        }
+
+        private static void BuildProduct(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.SalesInformation)
+                .WithOne();
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.PurchasingInformation)
+                .WithOne();
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.InventoryDetails)
+                .WithOne();
         }
 
         private static void BuildDatedEntities(ModelBuilder modelBuilder)

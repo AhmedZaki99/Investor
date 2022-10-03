@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
@@ -9,8 +8,6 @@ namespace InvestorData
     [Index(nameof(Code), IsUnique = true)]
     public class Product : BusinessEntity, IUniqueName, IComparable<Product>
     {
-
-        #region Common Data
 
         public bool IsService { get; set; }
 
@@ -27,43 +24,15 @@ namespace InvestorData
         public Category? Category { get; set; }
 
 
-        public decimal? SalesPrice { get; set; }
+        public string? SalesInformationId { get; set; }
+        public TradingInfo? SalesInformation { get; set; }
 
-        [MaxLength(1024)]
-        public string? SalesDescription { get; set; }
-
-        public string? IncomeAccountId { get; set; }
-        public Account? IncomeAccount { get; set; }
+        public string? PurchasingInformationId { get; set; }
+        public TradingInfo? PurchasingInformation { get; set; }
 
 
-        public decimal? Cost { get; set; }
-
-        [MaxLength(1024)]
-        public string? PurchaseDescription { get; set; }
-
-        public string? ExpenseAccountId { get; set; }
-        public Account? ExpenseAccount { get; set; }
-
-        #endregion
-
-        #region Non-Service Data
-
-        [MaxLength(128)]
-        public string? SKU { get; set; }
-
-
-        public double? Quantity { get; set; }
-
-        public string? ScaleUnitId { get; set; }
-        public ScaleUnit? ScaleUnit { get; set; }
-
-        public int? ReorderPoint { get; set; } // double.
-
-        [NotNull]
-        public string? InventoryAccountId { get; set; }
-        public Account? InventoryAccount { get; set; }
-
-        #endregion
+        public string? InventoryDetailsId { get; set; }
+        public InventoryInfo? InventoryDetails { get; set; }
 
 
         #region Coparision
