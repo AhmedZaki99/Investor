@@ -52,6 +52,9 @@ namespace InvestorAPI.Data
             // Business..
             BuildBusiness(modelBuilder);
 
+            // Account..
+            BuildAccount(modelBuilder);
+
             // Invoice & Bill..
             BuildInvoice(modelBuilder);
 
@@ -105,6 +108,24 @@ namespace InvestorAPI.Data
 
             #endregion
 
+        }
+
+        private static void BuildAccount(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Account>()
+                .Property(i => i.AccountScope)
+                .HasComputedColumnSql(
+                    @$"
+                        CASE
+                            WHEN [{nameof(Account.BusinessId)}] IS NULL
+                            THEN CASE
+		                        WHEN [{nameof(Account.BusinessTypeId)}] IS NULL
+		                        THEN CAST({AccountScope.Global:d} AS INT)
+		                        ELSE CAST({AccountScope.BusinessTypeSpecific:d} AS INT)
+	                        END
+	                        ELSE CAST({AccountScope.Local:d} AS INT)
+                        END
+                    ");
         }
 
         private static void BuildInvoice(ModelBuilder modelBuilder)

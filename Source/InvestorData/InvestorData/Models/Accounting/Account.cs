@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorData
 {
@@ -9,6 +10,10 @@ namespace InvestorData
         
         public string? BusinessTypeId { get; set; }
         public BusinessType? BusinessType { get; set; }
+
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public AccountScope AccountScope { get; set; }
 
         public AccountType AccountType { get; set; }
 
@@ -23,6 +28,14 @@ namespace InvestorData
 
         public decimal? Balance { get; set; }
 
+    }
+
+    public enum AccountScope
+    {
+        None = 0,
+        Local = 1,
+        Global = 2,
+        BusinessTypeSpecific = 3,
     }
 
     public enum AccountType
