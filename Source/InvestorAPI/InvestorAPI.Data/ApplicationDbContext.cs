@@ -55,6 +55,9 @@ namespace InvestorAPI.Data
             // Business..
             BuildBusiness(modelBuilder);
 
+            // Account..
+            BuildAccount(modelBuilder);
+
             // Invoice & Bill..
             BuildInvoice(modelBuilder);
 
