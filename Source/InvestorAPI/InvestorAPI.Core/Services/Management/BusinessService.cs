@@ -28,6 +28,8 @@ namespace InvestorAPI.Core
         public override Task<BusinessOutputDto?> FindEntityAsync(string id)
         {
             return EntityDbSet
+                .Include(b => b.BusinessType)
+                .AsSplitQuery()
                 .ProjectTo<BusinessOutputDto>(Mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(b => b.Id == id);
         }

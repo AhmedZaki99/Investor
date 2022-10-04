@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using InvestorAPI.Data;
 using InvestorData;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using System.Xml.Linq;
 
 namespace InvestorAPI.Core
 {
@@ -21,6 +25,29 @@ namespace InvestorAPI.Core
 
 
         #region Read
+
+        /// <inheritdoc/>
+        public override IAsyncEnumerable<ProductOutputDto> GetEntitiesAsync(params Expression<Func<Product, bool>>[] conditions)
+        {
+            var query = QueryIncludingInfo();
+            foreach (var condition in conditions)
+            {
+                query = query.Where(condition);
+            }
+
+            return query
+                .ProjectTo<ProductOutputDto>(Mapper.ConfigurationProvider)
+                .AsNoTracking()
+                .AsAsyncEnumerable();
+        }
+
+        /// <inheritdoc/>
+        public override Task<ProductOutputDto?> FindEntityAsync(string id)
+        {
+            return QueryIncludingInfo()
+                .ProjectTo<ProductOutputDto>(Mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
 
         /// <inheritdoc/>
         public IAsyncEnumerable<ProductOutputDto> GetEntitiesAsync(string businessId)
@@ -59,13 +86,13 @@ namespace InvestorAPI.Core
         /// <inheritdoc/>
         public IAsyncEnumerable<ProductOutputDto> FilterByType(string businessId, bool isService)
         {
-            throw new NotImplementedException();
+            return GetEntitiesAsync(p => p.BusinessId == businessId && p.IsService == isService);
         }
 
         /// <inheritdoc/>
         public IAsyncEnumerable<ProductOutputDto> FilterByCategory(string businessId, string categoryId)
         {
-            throw new NotImplementedException();
+            return GetEntitiesAsync(p => p.BusinessId == businessId && p.CategoryId == categoryId);
         }
 
         #endregion
@@ -87,13 +114,53 @@ namespace InvestorAPI.Core
 
         private async Task<Dictionary<string, string>?> ValidateAccountAsync(ProductUpdateInputDto dto, Product? original = null)
         {
+            if (dto.Code != original?.Code && await EntityDbSet.AnyAsync(p => p.Code == dto.Code))
+            {
+                return OneErrorDictionary(nameof(dto.Code), $"Product code already exists.");
+            }
+
             var errors = await ValidateName(dto.Name!, original?.Name);
+
+            errors ??= await ValidateId(AppDbContext.Categories, dto.CategoryId, original?.CategoryId);
+
+            errors ??= dto.SalesInformation is not null
+                ? await ValidateId(AppDbContext.Accounts, dto.SalesInformation.AccountId, original?.SalesInformation?.AccountId)
+                : null;
+            errors ??= dto.PurchasingInformation is not null
+                ? await ValidateId(AppDbContext.Accounts, dto.PurchasingInformation.AccountId, original?.PurchasingInformation?.AccountId)
+                : null;
+
+            errors ??= dto.InventoryDetails is not null
+                ? await ValidateId(AppDbContext.Accounts, dto.InventoryDetails.InventoryAccountId, original?.InventoryDetails?.InventoryAccountId)
+                : null;
+            errors ??= dto.InventoryDetails is not null
+                ? await ValidateId(AppDbContext.ScaleUnits, dto.InventoryDetails.ScaleUnitId, original?.InventoryDetails?.ScaleUnitId)
+                : null;
 
             errors ??= dto is ProductCreateInputDto cDto 
                 ? await ValidateId(AppDbContext.Businesses, cDto.BusinessId) 
                 : null;
 
             return errors;
+        }
+
+        #endregion
+
+
+        #region Helper Methods
+
+        private IQueryable<Product> QueryIncludingInfo()
+        {
+            return EntityDbSet
+                .Include(p => p.SalesInformation)
+                    .ThenInclude(i => i!.Account)
+                .Include(p => p.PurchasingInformation)
+                    .ThenInclude(i => i!.Account)
+                .Include(p => p.InventoryDetails)
+                    .ThenInclude(i => i!.InventoryAccount)
+                .Include(p => p.InventoryDetails)
+                    .ThenInclude(i => i!.ScaleUnit)
+                .AsSplitQuery();
         }
 
         #endregion
