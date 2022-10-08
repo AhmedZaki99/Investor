@@ -16,23 +16,21 @@ namespace InvestorAPI.Data
         public DbSet<ScaleUnit> ScaleUnits => Set<ScaleUnit>();
         public DbSet<UnitConversion> UnitConversions => Set<UnitConversion>();
 
+        public DbSet<TradingInfo> TradingInfos => Set<TradingInfo>();
+        public DbSet<InventoryInfo> InventoryInfos => Set<InventoryInfo>();
+
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Product> Products => Set<Product>();
 
         public DbSet<Address> Addresses => Set<Address>();
         public DbSet<Contact> Contacts => Set<Contact>();
-        public DbSet<Customer> Customers => Set<Customer>();
-        public DbSet<Vendor> Vendors => Set<Vendor>();
+        public DbSet<Trader> Traders => Set<Trader>();
 
-        public DbSet<InvoiceItem> InvoiceItems => Set<InvoiceItem>();
+        public DbSet<Item> Items => Set<Item>();
         public DbSet<Invoice> Invoices => Set<Invoice>();
 
-        public DbSet<BillItem> BillItems => Set<BillItem>();
-        public DbSet<Bill> Bills => Set<Bill>();
-
         public DbSet<PaymentMethod> PaymentMethods => Set<PaymentMethod>();
-        public DbSet<CustomerPayment> CustomerPayments => Set<CustomerPayment>();
-        public DbSet<CreditPayment> CreditPayments => Set<CreditPayment>();
+        public DbSet<Payment> Payments => Set<Payment>();
 
 
         #endregion
@@ -57,11 +55,17 @@ namespace InvestorAPI.Data
             // Business..
             BuildBusiness(modelBuilder);
 
+            // Account..
+            BuildAccount(modelBuilder);
+
             // Invoice & Bill..
             BuildInvoice(modelBuilder);
 
             // ScaleUnit..
             BuildScaleUnit(modelBuilder);
+
+            // Product..
+            BuildProduct(modelBuilder);
 
             // Dated Entities..
             BuildDatedEntities(modelBuilder);
@@ -99,39 +103,42 @@ namespace InvestorAPI.Data
                 .OnDelete(DeleteBehavior.ClientCascade);
 
             modelBuilder.Entity<Business>()
-                .HasMany(b => b.Bills)
-                .WithOne(b => b.Business)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            modelBuilder.Entity<Business>()
-                .HasMany(b => b.CustomerPayments)
+                .HasMany(b => b.Payments)
                 .WithOne(c => c.Business)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
             modelBuilder.Entity<Business>()
-                .HasMany(b => b.CreditPayments)
-                .WithOne(v => v.Business)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            modelBuilder.Entity<Business>()
-                .HasMany(b => b.Customers)
+                .HasMany(b => b.Traders)
                 .WithOne(c => c.Business)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            modelBuilder.Entity<Business>()
-                .HasMany(b => b.Vendors)
-                .WithOne(v => v.Business)
                 .OnDelete(DeleteBehavior.ClientCascade);
 
             #endregion
 
         }
 
+        private static void BuildAccount(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Account>()
+                .Property(i => i.AccountScope)
+                .HasComputedColumnSql(
+                    @$"
+                        CASE
+                            WHEN [{nameof(Account.BusinessId)}] IS NULL
+                            THEN CASE
+		                        WHEN [{nameof(Account.BusinessTypeId)}] IS NULL
+		                        THEN CAST({AccountScope.Global:d} AS INT)
+		                        ELSE CAST({AccountScope.BusinessTypeSpecific:d} AS INT)
+	                        END
+	                        ELSE CAST({AccountScope.Local:d} AS INT)
+                        END
+                    ");
+        }
+
         private static void BuildInvoice(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<InvoiceItem>()
+            modelBuilder.Entity<Item>()
                 .Property(i => i.Amount)
-                .HasComputedColumnSql($"[{nameof(InvoiceItem.Quantity)}] * [{nameof(InvoiceItem.Price)}]");
+                .HasComputedColumnSql($"[{nameof(Item.Quantity)}] * [{nameof(Item.Price)}]");
         }
 
         private static void BuildScaleUnit(ModelBuilder modelBuilder)
@@ -145,6 +152,21 @@ namespace InvestorAPI.Data
                 .HasOne(c => c.TargetUnit)
                 .WithMany()
                 .OnDelete(DeleteBehavior.ClientCascade);
+        }
+
+        private static void BuildProduct(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.SalesInformation)
+                .WithOne();
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.PurchasingInformation)
+                .WithOne();
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.InventoryDetails)
+                .WithOne();
         }
 
         private static void BuildDatedEntities(ModelBuilder modelBuilder)

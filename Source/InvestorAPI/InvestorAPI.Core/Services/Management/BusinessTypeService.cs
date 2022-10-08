@@ -35,13 +35,9 @@ namespace InvestorAPI.Core
             return ValidateInputAsync(dto, original);
         }
 
-        private async Task<Dictionary<string, string>?> ValidateInputAsync(BusinessTypeInputDto dto, BusinessType? original = null)
+        private Task<Dictionary<string, string>?> ValidateInputAsync(BusinessTypeInputDto dto, BusinessType? original = null)
         {
-            if (dto.Name != original?.Name && await EntityDbSet.AnyAsync(b => b.Name == dto.Name))
-            {
-                return OneErrorDictionary(nameof(dto.Name), "BusinessType name already exists.");
-            }
-            return null;
+            return ValidateName(dto.Name!, original?.Name);
         }
 
         #endregion

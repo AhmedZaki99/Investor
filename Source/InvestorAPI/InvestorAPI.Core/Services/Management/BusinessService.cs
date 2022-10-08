@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using InvestorAPI.Data;
 using InvestorData;
 using Microsoft.EntityFrameworkCore;
@@ -24,13 +25,13 @@ namespace InvestorAPI.Core
         #region Read
 
         /// <inheritdoc/>
-        public override async Task<BusinessOutputDto?> FindEntityAsync(string id)
+        public override Task<BusinessOutputDto?> FindEntityAsync(string id)
         {
-            var business = await EntityDbSet
+            return EntityDbSet
                 .Include(b => b.BusinessType)
+                .AsSplitQuery()
+                .ProjectTo<BusinessOutputDto>(Mapper.ConfigurationProvider)
                 .FirstOrDefaultAsync(b => b.Id == id);
-
-            return business is null ? null : Mapper.Map<BusinessOutputDto>(business);
         }
 
         #endregion
@@ -52,12 +53,13 @@ namespace InvestorAPI.Core
 
         private async Task<Dictionary<string, string>?> ValidateInputAsync(BusinessUpdateInputDto dto, Business? original = null)
         {
-            if (dto.Name != original?.Name && await EntityDbSet.AnyAsync(b => b.Name == dto.Name))
-            {
-                return OneErrorDictionary(nameof(dto.Name), "Business name already exists.");
-            }
+            var errors = await ValidateName(dto.Name!, original?.Name);
 
-            return dto is BusinessCreateInputDto cDto ? await ValidateId(AppDbContext.BusinessTypes, cDto.BusinessTypeId) : null;
+            errors ??= dto is BusinessCreateInputDto cDto 
+                ? await ValidateId(AppDbContext.BusinessTypes, cDto.BusinessTypeId) 
+                : null;
+
+            return errors;
         }
 
         #endregion

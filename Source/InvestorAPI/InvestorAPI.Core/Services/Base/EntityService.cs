@@ -1,15 +1,17 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using InvestorAPI.Data;
 using InvestorData;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 
 namespace InvestorAPI.Core
 {
     internal abstract class EntityService<TEntity, TOutputDto, TCreateDto, TUpdateDto> : IEntityService<TEntity, TOutputDto, TCreateDto, TUpdateDto>
-        where TEntity : class, IStringId
-        where TOutputDto : class, IStringId
+        where TEntity : EntityBase
+        where TOutputDto : OutputDtoBase
         where TCreateDto : class
         where TUpdateDto : class
     {
@@ -38,22 +40,26 @@ namespace InvestorAPI.Core
 
         #region Data Read
 
-        public virtual IAsyncEnumerable<TOutputDto> GetEntitiesAsync(Expression<Func<TEntity, bool>>? condition = null)
+        public virtual IAsyncEnumerable<TOutputDto> GetEntitiesAsync(params Expression<Func<TEntity, bool>>[] conditions)
         {
-            var query = condition is not null ? EntityDbSet.Where(condition) : EntityDbSet;
+            var query = EntityDbSet.AsQueryable();
+            foreach (var condition in conditions)
+            {
+                query = query.Where(condition);
+            }
 
             return query
+                .ProjectTo<TOutputDto>(Mapper.ConfigurationProvider)
                 .AsNoTracking()
-                .AsAsyncEnumerable()
-                .Select(Mapper.Map<TOutputDto>);
+                .AsAsyncEnumerable();
         }
 
 
-        public virtual async Task<TOutputDto?> FindEntityAsync(string id)
+        public virtual Task<TOutputDto?> FindEntityAsync(string id)
         {
-            var entity = await EntityDbSet.FindAsync(id);
-
-            return entity is null ? null : Mapper.Map<TOutputDto>(entity);
+            return EntityDbSet
+                .ProjectTo<TOutputDto>(Mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(e => e.Id == id);
         }
 
         #endregion
@@ -74,7 +80,7 @@ namespace InvestorAPI.Core
                 return new(errors, OperationError.UnprocessableEntity);
             }
 
-            var entity = Mapper.Map<TEntity>(dto);
+            var entity = MapForCreate(dto);
 
             EntityDbSet.Add(entity);
 
@@ -130,8 +136,8 @@ namespace InvestorAPI.Core
             {
                 return new(errors, OperationError.UnprocessableEntity);
             }
-            entity = Mapper.Map(dto, entity);
 
+            entity = MapForUpdate(dto, entity);
 
             var entry = AppDbContext.Entry(entity);
             if (entry.State == EntityState.Unchanged)
@@ -166,17 +172,87 @@ namespace InvestorAPI.Core
         #endregion
 
 
+        #region Mapping
+
+        /// <summary>
+        /// Maps the given Dto to an entity instance for data creation.
+        /// </summary>
+        /// <remarks>
+        /// Could be overridden to provide further adjustment on mapped element.
+        /// </remarks>
+        /// <param name="dto">The create input object to map.</param>
+        /// <returns>The mapped instance of the entity.</returns>
+        protected virtual TEntity MapForCreate(TCreateDto dto)
+        {
+            return Mapper.Map<TEntity>(dto);
+        }
+
+        /// <summary>
+        /// Maps the given Dto into the original state of the entity to apply changes.
+        /// </summary>
+        /// <remarks>
+        /// Could be overridden to provide further adjustment on mapped element.
+        /// </remarks>
+        /// <param name="dto">The update input object to map.</param>
+        /// <param name="original">The original state of the entity.</param>
+        /// <returns>The mapped instance of the entity.</returns>
+        protected virtual TEntity MapForUpdate(TUpdateDto dto, TEntity original)
+        {
+            return Mapper.Map(dto, original);
+        }
+
+        #endregion
+
+
         #region Abstract Methods
 
+        /// <summary>
+        /// Apply the required validation to process the create input Dto.
+        /// </summary>
+        /// <param name="dto">The create input object to validate.</param>
+        /// <returns>A dictionary of validation errors if any found; otherwise, <see langword="null"/>.</returns>
         public abstract Task<Dictionary<string, string>?> ValidateCreateInputAsync(TCreateDto dto);
 
+        /// <summary>
+        /// Apply the required validation to process the update input Dto.
+        /// </summary>
+        /// <param name="dto">The update input object to validate.</param>
+        /// <param name="original">The original state of the entity.</param>
+        /// <returns>A dictionary of validation errors if any found; otherwise, <see langword="null"/>.</returns>
         public abstract Task<Dictionary<string, string>?> ValidateUpdateInputAsync(TUpdateDto dto, TEntity original);
 
         #endregion
 
-        #region Protected Methods
+        #region Validation Methods
 
-        protected static async Task<Dictionary<string, string>?> ValidateId<T>(DbSet<T> dbSet, string? id, string? originalId = null) where T : class, IStringId
+        protected async Task<Dictionary<string, string>?> ValidateName(string name, string? originalName = null)
+        {
+            ArgumentNullException.ThrowIfNull(name, nameof(name));
+
+            if (typeof(IUniqueName).IsAssignableFrom(typeof(TEntity)))
+            {
+                if (name != originalName && await EntityDbSet.AnyAsync(e => ((IUniqueName)e).Name == name))
+                {
+                    return OneErrorDictionary(nameof(IUniqueName.Name), $"{typeof(TEntity).Name} name already exists.");
+                }
+            }
+            return null;
+        }
+
+        protected static async Task<Dictionary<string, string>?> ValidateName<T>(DbSet<T> dbSet, string name, string? originalName = null) 
+            where T : class, IUniqueName
+        {
+            ArgumentNullException.ThrowIfNull(name, nameof(name));
+
+            if (name != originalName && await dbSet.AnyAsync(e => e.Name == name))
+            {
+                return OneErrorDictionary(nameof(IUniqueName.Name), $"{typeof(T).Name} name already exists.");
+            }
+            return null;
+        }
+
+
+        protected static async Task<Dictionary<string, string>?> ValidateId<T>(DbSet<T> dbSet, string? id, string? originalId = null) where T : EntityBase
         {
             if (id is not null && id != originalId && !await dbSet.AnyAsync(e => e.Id == id))
             {

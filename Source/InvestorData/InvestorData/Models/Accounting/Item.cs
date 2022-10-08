@@ -1,11 +1,15 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
-    public class ItemBase
+    public class Item : EntityBase
     {
+
+        [Required]
+        public string InvoiceId { get; set; } = null!;
+        public Invoice? Invoice { get; set; }
+
 
         [Required]
         public string ProductId { get; set; } = null!;
@@ -16,10 +20,7 @@ namespace InvestorData
         public string? Description { get; set; }
 
 
-        [Required]
-        public int Quantity { get; set; }
-
-        [Required]
+        public double Quantity { get; set; }
         public decimal Price { get; set; }
 
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]

@@ -9,8 +9,8 @@ namespace InvestorAPI.Controllers
     [ApiController]
     [Produces(MediaTypeNames.Application.Json)]
     public abstract class EntityController<TEntity, TOutputDto, TCreateDto, TUpdateDto> : ControllerBase
-        where TEntity : class, IStringId
-        where TOutputDto : class, IStringId
+        where TEntity : EntityBase
+        where TOutputDto : OutputDtoBase
         where TCreateDto : class
         where TUpdateDto : class
     {

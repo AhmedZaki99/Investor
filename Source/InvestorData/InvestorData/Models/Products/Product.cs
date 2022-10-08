@@ -1,28 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
-    [Index(nameof(IsService))]
+    [Index(nameof(IsService), nameof(BusinessId))]
     [Index(nameof(Name), IsUnique = true)]
     [Index(nameof(Code), IsUnique = true)]
-    public class Product : DatedEntity, IStringId, IComparable<Product>
+    public class Product : BusinessEntity, IUniqueName
     {
 
-        #region Common Data
-
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string Id { get; set; } = null!;
-
-        [Required]
-        public string BusinessId { get; set; } = null!;
-        public Business? Business { get; set; }
-
-
-        [Required]
         public bool IsService { get; set; }
 
 
@@ -38,90 +24,15 @@ namespace InvestorData
         public Category? Category { get; set; }
 
 
-        public decimal? SalesPrice { get; set; }
+        public string? SalesInformationId { get; set; }
+        public TradingInfo? SalesInformation { get; set; }
 
-        [MaxLength(1024)]
-        public string? SalesDescription { get; set; }
-
-        public string? IncomeAccountId { get; set; }
-        public Account? IncomeAccount { get; set; }
+        public string? PurchasingInformationId { get; set; }
+        public TradingInfo? PurchasingInformation { get; set; }
 
 
-        public decimal? Cost { get; set; }
-
-        [MaxLength(1024)]
-        public string? PurchaseDescription { get; set; }
-
-        public string? ExpenseAccountId { get; set; }
-        public Account? ExpenseAccount { get; set; }
-
-        #endregion
-
-        #region Non-Service Data
-
-        [MaxLength(128)]
-        public string? SKU { get; set; }
-
-
-        public double? Quantity { get; set; }
-
-        public string? ScaleUnitId { get; set; }
-        public ScaleUnit? ScaleUnit { get; set; }
-
-        public int? ReorderPoint { get; set; }
-
-        [NotNull]
-        public string? InventoryAccountId { get; set; }
-        public Account? InventoryAccount { get; set; }
-
-        #endregion
-
-
-        #region Coparision
-
-        public int CompareTo(Product? other)
-        {
-            if (other is null)
-            {
-                return 1;
-            }
-            int compareByCategory = Category?.CompareTo(other.Category) ?? (other.Category is null ? 0 : -1);
-            if (compareByCategory == 0)
-            {
-                return Name.CompareTo(other.Name);
-            }
-            return compareByCategory;
-        } 
-        
-        public int PlainCompareTo(Product? other)
-        {
-            if (other == null)
-            {
-                return 1;
-            }
-
-            int compareByCategory;
-            if (Category == null)
-            {
-                if (other.Category != null)
-                {
-                    return -1;
-                }
-                compareByCategory = 0;
-            }
-            else
-            {
-                compareByCategory = Category.CompareTo(other.Category);
-            }
-
-            if (compareByCategory == 0)
-            {
-                return Name.CompareTo(other.Name);
-            }
-            return compareByCategory;
-        }
-
-        #endregion
+        public string? InventoryDetailsId { get; set; }
+        public InventoryInfo? InventoryDetails { get; set; }
 
     }
 }

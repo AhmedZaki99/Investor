@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
 using InvestorData;
 
-using Scope = InvestorAPI.Core.AccountOutputDto.AccountScope;
-
 namespace InvestorAPI.Core
 {
     public class DomainToDtoProfile : Profile
@@ -19,17 +17,28 @@ namespace InvestorAPI.Core
             CreateMap<BusinessCreateInputDto, Business>();
             CreateMap<BusinessUpdateInputDto, Business>().ReverseMap();
 
-
             // Account.
-            CreateMap<Account, AccountOutputDto>()
-                .ForMember(dest => dest.Scope, src => src.MapFrom(src => 
-                    src.BusinessId == null
-                    ? src.BusinessTypeId == null 
-                    ? Scope.Global 
-                    : Scope.BusinessTypeSpecific 
-                    : Scope.Local));
-
+            CreateMap<Account, AccountOutputDto>();
             CreateMap<AccountInputDto, Account>().ReverseMap();
+
+
+            // Category.
+            CreateMap<Category, CategoryOutputDto>();
+            CreateMap<CategoryCreateInputDto, Category>();
+            CreateMap<CategoryUpdateInputDto, Category>().ReverseMap();
+
+            // Trading Info.
+            CreateMap<TradingInfo, TradingInfoOutputDto>();
+            CreateMap<TradingInfoInputDto, TradingInfo>().ReverseMap();
+
+            // Inventory Info.
+            CreateMap<InventoryInfo, InventoryInfoOutputDto>();
+            CreateMap<InventoryInfoInputDto, InventoryInfo>().ReverseMap();
+
+            // Product.
+            CreateMap<Product, ProductOutputDto>();
+            CreateMap<ProductCreateInputDto, Product>();
+            CreateMap<ProductUpdateInputDto, Product>().ReverseMap();
         }
 
     }

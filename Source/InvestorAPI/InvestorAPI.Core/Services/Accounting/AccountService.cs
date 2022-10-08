@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using InvestorAPI.Data;
 using InvestorData;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace InvestorAPI.Core
@@ -29,7 +28,12 @@ namespace InvestorAPI.Core
         {
             ArgumentNullException.ThrowIfNull(businessId, nameof(businessId));
 
-            return FilterAccountsAsync(businessId);
+            var business = AppDbContext.Businesses.FirstOrDefault(b => b.Id == businessId);
+            if (business is null)
+            {
+                return AsyncEnumerable.Empty<AccountOutputDto>();
+            }
+            return GetEntitiesAsync(IncludedInBusiness(business));
         }
 
         #endregion
@@ -39,9 +43,17 @@ namespace InvestorAPI.Core
         /// <inheritdoc/>
         public IAsyncEnumerable<AccountOutputDto> FilterByTypeAsync(string? businessId, AccountType accountType)
         {
-            return businessId is null
-                   ? GetEntitiesAsync(a => a.AccountType == accountType)
-                   : FilterAccountsAsync(businessId, condition: a => a.AccountType == accountType);
+            if (businessId is null)
+            {
+                return GetEntitiesAsync(a => a.AccountType == accountType);
+            }
+
+            var business = AppDbContext.Businesses.FirstOrDefault(b => b.Id == businessId);
+            if (business is null)
+            {
+                return AsyncEnumerable.Empty<AccountOutputDto>();
+            }
+            return GetEntitiesAsync(a => a.AccountType == accountType, IncludedInBusiness(business));
         }
 
         #endregion
@@ -63,53 +75,23 @@ namespace InvestorAPI.Core
 
         private async Task<Dictionary<string, string>?> ValidateAccountAsync(AccountInputDto dto, Account? original = null)
         {
-            if (dto.Name != original?.Name && await EntityDbSet.AnyAsync(a => a.Name == dto.Name))
-            {
-                return OneErrorDictionary(nameof(dto.Name), "Account name already exists.");
-            }
+            var errors = await ValidateName(dto.Name!, original?.Name);
+            errors ??= await ValidateId(AppDbContext.Businesses, dto.BusinessId, original?.BusinessId);
+            errors ??= await ValidateId(AppDbContext.BusinessTypes, dto.BusinessTypeId, original?.BusinessTypeId);
 
-            var errors = await ValidateId(AppDbContext.Businesses, dto.BusinessId, original?.BusinessId);
-            if (errors is not null)
-            {
-                return errors;
-            }
-            errors = await ValidateId(AppDbContext.BusinessTypes, dto.BusinessTypeId, original?.BusinessTypeId);
-            if (errors is not null)
-            {
-                return errors;
-            }
-
-            return null;
+            return errors;
         }
 
         #endregion
 
 
-        #region Helper Methods
+        #region Filter Expressions
 
-        private IAsyncEnumerable<AccountOutputDto> FilterAccountsAsync(string businessId, Expression<Func<Account, bool>>? condition = null)
+        private static Expression<Func<Account, bool>> IncludedInBusiness(Business business)
         {
-            ArgumentNullException.ThrowIfNull(businessId, nameof(businessId));
-
-            var query = EntityDbSet
-                .Include(a => a.Business) // TODO: Try not to include business.
-                .Where(IncludedInBusiness(businessId));
-
-            if (condition is not null)
-            {
-                query = query.Where(condition);
-            }
-
-            return query
-                .AsSplitQuery()
-                .AsNoTracking()
-                .AsAsyncEnumerable()
-                .Select(Mapper.Map<AccountOutputDto>);
-        }
-
-        private static Expression<Func<Account, bool>> IncludedInBusiness(string businessId)
-        {
-            return a => a.BusinessId == businessId || a.BusinessId == null && (a.BusinessTypeId == null || a.BusinessTypeId == a.Business!.BusinessTypeId);
+            return a => a.AccountScope == AccountScope.Global
+                     || a.AccountScope == AccountScope.Local && a.BusinessId == business.Id
+                     || a.AccountScope == AccountScope.BusinessTypeSpecific && a.BusinessTypeId == business.BusinessTypeId;
         }
 
         #endregion

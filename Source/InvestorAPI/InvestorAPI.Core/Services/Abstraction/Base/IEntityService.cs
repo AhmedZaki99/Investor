@@ -11,8 +11,8 @@ namespace InvestorAPI.Core
     /// <typeparam name="TCreateDto">Type of the input data transfer object used for entity creation.</typeparam>
     /// <typeparam name="TUpdateDto">Type of the input data transfer object used for entity update.</typeparam>
     public interface IEntityService<TEntity, TOutputDto, TCreateDto, TUpdateDto>
-        where TEntity : class, IStringId
-        where TOutputDto : class, IStringId
+        where TEntity : EntityBase
+        where TOutputDto : OutputDtoBase
         where TCreateDto : class
         where TUpdateDto : class
     {
@@ -27,7 +27,7 @@ namespace InvestorAPI.Core
         /// This method is not preferred to use in case of big data handling.
         /// </remarks>
         /// <returns>An <see cref="IAsyncEnumerable{T}"/> of type <typeparamref name="TEntity"/> mapped to <typeparamref name="TOutputDto"/>.</returns>
-        IAsyncEnumerable<TOutputDto> GetEntitiesAsync(Expression<Func<TEntity, bool>>? condition = null);
+        IAsyncEnumerable<TOutputDto> GetEntitiesAsync(params Expression<Func<TEntity, bool>>[] conditions);
 
         /// <summary>
         /// Find entity by id.
