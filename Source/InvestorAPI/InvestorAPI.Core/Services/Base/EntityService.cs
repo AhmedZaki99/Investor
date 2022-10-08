@@ -229,12 +229,14 @@ namespace InvestorAPI.Core
         {
             ArgumentNullException.ThrowIfNull(name, nameof(name));
 
-            if (typeof(IUniqueName).IsAssignableFrom(typeof(TEntity)))
+            if (!typeof(IUniqueName).IsAssignableFrom(typeof(TEntity)))
             {
-                if (name != originalName && await EntityDbSet.AnyAsync(e => ((IUniqueName)e).Name == name))
-                {
-                    return OneErrorDictionary(nameof(IUniqueName.Name), $"{typeof(TEntity).Name} name already exists.");
-                }
+                var msg = $"The underlying entity of type {typeof(TEntity).FullName} doesn't implement {typeof(IUniqueName).Name} interface.";
+                throw new InvalidOperationException(msg);
+            }
+            if (name != originalName && await EntityDbSet.AnyAsync(e => ((IUniqueName)e).Name == name))
+            {
+                return OneErrorDictionary(nameof(IUniqueName.Name), $"{typeof(TEntity).Name} name already exists.");
             }
             return null;
         }
