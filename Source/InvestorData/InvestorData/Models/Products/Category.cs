@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 namespace InvestorData
 {
     [Index(nameof(Name), IsUnique = true)]
-    public class Category : OptionalBusinessEntity, IUniqueName, IComparable<Category>
+    public class Category : OptionalBusinessEntity, IUniqueName
     {
 
         [Required]
@@ -16,16 +16,6 @@ namespace InvestorData
 
 
         public List<Product> Products { get; set; } = new();
-
-
-        #region Comparison
-
-        public int CompareTo(Category? other)
-        {
-            return Name.CompareTo(other?.Name);
-        } 
-
-        #endregion
 
     }
 }

@@ -54,6 +54,15 @@ namespace InvestorAPI.Core
         /// <returns>Filterd products.</returns>
         IAsyncEnumerable<ProductOutputDto> FilterByCategory(string businessId, string categoryId);
 
+        /// <summary>
+        /// Filter products by type and category.
+        /// </summary>
+        /// <param name="businessId">Business to get products from.</param>
+        /// <param name="isService">Wheather product is a service.</param>
+        /// <param name="categoryId">The category to filter on.</param>
+        /// <returns>Filterd products.</returns>
+        IAsyncEnumerable<ProductOutputDto> FilterByTypeAndCategory(string businessId, bool isService,string categoryId);
+
         #endregion
 
     }

@@ -32,6 +32,9 @@ namespace InvestorAPI.Core
 
             services.AddScoped<IAccountService, AccountService>();
 
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductService, ProductService>();
+            
 
             return new CoreBuilder(services);
         }

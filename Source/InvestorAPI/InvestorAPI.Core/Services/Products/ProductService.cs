@@ -4,7 +4,6 @@ using InvestorAPI.Data;
 using InvestorData;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using System.Xml.Linq;
 
 namespace InvestorAPI.Core
 {
@@ -95,8 +94,40 @@ namespace InvestorAPI.Core
             return GetEntitiesAsync(p => p.BusinessId == businessId && p.CategoryId == categoryId);
         }
 
+        /// <inheritdoc/>
+        public IAsyncEnumerable<ProductOutputDto> FilterByTypeAndCategory(string businessId, bool isServie, string categoryId)
+        {
+            return GetEntitiesAsync(p => p.BusinessId == businessId 
+                                      && p.CategoryId == categoryId
+                                      && p.IsService == isServie);
+        }
+
         #endregion
 
+
+        #region Mapping
+
+        protected override Product MapForCreate(ProductCreateInputDto dto)
+        {
+            var product = base.MapForCreate(dto);
+            if (product.Category is not null)
+            {
+                product.Category.BusinessId = dto.BusinessId;
+            }
+            return product;
+        }
+
+        protected override Product MapForUpdate(ProductUpdateInputDto dto, Product original)
+        {
+            var product = base.MapForUpdate(dto, original);
+            if (dto.Category is not null && product.Category is not null)
+            {
+                product.Category.BusinessId = original.BusinessId;
+            }
+            return product;
+        }
+
+        #endregion
 
         #region Validation
 
@@ -139,6 +170,10 @@ namespace InvestorAPI.Core
 
             errors ??= dto is ProductCreateInputDto cDto 
                 ? await ValidateId(AppDbContext.Businesses, cDto.BusinessId) 
+                : null;
+
+            errors ??= dto.Category is not null
+                ? await ValidateName(AppDbContext.Categories, dto.Category.Name!, original?.Category?.Name)
                 : null;
 
             return errors;
