@@ -14,7 +14,7 @@ namespace Investor.Core
 
         public BrandEndpoint(HttpClient httpClient, IOptions<ApiOptions> optionsAccessor) : base(httpClient, optionsAccessor, "brands")
         {
-
+            // IMPORTANT: Rename Endpoint suffix to Client.
         }
 
         #endregion
