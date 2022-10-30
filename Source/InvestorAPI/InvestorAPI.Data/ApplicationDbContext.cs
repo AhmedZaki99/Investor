@@ -50,6 +50,8 @@ namespace InvestorAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // IMPORTANT: Move Entities' configuration to IEntityTypeConfiguration Classes.
+
             base.OnModelCreating(modelBuilder);
 
             // Business..
