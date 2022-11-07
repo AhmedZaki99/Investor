@@ -38,7 +38,7 @@ namespace InvestorData
         public string? Notes { get; set; }
 
 
-        public List<Item> Items { get; set; } = new();
+        public List<InvoiceItem> Items { get; set; } = new();
 
     }
 

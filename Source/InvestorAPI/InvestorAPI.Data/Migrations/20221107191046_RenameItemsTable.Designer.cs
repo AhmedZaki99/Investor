@@ -4,6 +4,7 @@ using InvestorAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace InvestorAPI.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221107191046_RenameItemsTable")]
+    partial class RenameItemsTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,7 +76,7 @@ namespace InvestorAPI.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Accounts", (string)null);
+                    b.ToTable("Accounts");
                 });
 
             modelBuilder.Entity("InvestorData.Address", b =>
@@ -110,7 +112,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Addresses", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("InvestorData.Business", b =>
@@ -152,7 +154,7 @@ namespace InvestorAPI.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Businesses", (string)null);
+                    b.ToTable("Businesses");
                 });
 
             modelBuilder.Entity("InvestorData.BusinessType", b =>
@@ -187,7 +189,7 @@ namespace InvestorAPI.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("BusinessTypes", (string)null);
+                    b.ToTable("BusinessTypes");
                 });
 
             modelBuilder.Entity("InvestorData.Category", b =>
@@ -225,7 +227,7 @@ namespace InvestorAPI.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Categories", (string)null);
+                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("InvestorData.Contact", b =>
@@ -262,7 +264,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Contacts", (string)null);
+                    b.ToTable("Contacts");
                 });
 
             modelBuilder.Entity("InvestorData.InventoryInfo", b =>
@@ -293,7 +295,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("ScaleUnitId");
 
-                    b.ToTable("InventoryInfos", (string)null);
+                    b.ToTable("InventoryInfos");
                 });
 
             modelBuilder.Entity("InvestorData.Invoice", b =>
@@ -356,7 +358,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("InvoiceType", "TraderId");
 
-                    b.ToTable("Invoices", (string)null);
+                    b.ToTable("Invoices");
                 });
 
             modelBuilder.Entity("InvestorData.InvoiceItem", b =>
@@ -396,7 +398,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("InvoiceItems", (string)null);
+                    b.ToTable("InvoiceItems");
                 });
 
             modelBuilder.Entity("InvestorData.Payment", b =>
@@ -454,7 +456,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("PaymentType", "TraderId");
 
-                    b.ToTable("Payments", (string)null);
+                    b.ToTable("Payments");
                 });
 
             modelBuilder.Entity("InvestorData.PaymentMethod", b =>
@@ -477,7 +479,7 @@ namespace InvestorAPI.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("PaymentMethods", (string)null);
+                    b.ToTable("PaymentMethods");
                 });
 
             modelBuilder.Entity("InvestorData.Product", b =>
@@ -551,7 +553,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("IsService", "BusinessId");
 
-                    b.ToTable("Products", (string)null);
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("InvestorData.ScaleUnit", b =>
@@ -589,7 +591,7 @@ namespace InvestorAPI.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("ScaleUnits", (string)null);
+                    b.ToTable("ScaleUnits");
                 });
 
             modelBuilder.Entity("InvestorData.Trader", b =>
@@ -643,7 +645,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("TraderType", "BusinessId");
 
-                    b.ToTable("Traders", (string)null);
+                    b.ToTable("Traders");
                 });
 
             modelBuilder.Entity("InvestorData.TradingInfo", b =>
@@ -667,7 +669,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("TradingInfos", (string)null);
+                    b.ToTable("TradingInfos");
                 });
 
             modelBuilder.Entity("InvestorData.UnitConversion", b =>
@@ -697,7 +699,7 @@ namespace InvestorAPI.Data.Migrations
 
                     b.HasIndex("TargetUnitId");
 
-                    b.ToTable("UnitConversions", (string)null);
+                    b.ToTable("UnitConversions");
                 });
 
             modelBuilder.Entity("InvestorData.Account", b =>
