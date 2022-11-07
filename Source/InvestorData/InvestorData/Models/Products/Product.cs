@@ -6,6 +6,7 @@ namespace InvestorData
     [Index(nameof(IsService), nameof(BusinessId))]
     [Index(nameof(Name), IsUnique = true)]
     [Index(nameof(Code), IsUnique = true)]
+    [EntityTypeConfiguration(typeof(ProductConfiguration))]
     public class Product : BusinessEntity, IUniqueName
     {
 
