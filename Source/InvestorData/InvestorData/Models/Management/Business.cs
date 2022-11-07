@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace InvestorData
 {
     [Index(nameof(Name), IsUnique = true)]
+    [EntityTypeConfiguration(typeof(BusinessConfiguration))]
     public class Business : DatedEntity, IUniqueName
     {
 
