@@ -7,6 +7,8 @@ namespace InvestorData
     {
         public void Configure(EntityTypeBuilder<Business> builder)
         {
+            // UNDONE: Use data annotations for delete behavior instead of fluent API.
+
             #region Client-Cascade dependent items on delete
 
             builder

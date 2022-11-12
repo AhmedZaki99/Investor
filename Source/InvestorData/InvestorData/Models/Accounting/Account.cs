@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace InvestorData
 {
     [Index(nameof(Name), IsUnique = true)]
-    [EntityTypeConfiguration(typeof(AccountConfiguration))]
+    [EntityTypeConfiguration(typeof(AccountConfiguration))] // UNDONE: Use generic attribute after .net 7 migration.
     public class Account : OptionalBusinessEntity, IUniqueName
     {
         

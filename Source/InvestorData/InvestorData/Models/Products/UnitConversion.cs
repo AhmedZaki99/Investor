@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace InvestorData
 {
-    [EntityTypeConfiguration(typeof(UnitConversionConfiguration))]
+    [EntityTypeConfiguration(typeof(UnitConversionConfiguration))] // UNDONE: Use generic attribute after .net 7 migration.
     public class UnitConversion : EntityBase
     {
 

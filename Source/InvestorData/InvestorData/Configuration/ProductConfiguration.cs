@@ -18,6 +18,9 @@ namespace InvestorData
             builder
                 .HasOne(p => p.InventoryDetails)
                 .WithOne();
+
+
+            // UNDONE: Use sub-models as Owned Entity Types.
         }
     }
 }

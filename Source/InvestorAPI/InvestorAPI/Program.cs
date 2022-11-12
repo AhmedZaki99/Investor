@@ -35,6 +35,9 @@ namespace InvestorAPI
 
         private static void ConfigureServices(WebApplicationBuilder builder)
         {
+            // TODO: Handle Server-Side errors properly for production environment.
+            //       See https://learn.microsoft.com/en-us/aspnet/core/web-api/handle-errors
+
             // TODO: Use CancellationToken in API endpoints.
             // TODO: Try use SkipWhile for pagination.
 
@@ -44,6 +47,7 @@ namespace InvestorAPI
                     options.SuppressAsyncSuffixInActionNames = false;
                     options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
                 })
+                // UNDONE: Use NewtonsoftJsonValidationMetadataProvider to show proper validation error messages.
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.Converters.Add(new EnumJsonConverter()));
 
@@ -51,7 +55,8 @@ namespace InvestorAPI
             // Add core services.
             builder.Services
                 .AddCoreServices()
-                .AddSqlServerDb(builder.Configuration.GetConnectionString("DefaultConnection"));
+                .AddSqlServerDb(builder.Configuration.GetConnectionString("DefaultConnection")
+                    ?? throw new InvalidOperationException("Couldn't resolve default database connection string from configuration providers."));
         }
 
         private static void ConfigurePipeline(WebApplication app)

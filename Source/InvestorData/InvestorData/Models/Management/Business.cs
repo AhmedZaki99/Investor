@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace InvestorData
 {
     [Index(nameof(Name), IsUnique = true)]
-    [EntityTypeConfiguration(typeof(BusinessConfiguration))]
+    [EntityTypeConfiguration(typeof(BusinessConfiguration))] // UNDONE: Use generic attribute after .net 7 migration.
     public class Business : DatedEntity, IUniqueName
     {
 

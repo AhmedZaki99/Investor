@@ -6,7 +6,7 @@ namespace InvestorData
     [Index(nameof(IsService), nameof(BusinessId))]
     [Index(nameof(Name), IsUnique = true)]
     [Index(nameof(Code), IsUnique = true)]
-    [EntityTypeConfiguration(typeof(ProductConfiguration))]
+    [EntityTypeConfiguration(typeof(ProductConfiguration))] // UNDONE: Use generic attribute after .net 7 migration.
     public class Product : BusinessEntity, IUniqueName
     {
 

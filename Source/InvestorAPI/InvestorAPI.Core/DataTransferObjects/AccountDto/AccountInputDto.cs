@@ -15,7 +15,7 @@ namespace InvestorAPI.Core
 
 
         [Required(ErrorMessage = "{0} is required and should be provided.")]
-        [EnumDataType(typeof(AccountType), ErrorMessage = "Invalid data for {0}")]
+        [EnumDataType(typeof(AccountType), ErrorMessage = "Invalid data for {0}")] // UNDONE: Use generic attribute after .net 7 migration.
         public AccountType? AccountType { get; set; }
         public decimal? Balance { get; set; }
 
