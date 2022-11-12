@@ -16,7 +16,7 @@ namespace InvestorAPI.Core
     public class ProductUpdateInputDto 
     {
 
-        // UNDONE: Optimize the new 'required' keyword for strict Json deserialization.
+        // TODO: Optimize the new 'required' keyword for strict Json deserialization.
 
         [Required(ErrorMessage = "{0} is required and cannot be empty.")]
         [StringLength(200, ErrorMessage = "{0} should not be more than {1} characters.")]

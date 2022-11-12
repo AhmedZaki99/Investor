@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
     public class TradingInfo : EntityBase
     {
 
-        [NotNull]
         public string? AccountId { get; set; }
         public Account? Account { get; set; }
 

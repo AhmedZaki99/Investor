@@ -47,7 +47,6 @@ namespace InvestorAPI
                     options.SuppressAsyncSuffixInActionNames = false;
                     options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
                 })
-                // UNDONE: Use NewtonsoftJsonValidationMetadataProvider to show proper validation error messages.
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.Converters.Add(new EnumJsonConverter()));
 

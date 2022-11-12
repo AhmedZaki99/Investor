@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorData
 {
-    [EntityTypeConfiguration(typeof(InvoiceItemConfiguration))] // UNDONE: Use generic attribute after .net 7 migration.
+    [EntityTypeConfiguration(typeof(InvoiceItemConfiguration))]
     public class InvoiceItem : EntityBase
     {
 

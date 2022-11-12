@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
@@ -15,7 +14,6 @@ namespace InvestorData
         public string? ScaleUnitId { get; set; }
         public ScaleUnit? ScaleUnit { get; set; }
 
-        [NotNull]
         public string? InventoryAccountId { get; set; }
         public Account? InventoryAccount { get; set; }
 
