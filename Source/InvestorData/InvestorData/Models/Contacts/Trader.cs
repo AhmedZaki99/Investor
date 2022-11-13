@@ -19,10 +19,7 @@ namespace InvestorData
         public string? Notes { get; set; }
 
 
-        public string? ContactId { get; set; }
         public Contact? Contact { get; set; }
-
-        public string? AddressId { get; set; }
         public Address? Address { get; set; }
 
 
