@@ -25,14 +25,8 @@ namespace InvestorData
         public Category? Category { get; set; }
 
 
-        public string? SalesInformationId { get; set; }
         public TradingInfo? SalesInformation { get; set; }
-
-        public string? PurchasingInformationId { get; set; }
         public TradingInfo? PurchasingInformation { get; set; }
-
-
-        public string? InventoryDetailsId { get; set; }
         public InventoryInfo? InventoryDetails { get; set; }
 
     }

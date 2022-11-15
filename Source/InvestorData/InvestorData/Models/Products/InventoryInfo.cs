@@ -1,9 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorData
 {
-    public class InventoryInfo : EntityBase
+    [Owned]
+    [Table("InventoryInfos")]
+    public class InventoryInfo
     {
 
         [MaxLength(128)]
@@ -15,7 +18,6 @@ namespace InvestorData
         public string? ScaleUnitId { get; set; }
         public ScaleUnit? ScaleUnit { get; set; }
 
-        [NotNull]
         public string? InventoryAccountId { get; set; }
         public Account? InventoryAccount { get; set; }
 

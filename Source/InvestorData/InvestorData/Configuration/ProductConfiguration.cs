@@ -8,16 +8,10 @@ namespace InvestorData
         public void Configure(EntityTypeBuilder<Product> builder)
         {
             builder
-                .HasOne(p => p.SalesInformation)
-                .WithOne();
+                .OwnsOne(p => p.SalesInformation, owned => owned.ToTable("SalesInfos"));
 
             builder
-                .HasOne(p => p.PurchasingInformation)
-                .WithOne();
-
-            builder
-                .HasOne(p => p.InventoryDetails)
-                .WithOne();
+                .OwnsOne(p => p.PurchasingInformation, owned => owned.ToTable("PurchasingInfos"));
         }
     }
 }

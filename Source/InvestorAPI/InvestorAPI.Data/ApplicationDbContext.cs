@@ -16,17 +16,10 @@ namespace InvestorAPI.Data
         public DbSet<ScaleUnit> ScaleUnits => Set<ScaleUnit>();
         public DbSet<UnitConversion> UnitConversions => Set<UnitConversion>();
 
-        public DbSet<TradingInfo> TradingInfos => Set<TradingInfo>();
-        public DbSet<InventoryInfo> InventoryInfos => Set<InventoryInfo>();
-
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Product> Products => Set<Product>();
 
-        public DbSet<Address> Addresses => Set<Address>();
-        public DbSet<Contact> Contacts => Set<Contact>();
         public DbSet<Trader> Traders => Set<Trader>();
-
-        public DbSet<InvoiceItem> InvoiceItems => Set<InvoiceItem>();
         public DbSet<Invoice> Invoices => Set<Invoice>();
 
         public DbSet<PaymentMethod> PaymentMethods => Set<PaymentMethod>();

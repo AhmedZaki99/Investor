@@ -4,14 +4,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorData
 {
+    [Owned]
+    [Table("InvoiceItems")]
     [EntityTypeConfiguration(typeof(InvoiceItemConfiguration))]
-    public class InvoiceItem : EntityBase
+    public class InvoiceItem
     {
-
-        [Required]
-        public string InvoiceId { get; set; } = null!;
-        public Invoice? Invoice { get; set; }
-
 
         [Required]
         public string ProductId { get; set; } = null!;
