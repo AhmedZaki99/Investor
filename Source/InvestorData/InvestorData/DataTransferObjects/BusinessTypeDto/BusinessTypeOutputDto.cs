@@ -1,4 +1,4 @@
-﻿namespace InvestorAPI.Core
+﻿namespace InvestorData
 {
     public class BusinessTypeOutputDto : OutputDtoBase
     {

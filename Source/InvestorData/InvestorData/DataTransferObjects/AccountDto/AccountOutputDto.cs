@@ -1,6 +1,4 @@
-﻿using InvestorData;
-
-namespace InvestorAPI.Core
+﻿namespace InvestorData
 {
     public class AccountOutputDto : OutputDtoBase
     {

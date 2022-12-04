@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace InvestorAPI.Core
+namespace InvestorData
 {
     public class InventoryInfoInputDto
     {

@@ -1,7 +1,6 @@
-﻿using InvestorData;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace InvestorAPI.Core
+namespace InvestorData
 {
     public class AccountInputDto
     {

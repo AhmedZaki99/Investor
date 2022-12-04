@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
-using InvestorData;
 
-namespace InvestorAPI.Core
+namespace InvestorData
 {
     public class DomainToDtoProfile : Profile
     {

@@ -1,4 +1,5 @@
 ﻿using InvestorAPI.Data;
+using InvestorData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,8 +22,8 @@ namespace InvestorAPI.Core
             ArgumentNullException.ThrowIfNull(services, nameof(services));
 
 
-            // Add Auto Mapper.
-            services.AddAutoMapper(typeof(CoreServiceCollectionExtensions));
+            // Add Data Mapper.
+            services.AddDataMapper();
 
 
             // Add core services..

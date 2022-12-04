@@ -3,7 +3,6 @@ using AutoMapper.QueryableExtensions;
 using InvestorAPI.Data;
 using InvestorData;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 
