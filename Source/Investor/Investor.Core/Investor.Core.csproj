@@ -16,7 +16,12 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="7.0.0" />
     <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     <PackageReference Include="System.Net.Http.Json" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\InvestorData\InvestorData\InvestorData.csproj" />
   </ItemGroup>
 
 </Project>

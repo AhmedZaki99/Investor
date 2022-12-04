@@ -8,34 +8,34 @@ namespace InvestorData
         public DomainToDtoProfile()
         {
             // BusinessType.
-            CreateMap<BusinessType, BusinessTypeOutputDto>();
+            CreateMap<BusinessType, BusinessTypeOutputDto>().ReverseMap();
             CreateMap<BusinessTypeInputDto, BusinessType>().ReverseMap();
 
             // Business.
-            CreateMap<Business, BusinessOutputDto>();
+            CreateMap<Business, BusinessOutputDto>().ReverseMap();
             CreateMap<BusinessCreateInputDto, Business>();
             CreateMap<BusinessUpdateInputDto, Business>().ReverseMap();
 
             // Account.
-            CreateMap<Account, AccountOutputDto>();
+            CreateMap<Account, AccountOutputDto>().ReverseMap();
             CreateMap<AccountInputDto, Account>().ReverseMap();
 
 
             // Category.
-            CreateMap<Category, CategoryOutputDto>();
+            CreateMap<Category, CategoryOutputDto>().ReverseMap();
             CreateMap<CategoryCreateInputDto, Category>();
             CreateMap<CategoryUpdateInputDto, Category>().ReverseMap();
 
             // Trading Info.
-            CreateMap<TradingInfo, TradingInfoOutputDto>();
+            CreateMap<TradingInfo, TradingInfoOutputDto>().ReverseMap();
             CreateMap<TradingInfoInputDto, TradingInfo>().ReverseMap();
 
             // Inventory Info.
-            CreateMap<InventoryInfo, InventoryInfoOutputDto>();
+            CreateMap<InventoryInfo, InventoryInfoOutputDto>().ReverseMap();
             CreateMap<InventoryInfoInputDto, InventoryInfo>().ReverseMap();
 
             // Product.
-            CreateMap<Product, ProductOutputDto>();
+            CreateMap<Product, ProductOutputDto>().ReverseMap();
             CreateMap<ProductCreateInputDto, Product>();
             CreateMap<ProductUpdateInputDto, Product>().ReverseMap();
         }

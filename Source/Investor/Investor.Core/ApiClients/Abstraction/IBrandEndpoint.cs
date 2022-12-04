@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides an abstraction for an endpoint client service, which manages <see cref="BrandModel"/> models.
     /// </summary>
-    public interface IBrandEndpoint : IModelEndpoint<BrandModel>
+    public interface IBrandEndpoint : IEntityClient<BrandModel>
     {
 
         #region Pagination

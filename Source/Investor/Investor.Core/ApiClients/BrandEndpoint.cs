@@ -6,7 +6,7 @@ namespace Investor.Core
     /// <summary>
     /// An endpoint client service that manages <see cref="BrandModel"/> models.
     /// </summary>
-    internal class BrandEndpoint : ModelEndpoint<BrandModel>, IBrandEndpoint
+    internal class BrandEndpoint : EntityClient<BrandModel>, IBrandEndpoint
     {
 
 
@@ -14,7 +14,7 @@ namespace Investor.Core
 
         public BrandEndpoint(HttpClient httpClient, IOptions<ApiOptions> optionsAccessor) : base(httpClient, optionsAccessor, "brands")
         {
-            // IMPORTANT: Rename Endpoint suffix to Client.
+
         }
 
         #endregion
@@ -40,29 +40,6 @@ namespace Investor.Core
 
         #endregion
 
-        #region Abstract Implementation
-
-        /// <inheritdoc/>
-        public override Task<IEnumerable<BrandModel>> PaginateAsync(BrandModel? lastModel = null)
-        {
-            if (lastModel is not null)
-            {
-                return PaginateAsync(lastModel.DateCreated);
-            }
-            return PaginateAsync(string.Empty);
-        }
-
-        /// <inheritdoc/>
-        public override Task<IEnumerable<BrandModel>> PaginateAsync(int count, BrandModel? lastModel = null)
-        {
-            if (lastModel is not null)
-            {
-                return PaginateAsync(count, lastModel.DateCreated);
-            }
-            return PaginateAsync($"?perPage={count}");
-        }
-
-        #endregion
 
         #region Protected Abstract Implementation
 
