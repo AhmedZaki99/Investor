@@ -43,8 +43,8 @@ namespace Investor.Core
         /// <summary>
         /// Save changes made to the entity in the server.
         /// </summary>
-        /// <returns>True if changes were saved successfully, otherwise false.</returns>
-        Task<bool> SaveChangesAsync(string id, TUpdateDto dto);
+        /// <returns>The updated entity as stored in server.</returns>
+        Task<TEntity> SaveChangesAsync(TEntity originalEntity, TUpdateDto dto);
 
         /// <summary>
         /// Delete entity by id.

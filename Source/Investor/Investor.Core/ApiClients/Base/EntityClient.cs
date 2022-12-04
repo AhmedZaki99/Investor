@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using InvestorData;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.Converters;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Http.Json;
@@ -31,7 +33,7 @@ namespace Investor.Core
             Options = optionsAccessor?.Value ??
                 throw new InvalidOperationException("Api options must be configured in order to connect with Api Endpoints.");
 
-            string baseUrl = $"{Options.ApiServerAddress}/{Options.ApiRelativePath}/{endpointPath}/";
+            string baseUrl = Path.Combine(Options.ApiServerAddress, Options.ApiRelativePath, endpointPath);
 
             HttpClient = httpClient;
 
@@ -108,17 +110,21 @@ namespace Investor.Core
         }
 
         /// <inheritdoc/>
-        public async Task<bool> SaveChangesAsync(string id, TUpdateDto dto)
+        public async Task<TEntity> SaveChangesAsync(TEntity originalEntity, TUpdateDto updatedDto)
         {
-            using var response = await HttpClient.PutAsJsonAsync(id, dto);
+            var originalDto = Mapper.Map<TUpdateDto>(originalEntity);
 
-            if (response.StatusCode == HttpStatusCode.NotFound)
-            {
-                return false;
-            }
+            var patchDoc = new JsonPatchDocument();
+            patchDoc.Construct(originalDto, updatedDto);
+
+            using var response = await HttpClient.PatchAsJsonAsync(originalEntity.Id, patchDoc);
+
             response.EnsureSuccessStatusCode();
 
-            return true;
+            var responseDto = await response.Content.ReadFromJsonAsync<TOutputDto>() ??
+                throw new NullReferenceException("Api resonse data deserialization returned null.");
+
+            return Mapper.Map<TEntity>(responseDto);
         }
 
         /// <inheritdoc/>
