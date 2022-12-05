@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using InvestorData;
 using Microsoft.AspNetCore.JsonPatch;
-using Microsoft.AspNetCore.JsonPatch.Converters;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Http.Json;
@@ -72,24 +71,9 @@ namespace Investor.Core
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<TEntity>> GetAllAsync()
+        public Task<IEnumerable<TEntity>> GetAllAsync()
         {
-            // TODO: Check the possibility of using IAsyncEnumerable and recent bug fixes.
-            try
-            {
-                var dtos = await HttpClient.GetFromJsonAsync<IEnumerable<TOutputDto>>(string.Empty) ??
-                    throw new NullReferenceException("Api resonse data deserialization returned null.");
-
-                return Mapper.Map<IEnumerable<TEntity>>(dtos);
-            }
-            catch (HttpRequestException ex)
-            {
-                if (ex.StatusCode == HttpStatusCode.NotFound)
-                {
-                    return Enumerable.Empty<TEntity>();
-                }
-                throw;
-            }
+            return GetAllInternalAsync();
         }
 
         #endregion
@@ -142,6 +126,40 @@ namespace Investor.Core
         }
 
         #endregion
+
+        #endregion
+
+
+        #region Protected Helper Methods
+
+        protected async Task<IEnumerable<TEntity>> GetAllInternalAsync(string query = "", string relativePath = "")
+        {
+            // TODO: Check the possibility of using IAsyncEnumerable and recent bug fixes.
+            try
+            {
+                if (!string.IsNullOrEmpty(query))
+                {
+                    query = "?" + query;
+                }
+                if (!string.IsNullOrEmpty(relativePath))
+                {
+                    relativePath = "/" + relativePath;
+                }
+
+                var dtos = await HttpClient.GetFromJsonAsync<IEnumerable<TOutputDto>>(relativePath + query) ??
+                    throw new NullReferenceException("Api resonse data deserialization returned null.");
+
+                return Mapper.Map<IEnumerable<TEntity>>(dtos);
+            }
+            catch (HttpRequestException ex)
+            {
+                if (ex.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return Enumerable.Empty<TEntity>();
+                }
+                throw;
+            }
+        }
 
         #endregion
 
