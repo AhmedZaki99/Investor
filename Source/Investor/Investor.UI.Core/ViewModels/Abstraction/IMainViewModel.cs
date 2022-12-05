@@ -12,12 +12,15 @@ namespace Investor.UI.Core.ViewModels
 
         #region Observable Properties
 
-        ObservableCollection<IBrandViewModel> Brands { get; set; }
-        IBrandViewModel? SelectedBrand { get; set; }
+        ObservableCollection<ICategoryViewModel> Categories { get; set; }
+        ObservableCollection<IAccountViewModel> Accounts { get; set; }
+
+        ObservableCollection<IProductViewModel> Products { get; set; }
+        IProductViewModel? SelectedProduct { get; set; }
 
         IEnumerable<string?> InputErrors { get; }
 
-        bool AddingNewBrand { get; set; }
+        bool AddingNewProduct { get; set; }
         string LocalStatus { get; set; }
 
         #endregion
@@ -26,12 +29,19 @@ namespace Investor.UI.Core.ViewModels
 
         ICommand CloseApplicationCommand { get; }
 
-        ICommand ToggleAddBrandCommand { get; }
+        ICommand ToggleAddProductCommand { get; }
 
-        ICommand GetBrandsCommand { get; }
-        IRelayCommand AddBrandCommand { get; }
-        IRelayCommand SaveBrandCommand { get; }
-        IRelayCommand DeleteBrandCommand { get; }
+        ICommand GetProductsCommand { get; }
+        IRelayCommand AddProductCommand { get; }
+        IRelayCommand SaveProductCommand { get; }
+        IRelayCommand DeleteProductCommand { get; }
+
+        #endregion
+
+
+        #region Methods
+
+        Task FetchData();
 
         #endregion
 

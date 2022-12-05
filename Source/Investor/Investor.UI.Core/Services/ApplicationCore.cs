@@ -35,7 +35,7 @@ namespace Investor.UI.Core
         #region Application Startup
 
         /// <inheritdoc/>
-        public void StartupApplication()
+        public async Task StartupApplication()
         {
             if (_applicationStartedup)
             {
@@ -47,6 +47,9 @@ namespace Investor.UI.Core
 
             // Show UI at startup.
             _uIService.ShowUI();
+
+            // Load viewmodel data.
+            await _mainViewModel.FetchData();
 
             _applicationStartedup = true;
         }

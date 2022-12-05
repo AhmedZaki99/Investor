@@ -60,10 +60,10 @@ namespace Investor.UI.WPF
 
         #region App Event Handlers
 
-        private void OnAppStartup(object sender, StartupEventArgs e)
+        private async void OnAppStartup(object sender, StartupEventArgs e)
         {
             // Startup Application.
-            _applicationCore.StartupApplication();
+            await _applicationCore.StartupApplication();
         }
 
         private void OnAppExit(object sender, ExitEventArgs e)
