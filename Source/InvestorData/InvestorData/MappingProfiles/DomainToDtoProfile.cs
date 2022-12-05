@@ -13,7 +13,7 @@ namespace InvestorData
 
             // Business.
             CreateMap<Business, BusinessOutputDto>().ReverseMap();
-            CreateMap<BusinessCreateInputDto, Business>();
+            CreateMap<BusinessCreateInputDto, Business>().ReverseMap();
             CreateMap<BusinessUpdateInputDto, Business>().ReverseMap();
 
             // Account.
@@ -23,7 +23,7 @@ namespace InvestorData
 
             // Category.
             CreateMap<Category, CategoryOutputDto>().ReverseMap();
-            CreateMap<CategoryCreateInputDto, Category>();
+            CreateMap<CategoryCreateInputDto, Category>().ReverseMap();
             CreateMap<CategoryUpdateInputDto, Category>().ReverseMap();
 
             // Trading Info.
@@ -36,7 +36,7 @@ namespace InvestorData
 
             // Product.
             CreateMap<Product, ProductOutputDto>().ReverseMap();
-            CreateMap<ProductCreateInputDto, Product>();
+            CreateMap<ProductCreateInputDto, Product>().ReverseMap();
             CreateMap<ProductUpdateInputDto, Product>().ReverseMap();
         }
 

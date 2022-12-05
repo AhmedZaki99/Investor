@@ -25,17 +25,17 @@ namespace Investor.Core
         /// <inheritdoc/>
         public Task<IEnumerable<Account>> GetAllAsync(string businessId)
         {
-            string query = $"businessId={businessId}";
-
-            return GetAllInternalAsync(query);
+            return GetAllInternalAsync(query: new { businessId });
         }
 
         /// <inheritdoc/>
         public Task<IEnumerable<Account>> GetAllByTypeAsync(string businessId, AccountType accountType)
         {
-            string query = $"businessId={businessId}&type={accountType}";
-
-            return GetAllInternalAsync(query);
+            return GetAllInternalAsync(query: new
+            {
+                businessId,
+                accountType
+            });
         }
 
         #endregion

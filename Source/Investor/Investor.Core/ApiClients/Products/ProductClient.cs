@@ -20,6 +20,8 @@ namespace Investor.Core
         #endregion
 
 
+        #region Interface Implementation
+
         #region Read
 
         /// <inheritdoc/>
@@ -34,23 +36,27 @@ namespace Investor.Core
 
         public Task<IEnumerable<Product>> GetAllByCategoryAsync(string businessId, string categoryId)
         {
-            string query = $"categoryId={categoryId}";
-
-            return GetAllInternalAsync(query: query, relativePath: $"filter-in-business/{businessId}");
+            return GetAllInternalAsync(relativePath: $"filter-in-business/{businessId}", query: new
+            {
+                categoryId
+            });
         }
 
         public Task<IEnumerable<Product>> GetAllByTypeAsync(string businessId, bool isService)
         {
-            string query = $"isService={isService}";
-
-            return GetAllInternalAsync(query: query, relativePath: $"filter-in-business/{businessId}");
+            return GetAllInternalAsync(relativePath: $"filter-in-business/{businessId}", query: new
+            {
+                isService
+            });
         }
 
         public Task<IEnumerable<Product>> GetAllByCategoryAndTypeAsync(string businessId, string categoryId, bool isService)
         {
-            string query = $"categoryId={categoryId}&isService={isService}";
-
-            return GetAllInternalAsync(query: query, relativePath: $"filter-in-business/{businessId}");
+            return GetAllInternalAsync(relativePath: $"filter-in-business/{businessId}", query: new
+            {
+                categoryId,
+                isService
+            });
         }
 
         #endregion
@@ -59,9 +65,49 @@ namespace Investor.Core
 
         public Task<IEnumerable<Product>> SearchAsync(string businessId, string keyword)
         {
-            string query = $"keyword={keyword}";
+            return GetAllInternalAsync(relativePath: $"search-in-business/{businessId}", query: new
+            {
+                keyword
+            });
+        }
 
-            return GetAllInternalAsync(query: query, relativePath: $"search-in-business/{businessId}");
+        #endregion
+
+        #endregion
+
+
+        #region Mapping
+
+        protected override Product MapOutput(ProductOutputDto dto)
+        {
+            var product = base.MapOutput(dto);
+
+            //if (dto.CategoryId is not null)
+            //{
+            //    product.Category = new Category
+            //    {
+            //        Id = dto.CategoryId,
+            //        Name = dto.CategoryName!
+            //    };
+            //}
+            //if (product.SalesInformation is not null)
+            //{
+            //    product.SalesInformation.Account = new Account
+            //    {
+            //        Id = dto.SalesInformation!.AccountId,
+            //        Name = dto.SalesInformation.AccountName!
+            //    };
+            //}
+            //if (product.PurchasingInformation is not null)
+            //{
+            //    product.PurchasingInformation.Account = new Account
+            //    {
+            //        Id = dto.PurchasingInformation!.AccountId,
+            //        Name = dto.PurchasingInformation.AccountName!
+            //    };
+            //}
+
+            return product;
         }
 
         #endregion

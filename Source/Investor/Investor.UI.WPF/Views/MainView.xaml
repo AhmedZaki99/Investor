@@ -18,7 +18,7 @@
         </Grid.ColumnDefinitions>
         
 
-        <!--#region Brands ListView -->
+        <!--#region Products ListView -->
 
         <Grid Grid.Column="0" Margin="10">
 
@@ -29,8 +29,8 @@
             </Grid.RowDefinitions>
 
             <ListView Grid.Row="0" Margin="0 0 0 10"
-                      ItemsSource="{Binding Brands}"
-                      SelectedItem="{Binding SelectedBrand, Mode=TwoWay}">
+                      ItemsSource="{Binding Products}"
+                      SelectedItem="{Binding SelectedProduct, Mode=TwoWay}">
 
                 <Validation.ErrorTemplate>
                     <ControlTemplate>
@@ -41,19 +41,19 @@
                 <ListView.View>
                     <GridView AllowsColumnReorder="True">
 
-                        <GridViewColumn Width="100" Header="Brand Name" DisplayMemberBinding="{Binding Name}"/>
-                        <GridViewColumn Width="70" Header="Scale Unit" DisplayMemberBinding="{Binding ScaleUnit}"/>
+                        <GridViewColumn Width="100" Header="Product Name" DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Width="70" Header="Quantity" DisplayMemberBinding="{Binding Quantity}"/>
 
-                        <GridViewColumn Width="150" Header="Description">
+                        <GridViewColumn Width="150" Header="Sales Description">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Description, TargetNullValue='N/A'}" TextTrimming="CharacterEllipsis"/>
+                                    <TextBlock Text="{Binding SalesDescription, TargetNullValue='N/A'}" TextTrimming="CharacterEllipsis"/>
                                 </DataTemplate>
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
-                        <GridViewColumn Width="75" Header="Buy Price" DisplayMemberBinding="{Binding BuyPrice, StringFormat={}{0:c}}"/>
-                        <GridViewColumn Width="75" Header="Sell Price" DisplayMemberBinding="{Binding SellPrice, StringFormat={}{0:c}}"/>
+                        <GridViewColumn Width="75" Header="Buy Price" DisplayMemberBinding="{Binding SalesPrice, StringFormat={}{0:c}}"/>
+                        <GridViewColumn Width="75" Header="Sell Price" DisplayMemberBinding="{Binding PurchasingPrice, StringFormat={}{0:c}}"/>
 
                     </GridView>
                 </ListView.View>
@@ -70,20 +70,20 @@
                 </Grid.ColumnDefinitions>
                 
                 <Button Grid.Column="0" 
-                        Command="{Binding GetBrandsCommand}" 
+                        Command="{Binding GetProductsCommand}" 
                         Padding="10" FontSize="14">
-                    Get Brands
+                    Get Products
                 </Button>
 
                 <Button Grid.Column="2" 
-                        Command="{Binding ToggleAddBrandCommand}"
+                        Command="{Binding ToggleAddProductCommand}"
                         Padding="10" FontSize="14">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
-                            <Setter Property="Content" Value="Add new brand" />
+                            <Setter Property="Content" Value="Add new product" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding AddingNewBrand}" Value="True">
-                                    <Setter Property="Content" Value="Discard new brand" />
+                                <DataTrigger Binding="{Binding AddingNewProduct}" Value="True">
+                                    <Setter Property="Content" Value="Discard new product" />
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
@@ -102,35 +102,37 @@
         <!--#endregion-->
         
         
-        <!--#region Brands Edit -->
+        <!--#region Products Edit -->
 
         <GroupBox Grid.Column="1" Margin="5 0 5 5" Padding="5 10 5 5" BorderThickness="2" BorderBrush="CadetBlue">
             <GroupBox.Style>
                 <Style TargetType="{x:Type GroupBox}">
-                    <Setter Property="Header" Value="Edit selected brand" />
+                    <Setter Property="Header" Value="Edit selected product" />
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding AddingNewBrand}" Value="True">
-                            <Setter Property="Header" Value="Add new brand" />
+                        <DataTrigger Binding="{Binding AddingNewProduct}" Value="True">
+                            <Setter Property="Header" Value="Add new product" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </GroupBox.Style>
-            
+
             <Grid>
 
                 <!-- Placeholder -->
                 <TextBlock FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" 
-                           Visibility="{Binding SelectedBrand, Converter={StaticResource NullableToVisibilityConverter}, ConverterParameter=revert}">
-                    Select a brand to edit..
+                           Visibility="{Binding SelectedProduct, Converter={StaticResource NullableToVisibilityConverter}, ConverterParameter=revert}">
+                    Select a product to edit..
                 </TextBlock>
 
-                <Grid Visibility="{Binding SelectedBrand, Converter={StaticResource NullableToVisibilityConverter}}">
+                <Grid Visibility="{Binding SelectedProduct, Converter={StaticResource NullableToVisibilityConverter}}">
 
-                    <Validation.ErrorTemplate>
-                        <ControlTemplate>
-                            <AdornedElementPlaceholder/>
-                        </ControlTemplate>
-                    </Validation.ErrorTemplate>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" MaxHeight="70" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
                     <!--#region Grid Resources -->
 
@@ -138,6 +140,16 @@
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="FontSize" Value="12" />
                             <Setter Property="VerticalAlignment" Value="Stretch"/>
+                        </Style>
+
+                        <Style TargetType="{x:Type ComboBox}">
+                            <Setter Property="FontSize" Value="12" />
+                            <Setter Property="VerticalAlignment" Value="Top"/>
+                            <Setter Property="Margin" Value="5 0" />
+                        </Style>
+                        <Style TargetType="{x:Type CheckBox}">
+                            <Setter Property="FontSize" Value="12" />
+                            <Setter Property="VerticalAlignment" Value="Top"/>
                         </Style>
 
                         <Style TargetType="{x:Type TextBox}">
@@ -148,7 +160,7 @@
                         <Style x:Key="TextBox.Multiline" TargetType="{x:Type TextBox}" 
                                BasedOn="{StaticResource {x:Type TextBox}}">
 
-                            <Setter Property="Margin" Value="5 0 5 20" />
+                            <Setter Property="Margin" Value="5 0 5 5" />
                             <Setter Property="AcceptsReturn" Value="True" />
                             <Setter Property="TextWrapping" Value="Wrap" />
                             <Setter Property="VerticalAlignment" Value="Stretch" />
@@ -164,58 +176,184 @@
 
                     <!--#endregion-->
 
-                    <!--#region Grid Cells -->
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                        <Grid>
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="2*" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="1.5*" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                            <Validation.ErrorTemplate>
+                                <ControlTemplate>
+                                    <AdornedElementPlaceholder/>
+                                </ControlTemplate>
+                            </Validation.ErrorTemplate>
 
-                    <!--#endregion-->
+                            <!--#region Grid Cells -->
 
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="20" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="20" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="20" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
 
-                    <!--#region Input -->
-
-                    <TextBlock Grid.Row="0">Name:</TextBlock>
-                    <TextBox Grid.Row="0" Grid.Column="1" 
-                             Text="{Binding SelectedBrand.Name, UpdateSourceTrigger=PropertyChanged}"/>
-
-
-                    <TextBlock Grid.Row="1">Scale Unit:</TextBlock>
-                    <TextBox Grid.Row="1" Grid.Column="1" 
-                             Text="{Binding SelectedBrand.ScaleUnit, UpdateSourceTrigger=PropertyChanged}"/>
+                            <!--#endregion-->
 
 
-                    <TextBlock Grid.Row="2">Description:</TextBlock>
-                    <TextBox Grid.Row="2" Grid.Column="1" 
-                             Style="{StaticResource TextBox.Multiline}"
-                             Text="{Binding SelectedBrand.Description, UpdateSourceTrigger=PropertyChanged}"/>
+                            <!--#region Basic Input -->
 
+                            <Grid Grid.Row="0" Height="90">
 
-                    <TextBlock Grid.Row="3">Buy Price:</TextBlock>
-                    <TextBox Grid.Row="3" Grid.Column="1" 
-                             Text="{Binding SelectedBrand.BuyPrice, StringFormat={}{0:c}}"/>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
 
+                                <TextBlock Grid.Row="0">Name:</TextBlock>
+                                <TextBox Grid.Row="0" Grid.Column="1" 
+                                         Text="{Binding SelectedProduct.Name, UpdateSourceTrigger=PropertyChanged}"/>
 
-                    <TextBlock Grid.Row="4">Sell Price:</TextBlock>
-                    <TextBox Grid.Row="4" Grid.Column="1" 
-                             Text="{Binding SelectedBrand.SellPrice, StringFormat={}{0:c}}"/>
+                                <TextBlock Grid.Row="1">Code:</TextBlock>
+                                <TextBox Grid.Row="1" Grid.Column="1" 
+                                         Text="{Binding SelectedProduct.Code, UpdateSourceTrigger=PropertyChanged}"/>
 
-                    <!--#endregion-->
+                                <TextBlock Grid.Row="2">Category:</TextBlock>
+                                <ComboBox Grid.Row="2" Grid.Column="1" 
+                                          DisplayMemberPath="Name"
+                                          ItemsSource="{Binding Categories}"
+                                          SelectedItem="{Binding SelectedProduct.Category, Mode=TwoWay}"/>
+                            </Grid>
+                            <!--#endregion-->
+
+                            <Separator Grid.Row="1" Margin="0 5"/>
+
+                            <!--#region Sales Input -->
+
+                            <CheckBox Grid.Row="2" x:Name="EnableSelling">Enable Selling</CheckBox>
+                            <Grid Grid.Row="3" Height="120"
+                                  Visibility="{Binding IsChecked, ElementName=EnableSelling, Converter={StaticResource BoolToVisibilityConverter}}">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="1.5*" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0">Account:</TextBlock>
+                                <ComboBox Grid.Row="0" Grid.Column="1" 
+                                          DisplayMemberPath="Name"
+                                          ItemsSource="{Binding Accounts}"
+                                          SelectedItem="{Binding SelectedProduct.SalesAccount, Mode=TwoWay}"/>
+
+                                <TextBlock Grid.Row="1">Price:</TextBlock>
+                                <TextBox Grid.Row="1" Grid.Column="1" 
+                                         Text="{Binding SelectedProduct.SalesPrice, StringFormat={}{0:c}}"/>
+
+                                <TextBlock Grid.Row="2">Description:</TextBlock>
+                                <TextBox Grid.Row="2" Grid.Column="1" 
+                                         Style="{StaticResource TextBox.Multiline}"
+                                         Text="{Binding SelectedProduct.SalesDescription, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Grid>
+
+                            <!--#endregion-->
+                            
+                            <Separator Grid.Row="4" Margin="0 5"/>
+
+                            <!--#region Purchasing Input -->
+
+                            <CheckBox Grid.Row="5" x:Name="EnableBuying">Enable Buying</CheckBox>
+                            <Grid Grid.Row="6" Height="120"
+                                  Visibility="{Binding IsChecked, ElementName=EnableBuying, Converter={StaticResource BoolToVisibilityConverter}}">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="1.5*" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0">Account:</TextBlock>
+                                <ComboBox Grid.Row="0" Grid.Column="1" 
+                                          DisplayMemberPath="Name"
+                                          ItemsSource="{Binding Accounts}"
+                                          SelectedItem="{Binding SelectedProduct.PurchasingAccount, Mode=TwoWay}"/>
+
+                                <TextBlock Grid.Row="1">Cost:</TextBlock>
+                                <TextBox Grid.Row="1" Grid.Column="1" 
+                                         Text="{Binding SelectedProduct.PurchasingPrice, StringFormat={}{0:c}}"/>
+
+                                <TextBlock Grid.Row="2">Description:</TextBlock>
+                                <TextBox Grid.Row="2" Grid.Column="1" 
+                                         Style="{StaticResource TextBox.Multiline}"
+                                         Text="{Binding SelectedProduct.PurchasingDescription, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Grid>
+
+                            <!--#endregion-->
+                            
+                            <Separator Grid.Row="7" Margin="0 5"/>
+
+                            <!--#region Inventory Input -->
+
+                            <CheckBox Grid.Row="8" x:Name="EnableInventory">Enable Inventory</CheckBox>
+                            <Grid Grid.Row="9" Height="120"
+                                  Visibility="{Binding IsChecked, ElementName=EnableInventory, Converter={StaticResource BoolToVisibilityConverter}}">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0">Account:</TextBlock>
+                                <ComboBox Grid.Row="0" Grid.Column="1" 
+                                          DisplayMemberPath="Name"
+                                          ItemsSource="{Binding Accounts}"
+                                          SelectedItem="{Binding SelectedProduct.InventoryAccount, Mode=TwoWay}"/>
+
+                                <TextBlock Grid.Row="1">Quantity:</TextBlock>
+                                <TextBox Grid.Row="1" Grid.Column="1" 
+                                         Text="{Binding SelectedProduct.Quantity, StringFormat={}{0:n}}"/>
+
+                                <TextBlock Grid.Row="2">Reorder at:</TextBlock>
+                                <TextBox Grid.Row="2" Grid.Column="1" 
+                                         Text="{Binding SelectedProduct.ReorderPoint, StringFormat={}{0:n}}"/>
+
+                                <TextBlock Grid.Row="3">SKU:</TextBlock>
+                                <TextBox Grid.Row="3" Grid.Column="1" 
+                                         Text="{Binding SelectedProduct.SKU, UpdateSourceTrigger=PropertyChanged}"/>
+
+                                <!--#endregion-->
+
+                            </Grid>
+                        </Grid>
+                    </ScrollViewer>
+
+                    <Separator Grid.Row="1" Margin="0 5"/>
 
                     <!--#region Validation -->
 
-                    <ScrollViewer Grid.Row="5" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
                         <ItemsControl ItemsSource="{Binding InputErrors}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -229,22 +367,22 @@
 
                     <!--#region Buttons -->
 
-                    <Button Grid.Row="6" Grid.ColumnSpan="2" 
-                            Visibility="{Binding AddingNewBrand, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=revert-hide}"
-                            Command="{Binding SaveBrandCommand}">
-                        Save Brand
+                    <Button Grid.Row="4"
+                            Visibility="{Binding AddingNewProduct, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=revert-hide}"
+                            Command="{Binding SaveProductCommand}">
+                        Save Product
                     </Button>
-                    <Button Grid.Row="7" Grid.ColumnSpan="2" 
-                            Visibility="{Binding AddingNewBrand, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=revert-hide}"
-                            Command="{Binding DeleteBrandCommand}">
-                        Delete Brand
+                    <Button Grid.Row="3"
+                            Visibility="{Binding AddingNewProduct, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter=revert-hide}"
+                            Command="{Binding DeleteProductCommand}">
+                        Delete Product
                     </Button>
-                    
-                    <Button Grid.Row="6" Grid.ColumnSpan="2" Grid.RowSpan="2" 
+
+                    <Button Grid.Row="3" Grid.RowSpan="2" 
                             VerticalAlignment="Center"
-                            Visibility="{Binding AddingNewBrand, Converter={StaticResource BoolToVisibilityConverter}}"
-                            Command="{Binding AddBrandCommand}">
-                        Add Brand
+                            Visibility="{Binding AddingNewProduct, Converter={StaticResource BoolToVisibilityConverter}}"
+                            Command="{Binding AddProductCommand}">
+                        Add Product
                     </Button>
 
                     <!--#endregion-->

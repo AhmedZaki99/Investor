@@ -1,5 +1,7 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using AutoMapper;
+using CommunityToolkit.Mvvm.Input;
 using Investor.Core;
+using InvestorData;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
@@ -30,48 +32,64 @@ namespace Investor.UI.Core.ViewModels
             set => SetProperty(ref _localStatus, value);
         }
 
-        private ObservableCollection<IBrandViewModel> _brands;
-        public ObservableCollection<IBrandViewModel> Brands
+
+        private ObservableCollection<ICategoryViewModel> _categories;
+        public ObservableCollection<ICategoryViewModel> Categories
         {
-            get => _brands;
-            set => SetProperty(ref _brands, value);
+            get => _categories;
+            set => SetProperty(ref _categories, value);
         }
 
-        private IBrandViewModel? _selectedBrand;
-        public IBrandViewModel? SelectedBrand
+        private ObservableCollection<IAccountViewModel> _accounts;
+        public ObservableCollection<IAccountViewModel> Accounts
         {
-            get => _selectedBrand;
+            get => _accounts;
+            set => SetProperty(ref _accounts, value);
+        }
+
+
+        private ObservableCollection<IProductViewModel> _products;
+        public ObservableCollection<IProductViewModel> Products
+        {
+            get => _products;
+            set => SetProperty(ref _products, value);
+        }
+
+        private IProductViewModel? _selectedProduct;
+        public IProductViewModel? SelectedProduct
+        {
+            get => _selectedProduct;
             set
             {
-                // Hook event listeners to notify commands, if new brand was selected.
-                NotifyCanSaveBrandOnFirstEdit(ref _selectedBrand, value);
-                NotifyOnBrandErrorsChanged(ref _selectedBrand, value);
+                // Hook event listeners to notify commands, if new product was selected.
+                NotifyCanSaveProductOnFirstEdit(ref _selectedProduct, value);
+                NotifyOnProductErrorsChanged(ref _selectedProduct, value);
 
-                if (SetProperty(ref _selectedBrand, value))
+                if (SetProperty(ref _selectedProduct, value))
                 {
-                    UpdateBrandView();
+                    UpdateProductView();
                 }
             }
         }
 
         public IEnumerable<string?> InputErrors
         {
-            get => SelectedBrand?.GetErrors().Select(err => $"*{err.ErrorMessage}") ?? Enumerable.Empty<string>();
+            get => SelectedProduct?.GetErrors().Select(err => $"*{err.ErrorMessage}") ?? Enumerable.Empty<string>();
         }
 
-        private bool _addingNewBrand;
-        public bool AddingNewBrand
+        private bool _addingNewProduct;
+        public bool AddingNewProduct
         {
-            get => _addingNewBrand;
+            get => _addingNewProduct;
             set
             {
-                if (SetProperty(ref _addingNewBrand, value))
+                if (SetProperty(ref _addingNewProduct, value))
                 {
                     if (value)
                     {
-                        SelectedBrand = new BrandViewModel(new("New brand"));
+                        SelectedProduct = new ProductViewModel();
                     }
-                    else SelectedBrand = null;
+                    else SelectedProduct = null;
                 }
             }
         }
@@ -83,12 +101,12 @@ namespace Investor.UI.Core.ViewModels
 
         public ICommand CloseApplicationCommand { get; private set; }
 
-        public ICommand ToggleAddBrandCommand { get; private set; }
+        public ICommand ToggleAddProductCommand { get; private set; }
 
-        public ICommand GetBrandsCommand { get; private set; }
-        public IRelayCommand AddBrandCommand { get; private set; }
-        public IRelayCommand SaveBrandCommand { get; private set; }
-        public IRelayCommand DeleteBrandCommand { get; private set; }
+        public ICommand GetProductsCommand { get; private set; }
+        public IRelayCommand AddProductCommand { get; private set; }
+        public IRelayCommand SaveProductCommand { get; private set; }
+        public IRelayCommand DeleteProductCommand { get; private set; }
 
 
         #endregion
@@ -97,24 +115,42 @@ namespace Investor.UI.Core.ViewModels
         #region Dependencies
 
         private readonly IHostApplicationLifetime _applicationLifetime;
-        private readonly IBrandEndpoint _brandEndpoint;
         private readonly ILogger<MainViewModel> _logger;
+
+        private readonly IProductClient _productClient;
+        private readonly ICategoryClient _categoryClient;
+        private readonly IAccountClient _accountClient;
+        private readonly IBusinessClient _businessClient;
+
+        private readonly IMapper _mapper;
 
         #endregion
 
         #region Constructors
 
-        public MainViewModel(IHostApplicationLifetime applicationLifetime, IBrandEndpoint brandEndpoint, ILogger<MainViewModel> logger)
+        public MainViewModel(IHostApplicationLifetime applicationLifetime,
+                             ILogger<MainViewModel> logger,
+                             IProductClient productClient,
+                             ICategoryClient categoryClient,
+                             IAccountClient accountClient,
+                             IBusinessClient businessClient,
+                             IMapper mapper)
         {
             // Dependencies.
             _applicationLifetime = applicationLifetime;
-            _brandEndpoint = brandEndpoint;
             _logger = logger;
+            _mapper = mapper;
+            _productClient = productClient;
+            _categoryClient= categoryClient;
+            _accountClient= accountClient;
+            _businessClient = businessClient;
 
             // Properites
-            _brands = new();
+            _categories = new();
+            _accounts = new();
+            _products = new();
             _localStatus = "Ready.";
-            _addingNewBrand = false;
+            _addingNewProduct = false;
 
             InitializeCommands();
         }
@@ -124,18 +160,31 @@ namespace Investor.UI.Core.ViewModels
         #region Initialization
 
         [MemberNotNull(nameof(CloseApplicationCommand))]
-        [MemberNotNull(nameof(ToggleAddBrandCommand), nameof(AddBrandCommand))]
-        [MemberNotNull(nameof(GetBrandsCommand), nameof(SaveBrandCommand), nameof(DeleteBrandCommand))]
+        [MemberNotNull(nameof(ToggleAddProductCommand), nameof(AddProductCommand))]
+        [MemberNotNull(nameof(GetProductsCommand), nameof(SaveProductCommand), nameof(DeleteProductCommand))]
         private void InitializeCommands()
         {
             CloseApplicationCommand = new RelayCommand(CloseApplication);
 
-            ToggleAddBrandCommand = new RelayCommand(ToggleAddBrand);
+            ToggleAddProductCommand = new RelayCommand(ToggleAddProduct);
 
-            GetBrandsCommand = new AsyncRelayCommand(GetBrandsAsync);
-            AddBrandCommand = new AsyncRelayCommand(AddBrandAsync, CanAddBrand);
-            SaveBrandCommand = new AsyncRelayCommand(SaveBrandAsync, CanSaveBrand);
-            DeleteBrandCommand = new AsyncRelayCommand(DeleteBrandAsync, CanDeleteBrand);
+            GetProductsCommand = new AsyncRelayCommand(GetProductsAsync);
+            AddProductCommand = new AsyncRelayCommand(AddProductAsync, CanAddProduct);
+            SaveProductCommand = new AsyncRelayCommand(SaveProductAsync, CanSaveProduct);
+            DeleteProductCommand = new AsyncRelayCommand(DeleteProductAsync, CanDeleteProduct);
+        }
+
+        #endregion
+
+        #region Data
+
+        public async Task FetchData()
+        {
+            var categories = await _categoryClient.GetAllAsync();
+            Categories = new(categories.Select(c => (ICategoryViewModel)new CategoryViewModel(c)));
+
+            var accounts = await _accountClient.GetAllAsync();
+            Accounts = new(accounts.Select(a => (IAccountViewModel)new AccountViewModel(a)));
         }
 
         #endregion
@@ -150,117 +199,132 @@ namespace Investor.UI.Core.ViewModels
 
         #endregion
 
-        #region Brands Actions
+        #region Products Actions
 
-        private void ToggleAddBrand()
+        private void ToggleAddProduct()
         {
-            AddingNewBrand = !AddingNewBrand;
-            if (!AddingNewBrand)
+            AddingNewProduct = !AddingNewProduct;
+            if (!AddingNewProduct)
             {
                 LocalStatus = "Ready.";
             }
         }
 
-        private async Task GetBrandsAsync()
+        private async Task GetProductsAsync()
         {
-            LocalStatus = "Getting brands...";
+            LocalStatus = "Getting products...";
             try
             {
-                var brands = await _brandEndpoint.PaginateAsync();
+                var products = await _productClient.GetAllAsync();
+                Products = new(products.Select(p => new ProductViewModel(p)));
 
-                Brands = new(brands.Select(b => new BrandViewModel(b)));
                 LocalStatus = "Up to date.";
             }
             catch (ApiConnectionException ex)
             {
                 LogApiConnectionError(ex);
-                LocalStatus = "Failed to get brands, please check your internet connection and try again.";
+                LocalStatus = "Failed to get products, please check your internet connection and try again.";
             }
         }
 
-        private async Task AddBrandAsync()
+        private async Task AddProductAsync()
         {
-            if (SelectedBrand is null)
+            if (SelectedProduct is null)
             {
-                throw new NullReferenceException("Couldn't resolve the brand reference to add..");
+                throw new NullReferenceException("Couldn't resolve the product reference to add..");
             }
 
-            LocalStatus = "Creating brand...";
+            LocalStatus = "Creating product...";
             try
             {
-                var brand = await _brandEndpoint.CreateAsync(SelectedBrand.GetModel());
+                var dto = _mapper.Map<ProductCreateInputDto>(SelectedProduct.GetModel());
+                await FakeData(dto);
 
-                AddingNewBrand = false;
-                LocalStatus = $"Brand has been created successfully with id: {brand.Id}.";
+                var product = await _productClient.CreateAsync(dto);
 
-                await GetBrandsAsync();
+                AddingNewProduct = false;
+                LocalStatus = $"Product has been created successfully with id: {product.Id}.";
+
+                await GetProductsAsync();
             }
             catch (ApiConnectionException ex)
             {
                 LogApiConnectionError(ex);
-                LocalStatus = "Failed to create the brand, please check your internet connection and try again.";
+                LocalStatus = "Failed to create the product, please check your internet connection and try again.";
             }
         }
 
-        private async Task SaveBrandAsync()
+        private async Task FakeData(ProductCreateInputDto dto)
         {
-            if (SelectedBrand is null)
+            var businesses = await _businessClient.GetAllAsync();
+
+            dto.BusinessId = businesses.First().Id;
+            dto.Category = null;
+        }
+
+        private async Task SaveProductAsync()
+        {
+            if (SelectedProduct is null)
             {
-                throw new NullReferenceException("Couldn't resolve the brand reference to save changes to..");
+                throw new NullReferenceException("Couldn't resolve the product reference to save changes to..");
             }
 
-            LocalStatus = "Saving brand...";
+            LocalStatus = "Saving product...";
             try
             {
-                var result = await _brandEndpoint.SaveChangesAsync(SelectedBrand.GetModel());
-                if (result)
+                var dto = _mapper.Map<ProductUpdateInputDto>(SelectedProduct.GetModel());
+
+                dto.Category = null;
+
+                var product = await _productClient.SaveChangesAsync(SelectedProduct.GetModel().Id, dto);
+                if (product is not null)
                 {
                     LocalStatus = "Changes saved successfully.";
                 }
                 else LocalStatus = "Something went wrong while trying to save changes..";
 
-                OnPropertyChanged(nameof(SelectedBrand));
+                OnPropertyChanged(nameof(SelectedProduct));
             }
             catch (ApiConnectionException ex)
             {
                 LogApiConnectionError(ex);
-                LocalStatus = "Failed to save changes to the brand, please check your internet connection and try again.";
+                LocalStatus = "Failed to save changes to the product, please check your internet connection and try again.";
             }
         }
 
-        private async Task DeleteBrandAsync()
+        private async Task DeleteProductAsync()
         {
-            if (SelectedBrand is null)
+            if (SelectedProduct is null)
             {
-                throw new NullReferenceException("Couldn't resolve the brand reference to delete..");
+                throw new NullReferenceException("Couldn't resolve the product reference to delete..");
             }
 
-            LocalStatus = "Deleting brand...";
+            LocalStatus = "Deleting product...";
             try
             {
-                var result = await _brandEndpoint.DeleteAsync(SelectedBrand.GetModel().Id);
+                var result = await _productClient.DeleteAsync(SelectedProduct.GetModel().Id);
                 if (result)
                 {
-                    SelectedBrand = null;
-                    LocalStatus = "Brand has been deleted successfully.";
+                    SelectedProduct = null;
+                    LocalStatus = "Product has been deleted successfully.";
 
-                    await GetBrandsAsync();
+                    await GetProductsAsync();
                 }
-                else LocalStatus = "Something went wrong while trying to delete the brand..";
+                else LocalStatus = "Something went wrong while trying to delete the product..";
             }
             catch (ApiConnectionException ex)
             {
                 LogApiConnectionError(ex);
-                LocalStatus = "Failed to delete the brand, please check your internet connection and try again.";
+                LocalStatus = "Failed to delete the product, please check your internet connection and try again.";
             }
         }
 
 
         #region CanExecute Actions
 
-        private bool CanAddBrand() => SelectedBrand is not null && !SelectedBrand.HasErrors;
-        private bool CanSaveBrand() => SelectedBrand is not null && SelectedBrand.IsModified && !SelectedBrand.HasErrors;
-        private bool CanDeleteBrand() => SelectedBrand is not null;
+        private bool CanAddProduct() => SelectedProduct is not null && !SelectedProduct.HasErrors;
+        private bool CanSaveProduct() => SelectedProduct is not null && SelectedProduct.IsModified && !SelectedProduct.HasErrors;
+        private bool CanDeleteProduct() => SelectedProduct is not null;
 
         #endregion
 
@@ -277,57 +341,57 @@ namespace Investor.UI.Core.ViewModels
         }
 
 
-        #region Selected Brand On Change
+        #region Selected Product On Change
 
-        private void NotifyCanSaveBrandOnFirstEdit(ref IBrandViewModel? oldBrand, IBrandViewModel? newBrand)
+        private void NotifyCanSaveProductOnFirstEdit(ref IProductViewModel? oldProduct, IProductViewModel? newProduct)
         {
-            if (oldBrand == newBrand) return;
+            if (oldProduct == newProduct) return;
 
-            void brandModifiedHandler(object? sender, PropertyChangedEventArgs e)
+            void productModifiedHandler(object? sender, PropertyChangedEventArgs e)
             {
                 // Call handler only once..
-                if (sender is IBrandViewModel brand)
+                if (sender is IProductViewModel product)
                 {
-                    brand.PropertyChanged -= brandModifiedHandler;
+                    product.PropertyChanged -= productModifiedHandler;
                 }
-                SaveBrandCommand.NotifyCanExecuteChanged();
+                SaveProductCommand.NotifyCanExecuteChanged();
                 LocalStatus = "Changes made not yet saved!";
             }
 
-            if (newBrand?.IsModified == false)
+            if (newProduct?.IsModified == false)
             {
-                newBrand.PropertyChanged += brandModifiedHandler;
+                newProduct.PropertyChanged += productModifiedHandler;
             }
-            else if (oldBrand is not null)
+            else if (oldProduct is not null)
             {
-                oldBrand.PropertyChanged -= brandModifiedHandler;
+                oldProduct.PropertyChanged -= productModifiedHandler;
             }
         }
         
-        private void NotifyOnBrandErrorsChanged(ref IBrandViewModel? oldBrand, IBrandViewModel? newBrand)
+        private void NotifyOnProductErrorsChanged(ref IProductViewModel? oldProduct, IProductViewModel? newProduct)
         {
-            if (oldBrand == newBrand) return;
+            if (oldProduct == newProduct) return;
 
-            void brandErrorsHandler(object? sender, DataErrorsChangedEventArgs e)
+            void productErrorsHandler(object? sender, DataErrorsChangedEventArgs e)
             {
-                UpdateBrandView();
+                UpdateProductView();
             }
 
-            if (newBrand is not null)
+            if (newProduct is not null)
             {
-                newBrand.ErrorsChanged += brandErrorsHandler;
+                newProduct.ErrorsChanged += productErrorsHandler;
             }
-            else if (oldBrand is not null)
+            else if (oldProduct is not null)
             {
-                oldBrand.ErrorsChanged -= brandErrorsHandler;
+                oldProduct.ErrorsChanged -= productErrorsHandler;
             }
         }
 
-        private void UpdateBrandView()
+        private void UpdateProductView()
         {
-            SaveBrandCommand.NotifyCanExecuteChanged();
-            DeleteBrandCommand.NotifyCanExecuteChanged();
-            AddBrandCommand.NotifyCanExecuteChanged();
+            SaveProductCommand.NotifyCanExecuteChanged();
+            DeleteProductCommand.NotifyCanExecuteChanged();
+            AddProductCommand.NotifyCanExecuteChanged();
             OnPropertyChanged(nameof(InputErrors));
         }
         

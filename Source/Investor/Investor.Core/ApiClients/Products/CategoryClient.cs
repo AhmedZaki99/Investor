@@ -25,9 +25,7 @@ namespace Investor.Core
         /// <inheritdoc/>
         public Task<IEnumerable<Category>> GetAllAsync(string businessId)
         {
-            string query = $"businessId={businessId}";
-
-            return GetAllInternalAsync(query);
+            return GetAllInternalAsync(query: new { businessId });
         }
 
         #endregion

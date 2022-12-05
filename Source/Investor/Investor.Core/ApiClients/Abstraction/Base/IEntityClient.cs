@@ -40,11 +40,19 @@ namespace Investor.Core
         /// <returns>The created entity as stored in server (including id).</returns>
         Task<TEntity> CreateAsync(TCreateDto dto);
 
+
         /// <summary>
         /// Save changes made to the entity in the server.
         /// </summary>
-        /// <returns>The updated entity as stored in server.</returns>
-        Task<TEntity> SaveChangesAsync(TEntity originalEntity, TUpdateDto dto);
+        /// <returns>The updated entity as stored in server, or null if entity was not found.</returns>
+        Task<TEntity?> SaveChangesAsync(string id, TUpdateDto dto);
+
+        /// <summary>
+        /// Save changes made to the entity in the server.
+        /// </summary>
+        /// <returns>The updated entity as stored in server, or null if entity was not found.</returns>
+        Task<TEntity?> SaveChangesAsync(TEntity originalEntity, TUpdateDto dto);
+
 
         /// <summary>
         /// Delete entity by id.
