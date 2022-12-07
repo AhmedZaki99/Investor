@@ -1,8 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InvestorData
 {
-    public class Address : EntityBase
+    [Owned]
+    [Table("Addresses")]
+    public class Address
     {
 
         [Required]

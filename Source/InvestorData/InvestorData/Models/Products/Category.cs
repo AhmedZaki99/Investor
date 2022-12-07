@@ -15,7 +15,7 @@ namespace InvestorData
         public string? Description { get; set; }
 
 
-        public List<Product> Products { get; set; } = new();
+        public ICollection<Product> Products { get; set; } = null!;
 
     }
 }

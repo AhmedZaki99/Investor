@@ -1,9 +1,10 @@
 ﻿using InvestorData;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace InvestorAPI.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<AppUser>
     {
 
         #region Entity Sets
@@ -16,17 +17,10 @@ namespace InvestorAPI.Data
         public DbSet<ScaleUnit> ScaleUnits => Set<ScaleUnit>();
         public DbSet<UnitConversion> UnitConversions => Set<UnitConversion>();
 
-        public DbSet<TradingInfo> TradingInfos => Set<TradingInfo>();
-        public DbSet<InventoryInfo> InventoryInfos => Set<InventoryInfo>();
-
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<Product> Products => Set<Product>();
 
-        public DbSet<Address> Addresses => Set<Address>();
-        public DbSet<Contact> Contacts => Set<Contact>();
         public DbSet<Trader> Traders => Set<Trader>();
-
-        public DbSet<Item> Items => Set<Item>();
         public DbSet<Invoice> Invoices => Set<Invoice>();
 
         public DbSet<PaymentMethod> PaymentMethods => Set<PaymentMethod>();
@@ -52,125 +46,7 @@ namespace InvestorAPI.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // Business..
-            BuildBusiness(modelBuilder);
-
-            // Account..
-            BuildAccount(modelBuilder);
-
-            // Invoice & Bill..
-            BuildInvoice(modelBuilder);
-
-            // ScaleUnit..
-            BuildScaleUnit(modelBuilder);
-
-            // Product..
-            BuildProduct(modelBuilder);
-
-            // Dated Entities..
-            BuildDatedEntities(modelBuilder);
-        }
-
-        #region Model Builders
-
-        private static void BuildBusiness(ModelBuilder modelBuilder)
-        {
-            #region Client-Cascade dependent items on delete
-
-            modelBuilder.Entity<Business>()
-                .HasMany(b => b.Accounts)
-                .WithOne(a => a.Business)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            modelBuilder.Entity<Business>()
-                .HasMany(b => b.Products)
-                .WithOne(p => p.Business)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            modelBuilder.Entity<Business>()
-                .HasMany(b => b.Categories)
-                .WithOne(c => c.Business)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            modelBuilder.Entity<Business>()
-                .HasMany(b => b.ScaleUnits)
-                .WithOne(u => u.Business)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            modelBuilder.Entity<Business>()
-                .HasMany(b => b.Invoices)
-                .WithOne(i => i.Business)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            modelBuilder.Entity<Business>()
-                .HasMany(b => b.Payments)
-                .WithOne(c => c.Business)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            modelBuilder.Entity<Business>()
-                .HasMany(b => b.Traders)
-                .WithOne(c => c.Business)
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            #endregion
-
-        }
-
-        private static void BuildAccount(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Account>()
-                .Property(i => i.AccountScope)
-                .HasComputedColumnSql(
-                    @$"
-                        CASE
-                            WHEN [{nameof(Account.BusinessId)}] IS NULL
-                            THEN CASE
-		                        WHEN [{nameof(Account.BusinessTypeId)}] IS NULL
-		                        THEN CAST({AccountScope.Global:d} AS INT)
-		                        ELSE CAST({AccountScope.BusinessTypeSpecific:d} AS INT)
-	                        END
-	                        ELSE CAST({AccountScope.Local:d} AS INT)
-                        END
-                    ");
-        }
-
-        private static void BuildInvoice(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Item>()
-                .Property(i => i.Amount)
-                .HasComputedColumnSql($"[{nameof(Item.Quantity)}] * [{nameof(Item.Price)}]");
-        }
-
-        private static void BuildScaleUnit(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<UnitConversion>()
-                .HasOne(c => c.SourceUnit)
-                .WithMany()
-                .OnDelete(DeleteBehavior.ClientCascade);
-
-            modelBuilder.Entity<UnitConversion>()
-                .HasOne(c => c.TargetUnit)
-                .WithMany()
-                .OnDelete(DeleteBehavior.ClientCascade);
-        }
-
-        private static void BuildProduct(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.SalesInformation)
-                .WithOne();
-
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.PurchasingInformation)
-                .WithOne();
-
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.InventoryDetails)
-                .WithOne();
-        }
-
-        private static void BuildDatedEntities(ModelBuilder modelBuilder)
-        {
+            // Set DatedEntity types creation date on database side.
             foreach (var entity in modelBuilder.Model.GetEntityTypes())
             {
                 if (GetAllBaseTypes(entity.ClrType).Any(t => t == typeof(DatedEntity)))
@@ -179,9 +55,7 @@ namespace InvestorAPI.Data
                 }
             }
         }
-
-        #endregion
-
+        
         #endregion
 
 

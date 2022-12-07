@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
@@ -8,7 +7,6 @@ namespace InvestorData
     public class Invoice : BusinessEntity
     {
 
-        [NotNull]
         public string? TraderId { get; set; }
         public Trader? Trader { get; set; }
 
@@ -38,7 +36,7 @@ namespace InvestorData
         public string? Notes { get; set; }
 
 
-        public List<Item> Items { get; set; } = new();
+        public ICollection<InvoiceItem> Items { get; set; } = null!;
 
     }
 

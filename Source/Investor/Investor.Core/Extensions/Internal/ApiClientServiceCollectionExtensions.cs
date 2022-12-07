@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Logging;
 using Polly;
 using Polly.Extensions.Http;
+using Polly.Fallback;
+using Polly.Retry;
 using Polly.Timeout;
 
 namespace Investor.Core
@@ -15,6 +17,17 @@ namespace Investor.Core
         private const int RetryCount = 3;
 
         private const int TimeoutSeconds = 15;
+
+        #endregion
+
+
+        #region Policies
+
+        private static AsyncFallbackPolicy<HttpResponseMessage?>? _fallbackPolicy;
+
+        private static AsyncRetryPolicy<HttpResponseMessage?>? _retryPolicy;
+
+        private static AsyncTimeoutPolicy<HttpResponseMessage?>? _timeoutPolicy;
 
         #endregion
 
@@ -40,7 +53,8 @@ namespace Investor.Core
 
         private static IAsyncPolicy<HttpResponseMessage?> GetFallbackPolicy<TClient>(IServiceProvider serviceProvider, HttpRequestMessage request) where TClient : class
         {
-            return HttpPolicyExtensions
+            return _fallbackPolicy ??=
+                HttpPolicyExtensions
                 .HandleTransientHttpError()
                 .Or<TimeoutRejectedException>()
                 .FallbackAsync(fallbackValue: null, onFallbackAsync: OnFallbackCallback<TClient>);
@@ -69,7 +83,8 @@ namespace Investor.Core
 
         private static IAsyncPolicy<HttpResponseMessage?> GetRetryPolicy<TClient>(IServiceProvider serviceProvider, HttpRequestMessage request) where TClient : class
         {
-            return HttpPolicyExtensions
+            return _retryPolicy ??= 
+                HttpPolicyExtensions
                 .HandleTransientHttpError()
                 .Or<TimeoutRejectedException>()
                 .WaitAndRetryAsync(RetryCount, i => TimeSpan.FromSeconds(i), onRetry: (response, time) =>
@@ -103,7 +118,7 @@ namespace Investor.Core
 
         private static IAsyncPolicy<HttpResponseMessage?> GetTimeoutPolicy<TClient>(IServiceProvider serviceProvider, HttpRequestMessage request) where TClient : class
         {
-            return Policy.TimeoutAsync<HttpResponseMessage?>(TimeoutSeconds);
+            return _timeoutPolicy ??= Policy.TimeoutAsync<HttpResponseMessage?>(TimeoutSeconds);
         }
 
         #endregion

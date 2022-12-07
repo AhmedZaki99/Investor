@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using InvestorData;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Investor.Core
 {
@@ -19,7 +20,8 @@ namespace Investor.Core
         {
             ArgumentNullException.ThrowIfNull(services, nameof(services));
 
-            // TODO: Add Core Services.
+            // Add Data Mapper.
+            services.AddDataMapper();
 
 
             return new CoreBuilder(services);
@@ -34,8 +36,15 @@ namespace Investor.Core
         {
             ArgumentNullException.ThrowIfNull(builder, nameof(builder));
 
-            // Add Api Endpoints.
-            builder.Services.AddHttpClient<IBrandEndpoint, BrandEndpoint>().AddApiPolicyHandlers<BrandEndpoint>();
+            // Add Api Clients.
+
+            builder.Services.AddHttpClient<IBusinessTypeClient, BusinessTypeClient>().AddApiPolicyHandlers<BusinessTypeClient>();
+            builder.Services.AddHttpClient<IBusinessClient, BusinessClient>().AddApiPolicyHandlers<BusinessClient>();
+
+            builder.Services.AddHttpClient<IAccountClient, AccountClient>().AddApiPolicyHandlers<AccountClient>();
+            
+            builder.Services.AddHttpClient<ICategoryClient, CategoryClient>().AddApiPolicyHandlers<CategoryClient>();
+            builder.Services.AddHttpClient<IProductClient, ProductClient>().AddApiPolicyHandlers<ProductClient>();
 
 
             // Configure Api Options.

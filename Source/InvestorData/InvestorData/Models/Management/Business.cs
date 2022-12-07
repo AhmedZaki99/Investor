@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
 
 namespace InvestorData
 {
@@ -9,11 +8,16 @@ namespace InvestorData
     {
 
         [Required]
+        public string AppUserId { get; set; } = null!;
+
+
+        [Required]
         [MaxLength(256)]
         public string Name { get; set; } = null!;
 
 
-        [NotNull]
+        // IMPORTANT: Study more proper designs for data structure with required relations that shouldn't cascade on delete.
+
         public string? BusinessTypeId { get; set; }
         public BusinessType? BusinessType { get; set; }
 
@@ -29,17 +33,28 @@ namespace InvestorData
 
         #region Navigation Properties
 
-        // TODO: Study the difference bet. assigning nav. properties as Lists vs IEnumerables..
+        [DeleteBehavior(DeleteBehavior.ClientCascade)]
+        public ICollection<Account> Accounts { get; set; } = null!;
 
-        public List<Account> Accounts { get; set; } = new();
 
-        public List<ScaleUnit> ScaleUnits { get; set; } = new();
-        public List<Category> Categories { get; set; } = new();
-        public List<Product> Products { get; set; } = new();
+        [DeleteBehavior(DeleteBehavior.ClientCascade)]
+        public ICollection<ScaleUnit> ScaleUnits { get; set; } = null!;
 
-        public List<Trader> Traders { get; set; } = new();
-        public List<Invoice> Invoices { get; set; } = new();
-        public List<Payment> Payments { get; set; } = new();
+        [DeleteBehavior(DeleteBehavior.ClientCascade)]
+        public ICollection<Category> Categories { get; set; } = null!;
+
+        [DeleteBehavior(DeleteBehavior.ClientCascade)]
+        public ICollection<Product> Products { get; set; } = null!;
+
+
+        [DeleteBehavior(DeleteBehavior.ClientCascade)]
+        public ICollection<Trader> Traders { get; set; } = null!;
+
+        [DeleteBehavior(DeleteBehavior.ClientCascade)]
+        public ICollection<Invoice> Invoices { get; set; } = null!;
+
+        [DeleteBehavior(DeleteBehavior.ClientCascade)]
+        public ICollection<Payment> Payments { get; set; } = null!;
 
         #endregion
 

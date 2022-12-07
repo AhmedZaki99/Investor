@@ -13,7 +13,7 @@
         /// This method should be only called once.
         /// </remarks>
         /// <exception cref="InvalidOperationException"/>
-        void StartupApplication();
+        Task StartupApplication();
 
     }
 }

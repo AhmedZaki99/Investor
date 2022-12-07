@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace InvestorData
 {
+    [EntityTypeConfiguration(typeof(UnitConversionConfiguration))]
     public class UnitConversion : EntityBase
     {
 

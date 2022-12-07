@@ -36,7 +36,8 @@ namespace Investor.UI.WPF
 
             // Application Services.
             services.AddApplicationServices()
-                .AddApiServer(hostContext.Configuration["ApiServerAddress"])
+                .AddApiServer(hostContext.Configuration["ApiServerAddress"] // TODO: Use dynamic configuration binding to count for runtime configuration editing.
+                    ?? throw new InvalidOperationException("Couldn't resolve api server address from configuration providers."))
                 .AddUI<UIService>();
         }
 

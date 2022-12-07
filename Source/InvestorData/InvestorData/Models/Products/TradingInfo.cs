@@ -1,12 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace InvestorData
 {
-    public class TradingInfo : EntityBase
+    [Owned]
+    public class TradingInfo
     {
 
-        [NotNull]
         public string? AccountId { get; set; }
         public Account? Account { get; set; }
 

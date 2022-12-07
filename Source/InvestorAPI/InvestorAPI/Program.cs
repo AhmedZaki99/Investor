@@ -1,4 +1,5 @@
 using InvestorAPI.Core;
+using InvestorAPI.Data;
 using InvestorAPI.JsonConverters;
 using Microsoft.EntityFrameworkCore;
 
@@ -35,6 +36,9 @@ namespace InvestorAPI
 
         private static void ConfigureServices(WebApplicationBuilder builder)
         {
+            // TODO: Handle Server-Side errors properly for production environment.
+            //       See https://learn.microsoft.com/en-us/aspnet/core/web-api/handle-errors
+
             // TODO: Use CancellationToken in API endpoints.
             // TODO: Try use SkipWhile for pagination.
 
@@ -47,11 +51,21 @@ namespace InvestorAPI
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.Converters.Add(new EnumJsonConverter()));
 
+            // Add Identity.
+            builder.Services
+                .AddIdentityCore<AppUser>(options =>
+                {
+                    options.User.RequireUniqueEmail = true;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                })
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Add core services.
             builder.Services
                 .AddCoreServices()
-                .AddSqlServerDb(builder.Configuration.GetConnectionString("DefaultConnection"));
+                .AddSqlServerDb(builder.Configuration.GetConnectionString("DefaultConnection")
+                    ?? throw new InvalidOperationException("Couldn't resolve default database connection string from configuration providers."));
         }
 
         private static void ConfigurePipeline(WebApplication app)

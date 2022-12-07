@@ -19,15 +19,12 @@ namespace InvestorData
         public string? Notes { get; set; }
 
 
-        public string? ContactId { get; set; }
         public Contact? Contact { get; set; }
-
-        public string? AddressId { get; set; }
         public Address? Address { get; set; }
 
 
-        public List<Invoice> Invoices { get; set; } = new();
-        public List<Payment> Payments { get; set; } = new();
+        public ICollection<Invoice> Invoices { get; set; } = null!;
+        public ICollection<Payment> Payments { get; set; } = null!;
 
     }
 

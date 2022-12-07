@@ -13,6 +13,10 @@ namespace InvestorAPI.Core
     internal class ProductService : EntityService<Product, ProductOutputDto, ProductCreateInputDto, ProductUpdateInputDto>, IProductService
     {
 
+        // TODO: You might just want to add events triggered on each of the CRUD operations (protected events - methods - for the moment).
+        // IMPORTANT: Note that services should not act like repositories, so, inter-services injection should be possible for shared effects.
+        //            And remember, the Client is the User, while the Server is the Business.
+
         #region Constructor
 
         public ProductService(ApplicationDbContext dbContext, IMapper mapper) : base(dbContext, dbContext.Products, mapper)

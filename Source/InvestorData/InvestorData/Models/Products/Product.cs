@@ -6,6 +6,7 @@ namespace InvestorData
     [Index(nameof(IsService), nameof(BusinessId))]
     [Index(nameof(Name), IsUnique = true)]
     [Index(nameof(Code), IsUnique = true)]
+    [EntityTypeConfiguration(typeof(ProductConfiguration))]
     public class Product : BusinessEntity, IUniqueName
     {
 
@@ -24,14 +25,8 @@ namespace InvestorData
         public Category? Category { get; set; }
 
 
-        public string? SalesInformationId { get; set; }
         public TradingInfo? SalesInformation { get; set; }
-
-        public string? PurchasingInformationId { get; set; }
         public TradingInfo? PurchasingInformation { get; set; }
-
-
-        public string? InventoryDetailsId { get; set; }
         public InventoryInfo? InventoryDetails { get; set; }
 
     }
