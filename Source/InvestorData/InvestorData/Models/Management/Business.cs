@@ -8,6 +8,10 @@ namespace InvestorData
     {
 
         [Required]
+        public string AppUserId { get; set; } = null!;
+
+
+        [Required]
         [MaxLength(256)]
         public string Name { get; set; } = null!;
 

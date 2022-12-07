@@ -1,4 +1,5 @@
 using InvestorAPI.Core;
+using InvestorAPI.Data;
 using InvestorAPI.JsonConverters;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,6 +51,15 @@ namespace InvestorAPI
                 .AddNewtonsoftJson(options =>
                     options.SerializerSettings.Converters.Add(new EnumJsonConverter()));
 
+            // Add Identity.
+            builder.Services
+                .AddIdentityCore<AppUser>(options =>
+                {
+                    options.User.RequireUniqueEmail = true;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                })
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Add core services.
             builder.Services
