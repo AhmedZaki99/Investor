@@ -29,30 +29,28 @@ namespace InvestorData
 
         #region Navigation Properties
 
-        // TODO: Study the difference bet. assigning nav. properties as Lists vs IEnumerables..
-
         [DeleteBehavior(DeleteBehavior.ClientCascade)]
-        public List<Account> Accounts { get; set; } = new();
+        public ICollection<Account> Accounts { get; set; } = null!;
 
 
         [DeleteBehavior(DeleteBehavior.ClientCascade)]
-        public List<ScaleUnit> ScaleUnits { get; set; } = new();
+        public ICollection<ScaleUnit> ScaleUnits { get; set; } = null!;
 
         [DeleteBehavior(DeleteBehavior.ClientCascade)]
-        public List<Category> Categories { get; set; } = new();
+        public ICollection<Category> Categories { get; set; } = null!;
 
         [DeleteBehavior(DeleteBehavior.ClientCascade)]
-        public List<Product> Products { get; set; } = new();
+        public ICollection<Product> Products { get; set; } = null!;
 
 
         [DeleteBehavior(DeleteBehavior.ClientCascade)]
-        public List<Trader> Traders { get; set; } = new();
+        public ICollection<Trader> Traders { get; set; } = null!;
 
         [DeleteBehavior(DeleteBehavior.ClientCascade)]
-        public List<Invoice> Invoices { get; set; } = new();
+        public ICollection<Invoice> Invoices { get; set; } = null!;
 
         [DeleteBehavior(DeleteBehavior.ClientCascade)]
-        public List<Payment> Payments { get; set; } = new();
+        public ICollection<Payment> Payments { get; set; } = null!;
 
         #endregion
 

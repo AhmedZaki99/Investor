@@ -36,7 +36,7 @@ namespace InvestorData
         public string? Notes { get; set; }
 
 
-        public List<InvoiceItem> Items { get; set; } = new();
+        public ICollection<InvoiceItem> Items { get; set; } = null!;
 
     }
 
