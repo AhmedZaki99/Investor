@@ -23,8 +23,8 @@ namespace InvestorData
         public Address? Address { get; set; }
 
 
-        public List<Invoice> Invoices { get; set; } = new();
-        public List<Payment> Payments { get; set; } = new();
+        public ICollection<Invoice> Invoices { get; set; } = null!;
+        public ICollection<Payment> Payments { get; set; } = null!;
 
     }
 
